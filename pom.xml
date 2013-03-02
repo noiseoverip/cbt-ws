@@ -1,0 +1,181 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.cbt</groupId>
+	<artifactId>cbt-ws</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>cbt-ws</name>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.cbt</groupId>
+			<artifactId>cbt-ws-dao</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>8.1.9.v20130131</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.17</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-bundle</artifactId>
+			<version>1.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>1.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-guice</artifactId>
+			<version>1.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-multipart</artifactId>
+			<version>1.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+			<version>3.0.0-RC1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-meta</artifactId>
+			<version>3.0.0-RC1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-codegen</artifactId>
+			<version>3.0.0-RC1</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>cbt-web-service</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<systemProperties>
+						<systemProperty>
+							<name>log4j.configuration</name>
+							<value>log4j.properties</value>
+						</systemProperty>
+					</systemProperties>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<warName>cbt-ws</warName>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.0.0.RC0</version>
+				<configuration>
+					<contextHandlers>
+						<contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+							<contextPath>/static</contextPath>
+							<resourceBase>src/main/webapp/static</resourceBase>
+						</contextHandler>
+					</contextHandlers>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>jooqgenerate</id>
+			<build>
+				<plugins>
+					<plugin>
+						<!-- Specify the maven code generator plugin -->
+						<groupId>org.jooq</groupId>
+						<artifactId>jooq-codegen-maven</artifactId>
+						<version>3.0.0-RC1</version>
+
+						<!-- The plugin should hook into the generate goal -->
+						<executions>
+							<execution>
+								<id>exec1</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+
+						<!-- Manage the plugin's dependency. In this example, we'll use a Postgres 
+							database -->
+						<dependencies>
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>5.1.23</version>
+							</dependency>
+						</dependencies>
+
+						<!-- Specify the plugin configuration -->
+						<configuration>
+
+							<!-- JDBC connection parameters -->
+							<jdbc>
+								<driver>com.mysql.jdbc.Driver</driver>
+								<url>jdbc:mysql://localhost:3306/cbt</url>
+								<user>root</user>
+								<password></password>
+							</jdbc>
+
+							<!-- Generator parameters -->
+							<generator>
+								<name>org.jooq.util.DefaultGenerator</name>
+								<database>
+									<name>org.jooq.util.mysql.MySQLDatabase</name>
+									<includes>.*</includes>
+									<excludes></excludes>
+									<inputSchema>cbt</inputSchema>
+								</database>
+								<generate>
+									<relations>true</relations>
+									<deprecated>false</deprecated>
+								</generate>
+								<target>
+									<packageName>com.cbt.ws.jooq</packageName>
+									<directory>src/main/java</directory>
+								</target>
+							</generator>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
