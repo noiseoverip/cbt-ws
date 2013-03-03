@@ -71,12 +71,10 @@ public class TestPackageWs {
 		return Response.status(200).build();
 
 	}
-
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestPackage[] get() {
-		TestPackage[] packages = null;
-		packages = mDao.getPackagesAll();
-		return packages;
+	public TestPackage[] get() {		
+		return mDao.getAll();
 	}
 }

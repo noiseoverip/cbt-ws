@@ -11,32 +11,32 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
-import com.cbt.ws.dao.TestConfigDao;
-import com.cbt.ws.entity.TestConfig;
+import com.cbt.ws.dao.TestProfileDao;
+import com.cbt.ws.entity.TestProfile;
 import com.google.inject.servlet.RequestScoped;
 
 /**
- * Test configuration web service
+ * Test profile web service
  * 
  * @author SauliusAlisauskas 2013-03-03 Initial version
  * 
  */
-@Path("/testconfig/")
+@Path("/testprofile/")
 @RequestScoped
-public class TestConfigWs {
+public class TestProfileWs {
 
-	private final Logger mLogger = Logger.getLogger(TestConfigWs.class);
+	private final Logger mLogger = Logger.getLogger(TestProfileWs.class);
 
-	private TestConfigDao mDao;
+	private TestProfileDao mDao;
 
 	@Inject
-	public TestConfigWs(TestConfigDao dao) {
+	public TestProfileWs(TestProfileDao dao) {
 		mDao = dao;
 	}
 
 	/**
 	 * 
-	 * Add new test configuration
+	 * Add new test package to the system
 	 * 
 	 * @param uploadedInputStream
 	 * @param fileDetail
@@ -45,12 +45,12 @@ public class TestConfigWs {
 	@POST
 	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(TestConfig testConfig) {
+	public Response add(TestProfile testProfile) {
 
 		//TODO: implement authentication
-		testConfig.setUserId(1L);
+		testProfile.setUserId(1L);
 
-		mDao.add(testConfig);
+		mDao.add(testProfile);
 		
 		return Response.status(200).build();
 
@@ -58,7 +58,7 @@ public class TestConfigWs {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestConfig[] get() {		
+	public TestProfile[] get() {		
 		return mDao.getAll();
 	}
 }

@@ -74,9 +74,7 @@ public class TestTargetWs {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestTarget[] get() {
-		TestTarget[] apps = null;
-		apps = mDao.getTestTargetAll();
-		return apps;
+	public TestTarget[] get() {		
+		return mDao.getAll();
 	}
 }

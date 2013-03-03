@@ -7,10 +7,8 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
 import com.cbt.ws.dao.TestConfigDao;
 import com.cbt.ws.dao.TestPackageDao;
+import com.cbt.ws.dao.TestProfileDao;
 import com.cbt.ws.dao.TestTargetDao;
-import com.cbt.ws.services.TestConfigWs;
-import com.cbt.ws.services.TestPackageWs;
-import com.cbt.ws.services.TestTargetWs;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
@@ -32,6 +30,7 @@ public class HelloGuiceServletConfig extends GuiceServletContextListener {
 				
 				bind(TestPackageDao.class);
 				bind(TestTargetDao.class);
+				bind(TestProfileDao.class);
 				bind(TestConfigDao.class);
 				
 				 // hook Jackson into Jersey as the POJO <-> JSON mapper
