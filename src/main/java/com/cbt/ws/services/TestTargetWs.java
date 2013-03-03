@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import com.cbt.ws.dao.TestTargetDao;
 import com.cbt.ws.entity.TestTarget;
-import com.cbt.ws.entity.User;
+import com.google.inject.servlet.RequestScoped;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
@@ -29,6 +29,7 @@ import com.sun.jersey.multipart.FormDataParam;
  * 
  */
 @Path("/testtarget/")
+@RequestScoped
 public class TestTargetWs {
 
 	private final Logger mLogger = Logger.getLogger(TestTargetWs.class);
@@ -52,19 +53,15 @@ public class TestTargetWs {
 	@Path("/add")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadFile(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("username") String username) {
-
-		// Load user info (should be taken care by interceptors, authentication...)
-		User user = new User();
-		user.setName(username);
-		user.setId(1); //TODO: for now always use user id 1
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("username") String username) {		
 
 		// Encapsulate test package info
-		TestTarget tTarget = new TestTarget();
-		tTarget.setOwner(user);
+		TestTarget testTarget = new TestTarget();
+		//TODO: implement authentication
+		testTarget.setUserId(1L);
 
 		try {
-			mDao.storeTestTarget(tTarget, uploadedInputStream);
+			mDao.storeTestTarget(testTarget, uploadedInputStream);
 		} catch (IOException e) {
 			mLogger.error("Error while save file", e);
 		}
