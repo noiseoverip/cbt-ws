@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
@@ -30,12 +31,23 @@ public class DeviceJobsWs {
 	public DeviceJobsWs(DevicejobDao dao) {
 		mDao = dao;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public DeviceJob[] get() {		
+	public DeviceJob[] get() {
 		return mDao.getAll();
-	}
+	}	
 	
-	//TODO: add get jobs by device id
+	/**
+	 * Get oldest waiting device job
+	 * 
+	 * @param deviceId
+	 * @return JSON string containing device job properties if any jobs available, 204 otherwise
+	 */
+	@GET
+	@Path("/waiting")
+	@Produces(MediaType.APPLICATION_JSON)
+	public DeviceJob getWaitingJobs(@QueryParam("deviceId") Long deviceId) {
+		return mDao.getOldestWaiting(deviceId);
+	}
 }
