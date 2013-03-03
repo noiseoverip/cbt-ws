@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
+import com.cbt.ws.dao.DevicejobDao;
 import com.cbt.ws.dao.TestConfigDao;
 import com.cbt.ws.dao.TestPackageDao;
 import com.cbt.ws.dao.TestProfileDao;
@@ -34,6 +35,7 @@ public class HelloGuiceServletConfig extends GuiceServletContextListener {
 				bind(TestProfileDao.class);
 				bind(TestConfigDao.class);
 				bind(TestRunDao.class);
+				bind(DevicejobDao.class);
 				
 				 // hook Jackson into Jersey as the POJO <-> JSON mapper
 				bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
@@ -44,8 +46,7 @@ public class HelloGuiceServletConfig extends GuiceServletContextListener {
 				params.put("com.sun.jersey.config.feature.Trace", "true"); // enable tracing
 				
 				// Route all requests through GuiceContainer
-				serve("/*").with(GuiceContainer.class, params);
-				
+				serve("/*").with(GuiceContainer.class, params);				
 			}
 		}, new ConfigModule());
 	}
