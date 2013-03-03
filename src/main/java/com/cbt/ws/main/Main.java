@@ -33,18 +33,15 @@ public class Main {
 		// Enable serving static content
 		ResourceHandler resource_handler = new ResourceHandler();
 	    resource_handler.setDirectoriesListed(true);
-	    resource_handler.setWelcomeFiles(new String[]{ "index.html" });
-	    //resource_handler.setResourceBase("\\src\\main\\java\\com\\cbt\\ws\\html");
+	    resource_handler.setWelcomeFiles(new String[]{ "index.html" });	  
 	    resource_handler.setResourceBase("./src/main/java/com/cbt/ws/html");
 
 	    HandlerList handlers = new HandlerList();
 	    handlers.setHandlers(new Handler[] { resource_handler, sch });
-	    server.setHandler(handlers);
-		//sch.setResourceBase("\\source\\main\\webapp\\static");
+	    server.setHandler(handlers);		
 		
 		// Start the server
 		server.start();
 		server.join();
 	}
-
 }
