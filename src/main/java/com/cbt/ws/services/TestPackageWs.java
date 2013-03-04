@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
-import com.cbt.ws.dao.TestPackageDao;
+import com.cbt.ws.dao.TestScriptDao;
 import com.cbt.ws.entity.TestPackage;
 import com.google.inject.servlet.RequestScoped;
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -34,10 +34,10 @@ public class TestPackageWs {
 
 	private final Logger mLogger = Logger.getLogger(TestPackageWs.class);
 
-	private TestPackageDao mDao;
+	private TestScriptDao mDao;
 
 	@Inject
-	public TestPackageWs(TestPackageDao dao) {
+	public TestPackageWs(TestScriptDao dao) {
 		mDao = dao;
 	}
 

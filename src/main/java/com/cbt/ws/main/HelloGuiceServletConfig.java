@@ -5,9 +5,10 @@ import java.util.Map;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
+import com.cbt.ws.dao.CheckoutDao;
 import com.cbt.ws.dao.DevicejobDao;
 import com.cbt.ws.dao.TestConfigDao;
-import com.cbt.ws.dao.TestPackageDao;
+import com.cbt.ws.dao.TestScriptDao;
 import com.cbt.ws.dao.TestProfileDao;
 import com.cbt.ws.dao.TestRunDao;
 import com.cbt.ws.dao.TestTargetDao;
@@ -30,12 +31,13 @@ public class HelloGuiceServletConfig extends GuiceServletContextListener {
 				//bind(TestTargetWs.class);
 				//bind(TestConfigWs.class);
 				
-				bind(TestPackageDao.class);
+				bind(TestScriptDao.class);
 				bind(TestTargetDao.class);
 				bind(TestProfileDao.class);
 				bind(TestConfigDao.class);
 				bind(TestRunDao.class);
 				bind(DevicejobDao.class);
+				bind(CheckoutDao.class);
 				
 				 // hook Jackson into Jersey as the POJO <-> JSON mapper
 				bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
