@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
 import com.cbt.ws.dao.TestScriptDao;
-import com.cbt.ws.entity.TestPackage;
+import com.cbt.ws.entity.TestScript;
 import com.google.inject.servlet.RequestScoped;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -30,14 +30,14 @@ import com.sun.jersey.multipart.FormDataParam;
  */
 @Path("/testpackage/")
 @RequestScoped
-public class TestPackageWs {
+public class TestScriptWs {
 
-	private final Logger mLogger = Logger.getLogger(TestPackageWs.class);
+	private final Logger mLogger = Logger.getLogger(TestScriptWs.class);
 
 	private TestScriptDao mDao;
 
 	@Inject
-	public TestPackageWs(TestScriptDao dao) {
+	public TestScriptWs(TestScriptDao dao) {
 		mDao = dao;
 	}
 
@@ -56,7 +56,7 @@ public class TestPackageWs {
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("username") String username) {		
 
 		// Encapsulate test package info
-		TestPackage testPackage = new TestPackage();
+		TestScript testPackage = new TestScript();
 		//TODO: implement authentication
 		testPackage.setUserId(1L);
 
@@ -74,7 +74,7 @@ public class TestPackageWs {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestPackage[] get() {		
+	public TestScript[] get() {		
 		return mDao.getAll();
 	}
 }
