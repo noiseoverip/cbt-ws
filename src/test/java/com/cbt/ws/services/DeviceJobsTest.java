@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.cbt.ws.entity.DeviceJob;
-import com.cbt.ws.jooq.enums.DevicejobsStatus;
+import com.cbt.ws.jooq.enums.DeviceJobStatus;
 import com.cbt.ws.main.HelloGuiceServletConfig;
 import com.google.inject.servlet.GuiceFilter;
 import com.sun.jersey.api.client.ClientResponse;
@@ -65,13 +65,13 @@ public class DeviceJobsTest extends JerseyTest {
 		DeviceJob deviceJob = webResource.path("devicejobs/waiting").queryParam("deviceId", "1")
 				.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON_TYPE).get(DeviceJob.class);
 		
-		deviceJob.setStatus(DevicejobsStatus.CHECKEDOUT);
+		deviceJob.setStatus(DeviceJobStatus.CHECKEDOUT);
 		
 		ClientResponse response = webResource.path("devicejobs").type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class, deviceJob);
 		logger.info("Response fo change to CHECKEDOUT:" + response);
 		assertEquals(ClientResponse.Status.OK.getStatusCode(), response.getStatus());
 		
-		deviceJob.setStatus(DevicejobsStatus.WAITING);
+		deviceJob.setStatus(DeviceJobStatus.WAITING);
 		
 		response = webResource.path("devicejobs").type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class, deviceJob);
 		logger.info("Response of change to WAITING:" + response);

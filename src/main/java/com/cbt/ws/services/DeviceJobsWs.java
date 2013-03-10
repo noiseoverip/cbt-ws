@@ -64,7 +64,10 @@ public class DeviceJobsWs {
 			mDao.update(deviceJob);
 		} catch (CbtDaoException e) {
 			return Response.serverError().build();
-		}		
+		}
+		
+		//TODO: if status if finished, perform test run check logic to see if all test run has been finished
+		
 		return Response.ok().build();
 	}
 }
