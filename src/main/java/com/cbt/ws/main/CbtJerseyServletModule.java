@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.cbt.ws.dao.CheckoutDao;
+import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.dao.DevicejobDao;
 import com.cbt.ws.dao.TestConfigDao;
 import com.cbt.ws.dao.TestProfileDao;
@@ -35,6 +36,7 @@ public class CbtJerseyServletModule extends JerseyServletModule {
 		bind(TestRunDao.class);
 		bind(DevicejobDao.class);
 		bind(CheckoutDao.class);
+		bind(DeviceDao.class);
 		
 		 // hook Jackson into Jersey as the POJO <-> JSON mapper
 		//bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
