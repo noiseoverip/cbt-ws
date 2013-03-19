@@ -2,6 +2,7 @@ package com.cbt.ws.services;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -35,10 +36,24 @@ public class DeviceWs {
 	}
 	
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Device getDeviceByUid(Device device) {
+		String uniqueId = Utils.Md5(Utils.buildContentForDeviceUniqueId(device));
+		return mDao.getDeviceByUid(uniqueId);
+	}	
+	
+	@POST
 	@Path("/{deviceId}")
 	@Consumes(MediaType.APPLICATION_JSON)	
 	public void updateDevice(@PathParam("deviceId") Long deviceId, Device device) throws CbtDaoException {
 		mDao.updateDevice(device);		
+	}
+	
+	@DELETE
+	@Path("/{deviceId}")	
+	public void deleteDevice(@PathParam("deviceId") Long deviceId) throws CbtDaoException {
+		mDao.deleteDevice(deviceId);
 	}
 	
 	//TODO: need to add check if all parameters are provided

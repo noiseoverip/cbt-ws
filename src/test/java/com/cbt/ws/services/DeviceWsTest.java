@@ -4,10 +4,8 @@
 package com.cbt.ws.services;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
-import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
 
@@ -40,56 +38,43 @@ public class DeviceWsTest extends JerseyTest {
 	}
 
 	@Test
-	public void testAddGetDevice() {
+	public void testAddGetUpdateGetByUidDevice() {
 		WebResource webResource = resource();
 		Device device = new Device();
 		device.setUserId(1L);
 		device.setDeviceTypeId(1L);
 		device.setDeviceOsId(1L);
 		device.setSerialNumber(String.valueOf(new Random().nextLong()));
-
+		
+		//Add device
 		ClientResponse response = webResource.path("device").type(MediaType.APPLICATION_JSON_TYPE)
 				.accept(MediaType.TEXT_HTML).put(ClientResponse.class, device);
 		logger.info(response);
-
 		assertEquals(ClientResponse.Status.OK.getStatusCode(), response.getStatus());
 		Long deviceId = Long.valueOf(response.getEntity(String.class));
 		device.setId(deviceId);
-
+		
+		// Get device
 		Device fetchedDevice = webResource.path("device/" + deviceId).accept(MediaType.APPLICATION_JSON)
 				.get(Device.class);
-
 		assertEquals(device, fetchedDevice);
-	}
-
-	@Test
-	public void updateDevice() {
-		WebResource webResource = resource();
-		Long deviceId = 1L;
-		Device device = webResource.path("device/" + deviceId).accept(MediaType.APPLICATION_JSON).get(Device.class);
-		assertNotNull(device);
-
+		
+		// Get device by unique id
+		Device deviceByUid = webResource.path("device").type(MediaType.APPLICATION_JSON_TYPE).accept(MediaType.APPLICATION_JSON)
+				.post(Device.class, device);		
+		assertEquals(device, deviceByUid);
+		
+		// Update device
 		device.setState(DeviceState.ONLINE);
-
-		ClientResponse response = webResource.path("device/" + deviceId).type(MediaType.APPLICATION_JSON_TYPE)
+		ClientResponse responseUpdate = webResource.path("device/" + deviceId).type(MediaType.APPLICATION_JSON_TYPE)
 				.post(ClientResponse.class, device);		
-		assertEquals(ClientResponse.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+		assertEquals(ClientResponse.Status.NO_CONTENT.getStatusCode(), responseUpdate.getStatus());		
+		Device deviceAfterUpdate = webResource.path("device/" + deviceId).accept(MediaType.APPLICATION_JSON)
+				.get(Device.class);		
+		assertEquals(deviceAfterUpdate.getState(), DeviceState.ONLINE);
 		
-		Device fetchedDevice = webResource.path("device/" + deviceId).accept(MediaType.APPLICATION_JSON)
-				.get(Device.class);
-		
-		assertEquals(device, fetchedDevice);
-		
-		//Reset state back
-		device.setState(DeviceState.OFFLINE);
-		
-		ClientResponse response2 = webResource.path("device/" + deviceId).type(MediaType.APPLICATION_JSON_TYPE)
-				.post(ClientResponse.class, device);		
-		assertEquals(ClientResponse.Status.NO_CONTENT.getStatusCode(), response2.getStatus());		
-		
-		Device fetchedDevice2 = webResource.path("device/" + deviceId).accept(MediaType.APPLICATION_JSON)
-				.get(Device.class);
-		
-		assertEquals(device, fetchedDevice2);
+		// Delete device
+		ClientResponse deleteResponse = webResource.path("device/" + deviceId).delete(ClientResponse.class);
+		assertEquals(ClientResponse.Status.NO_CONTENT.getStatusCode(), deleteResponse.getStatus());
 	}
 }
