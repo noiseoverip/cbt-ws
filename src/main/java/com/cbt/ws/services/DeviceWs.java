@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.entity.Device;
 import com.cbt.ws.exceptions.CbtDaoException;
+import com.cbt.ws.utils.Utils;
 import com.google.inject.servlet.RequestScoped;
 
 @Path("/device")
@@ -40,10 +41,14 @@ public class DeviceWs {
 		mDao.updateDevice(device);		
 	}
 	
+	//TODO: need to add check if all parameters are provided
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
 	public String updateDevice(Device device) throws CbtDaoException {
+		// Generate device unique id
+		String uniqueId = Utils.Md5(Utils.buildContentForDeviceUniqueId(device));
+		device.setDeviceUniqueId(uniqueId);		
 		return mDao.add(device).toString();
 	}
 

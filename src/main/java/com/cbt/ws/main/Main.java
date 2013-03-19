@@ -15,7 +15,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		// Create the server.
-		Server server = new Server(8080);
+		Server server = new Server(8081);
 
 		// Create a servlet context and add the jersey servlet.
 		ServletContextHandler sch = new ServletContextHandler(server, "/");

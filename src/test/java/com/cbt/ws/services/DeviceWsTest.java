@@ -6,6 +6,7 @@ package com.cbt.ws.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Random;
 import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
@@ -45,8 +46,7 @@ public class DeviceWsTest extends JerseyTest {
 		device.setUserId(1L);
 		device.setDeviceTypeId(1L);
 		device.setDeviceOsId(1L);
-		String uniqueId = UUID.randomUUID().toString();
-		device.setDeviceUniqueId(uniqueId);
+		device.setSerialNumber(String.valueOf(new Random().nextLong()));
 
 		ClientResponse response = webResource.path("device").type(MediaType.APPLICATION_JSON_TYPE)
 				.accept(MediaType.TEXT_HTML).put(ClientResponse.class, device);
