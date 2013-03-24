@@ -24,7 +24,7 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class DeviceJobsWs {
 
-	//private final Logger mLogger = Logger.getLogger(DeviceJobsWs.class);
+	// private final Logger mLogger = Logger.getLogger(DeviceJobsWs.class);
 
 	private DevicejobDao mDao;
 
@@ -32,13 +32,17 @@ public class DeviceJobsWs {
 	public DeviceJobsWs(DevicejobDao dao) {
 		mDao = dao;
 	}
-
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public DeviceJob[] get() {
-		return mDao.getAll();
-	}	
-	
+	public DeviceJob[] get(@QueryParam(value = "testRunId") Long testRunId) {
+		if (null == testRunId) {
+			return mDao.getAll();
+		} else {
+			return mDao.getByTestRunId(testRunId);
+		}		
+	}
+
 	/**
 	 * Get oldest waiting device job
 	 * 
@@ -51,23 +55,23 @@ public class DeviceJobsWs {
 	public DeviceJob getWaitingJobs(@QueryParam("deviceId") Long deviceId) {
 		return mDao.getOldestWaiting(deviceId);
 	}
-	
+
 	/**
 	 * Update single {@link DeviceJob} entry
 	 * 
 	 * @param deviceJob
 	 * @return
 	 */
-	@POST	
-	public Response updateJob(DeviceJob deviceJob) {		
+	@POST
+	public Response updateJob(DeviceJob deviceJob) {
 		try {
 			mDao.update(deviceJob);
 		} catch (CbtDaoException e) {
 			return Response.serverError().build();
 		}
-		
-		//TODO: if status if finished, perform test run check logic to see if all test run has been finished
-		
+
+		// TODO: if status if finished, perform test run check logic to see if all test run has been finished
+
 		return Response.ok().build();
 	}
 }

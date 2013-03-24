@@ -10,8 +10,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-
-import org.apache.log4j.Logger;
+import javax.ws.rs.core.MediaType;
 
 import com.cbt.ws.dao.CheckoutDao;
 import com.cbt.ws.entity.TestPackage;
@@ -21,14 +20,21 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class CheckoutWs {
 
-	private final Logger mLogger = Logger.getLogger(CheckoutWs.class);
+	//private final Logger mLogger = Logger.getLogger(CheckoutWs.class);
 	private CheckoutDao mDao;
 
 	@Inject
 	public CheckoutWs(CheckoutDao dao) {
 		mDao = dao;
 	}	
-
+	
+	@GET
+	@Path("/testpackage")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TestPackage getTestPackageInfo(@QueryParam("devicejob_id") Long devicejobId) {
+		return mDao.getTestPackage(devicejobId);
+	}
+	
 	@Path("/testpackage.zip")
 	@GET
 	@Produces("application/x-zip-compressed")

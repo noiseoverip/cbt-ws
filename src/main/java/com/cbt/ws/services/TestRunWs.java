@@ -1,18 +1,22 @@
 package com.cbt.ws.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.dao.DevicejobDao;
 import com.cbt.ws.dao.TestRunDao;
+import com.cbt.ws.entity.Device;
 import com.cbt.ws.entity.DeviceJob;
 import com.cbt.ws.entity.TestRun;
 import com.google.inject.servlet.RequestScoped;
@@ -27,15 +31,18 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class TestRunWs {
 
-	private final Logger mLogger = Logger.getLogger(TestRunWs.class);
+	//private final Logger mLogger = Logger.getLogger(TestRunWs.class);
 
 	private TestRunDao mTestrunDao;
 	private DevicejobDao mDevicejobDao;
+	private DeviceDao mDeviceDao;
+	private final Logger mLogger = Logger.getLogger(TestRunWs.class);
 
 	@Inject
-	public TestRunWs(TestRunDao dao, DevicejobDao devicejobDao) {
+	public TestRunWs(TestRunDao dao, DevicejobDao devicejobDao, DeviceDao deviceDao) {
 		mTestrunDao = dao;
 		mDevicejobDao = devicejobDao;
+		mDeviceDao = deviceDao;
 	}
 
 	/**
@@ -46,34 +53,40 @@ public class TestRunWs {
 	 * @param fileDetail
 	 * @return
 	 */
-	@POST
-	@Path("/add")
+	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(TestRun testRun) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public TestRun add(TestRun testRun) {
 
 		// TODO: implement authentication
 		testRun.setUserId(1L);
 
 		Long testRunId = mTestrunDao.add(testRun);
-
-		// TODO: get device id's based on test profile device types
+		testRun.setId(testRunId);
 		
+		List<Long> deviceTypes = mTestrunDao.getTestRunComplex(testRun.getId()).getDeviceTypes();		
+		List<DeviceJob> jobs = new ArrayList<DeviceJob>();		
 		
-		// Add device id's to devicejobs table
-		DeviceJob dj1 = new DeviceJob();
-		dj1.setDeviceId(1L);
-		dj1.setUserId(1L);
-		dj1.setTestRunId(testRunId);		
-		mDevicejobDao.add(dj1);
+		for (Long deviceType : deviceTypes) {
+			List<Device> devices = mDeviceDao.getDevicesOfType(deviceType);
+			if (null != devices) {
+				for (Device device : devices) {
+					DeviceJob job = new DeviceJob();
+					job.setDeviceId(device.getId());
+					job.setUserId(device.getUserId());
+					job.setTestRunId(testRun.getId());	
+					Long deviceJobId = mDevicejobDao.add(job);
+					if (null != deviceJobId) {
+						job.setId(deviceJobId);
+						jobs.add(job);
+					} else {
+						mLogger.error("Could not created job:" + job);
+					}					
+				}
+			}
+		}
 		
-		DeviceJob dj2 = new DeviceJob();
-		dj2.setDeviceId(2L);
-		dj2.setUserId(1L);
-		dj2.setTestRunId(testRunId);		
-		mDevicejobDao.add(dj2);	
-
-		return Response.status(200).build();
-
+		return testRun;
 	}
 
 	@GET

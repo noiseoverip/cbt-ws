@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.cbt.ws.services;
 
 import static org.junit.Assert.assertEquals;
@@ -24,7 +21,9 @@ import com.sun.jersey.test.framework.WebAppDescriptor;
 
 //TODO: figure out how to slip in fake database...
 /**
- * @author saulius
+ * Unit test for {@link DeviceWs}
+ * 
+ * @author SauliusAlisauskas 2013-03-24 Initial version
  * 
  */
 public class DeviceWsTest extends JerseyTest {
@@ -53,6 +52,13 @@ public class DeviceWsTest extends JerseyTest {
 		assertEquals(ClientResponse.Status.OK.getStatusCode(), response.getStatus());
 		Long deviceId = Long.valueOf(response.getEntity(String.class));
 		device.setId(deviceId);
+		
+		//Add same devie one more time
+		ClientResponse responseAd2 = webResource.path("device").type(MediaType.APPLICATION_JSON_TYPE)
+				.accept(MediaType.TEXT_HTML).put(ClientResponse.class, device);
+		logger.info(responseAd2);
+		assertEquals(ClientResponse.Status.CONFLICT.getStatusCode(), responseAd2.getStatus());
+
 		
 		// Get device
 		Device fetchedDevice = webResource.path("device/" + deviceId).accept(MediaType.APPLICATION_JSON)

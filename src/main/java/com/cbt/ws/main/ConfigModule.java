@@ -5,7 +5,8 @@ import com.google.inject.AbstractModule;
 
 public class ConfigModule extends AbstractModule {
 	
-	private static final String TESTPACKAGE_STORE_PATH = "C://Dev//CBT//ws-store//";
+	//private static final String TESTPACKAGE_STORE_PATH = "C://Dev//CBT//ws-store//";
+	private static final String TESTPACKAGE_STORE_PATH = "/home/saulius/Documents/cbt/storage/";
 	
 	@Override
 	protected void configure() {

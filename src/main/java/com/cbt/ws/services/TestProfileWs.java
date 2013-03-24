@@ -9,8 +9,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
-
 import com.cbt.ws.dao.TestProfileDao;
 import com.cbt.ws.entity.TestProfile;
 import com.google.inject.servlet.RequestScoped;
@@ -25,7 +23,7 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class TestProfileWs {
 
-	private final Logger mLogger = Logger.getLogger(TestProfileWs.class);
+	// private final Logger mLogger = Logger.getLogger(TestProfileWs.class);
 
 	private TestProfileDao mDao;
 
@@ -47,18 +45,18 @@ public class TestProfileWs {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response add(TestProfile testProfile) {
 
-		//TODO: implement authentication
+		// TODO: implement authentication
 		testProfile.setUserId(1L);
 
 		mDao.add(testProfile);
-		
+
 		return Response.status(200).build();
 
 	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestProfile[] get() {		
+	public TestProfile[] get() {
 		return mDao.getAll();
 	}
 }

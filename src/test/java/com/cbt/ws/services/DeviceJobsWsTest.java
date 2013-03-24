@@ -1,9 +1,8 @@
-/**
- * 
- */
 package com.cbt.ws.services;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.Random;
 
 import javax.ws.rs.core.MediaType;
 
@@ -22,28 +21,19 @@ import com.sun.jersey.test.framework.WebAppDescriptor;
 
 //TODO: figure out how to slip in fake database...
 /**
- * @author saulius
+ * Unit test for {@link DeviceJobsWs}
+ * 
+ * @author SauliusAlisauskas 2013-03-24 Initial version
  * 
  */
-public class DeviceJobsTest extends JerseyTest {
+public class DeviceJobsWsTest extends JerseyTest {
 
-	private final Logger logger = Logger.getLogger(DeviceJobsTest.class);
+	private final Logger logger = Logger.getLogger(DeviceJobsWsTest.class);
 
 	@Override
 	protected AppDescriptor configure() {
 		return new WebAppDescriptor.Builder().filterClass(GuiceFilter.class)
-				.contextListenerClass(HelloGuiceServletConfig.class)
-				.build();
-	}
-
-	@Test
-	public void testWaitingJob() {
-		WebResource webResource = resource();
-		DeviceJob response = webResource.path("devicejobs/waiting").queryParam("deviceId", "1")
-				.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON_TYPE).get(DeviceJob.class);
-		logger.info(response);
-		// DeviceJob job = response.getEntity(new GenericType<DeviceJob>(){});
-		assertEquals(Long.valueOf(1), response.getDeviceId());
+				.contextListenerClass(HelloGuiceServletConfig.class).build();
 	}
 
 	@Test
@@ -55,27 +45,43 @@ public class DeviceJobsTest extends JerseyTest {
 		// DeviceJob job = response.getEntity(new GenericType<DeviceJob>(){});
 		assertEquals(Long.valueOf(1), jobs[0].getDeviceId());
 	}
-	
+
+	// TODO: fix this
 	/**
-	 * Get on job with status WAITING, update it to CHECKEDOUT, verify response code, update it to WAITING, verify response code
+	 * Get on job with status WAITING, update it to CHECKEDOUT, verify response code, update it to WAITING, verify
+	 * response code
 	 */
 	@Test
 	public void testJobUpdate() {
 		WebResource webResource = resource();
-		DeviceJob deviceJob = webResource.path("devicejobs/waiting").queryParam("deviceId", "1")
+		Long deviceId = new Random().nextLong();
+
+		DeviceJob deviceJob = webResource.path("devicejobs/waiting").queryParam("deviceId", deviceId.toString())
 				.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON_TYPE).get(DeviceJob.class);
-		
+
 		deviceJob.setStatus(DeviceJobStatus.CHECKEDOUT);
-		
-		ClientResponse response = webResource.path("devicejobs").type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class, deviceJob);
+
+		ClientResponse response = webResource.path("devicejobs").type(MediaType.APPLICATION_JSON_TYPE)
+				.post(ClientResponse.class, deviceJob);
 		logger.info("Response fo change to CHECKEDOUT:" + response);
 		assertEquals(ClientResponse.Status.OK.getStatusCode(), response.getStatus());
-		
+
 		deviceJob.setStatus(DeviceJobStatus.WAITING);
-		
-		response = webResource.path("devicejobs").type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class, deviceJob);
+
+		response = webResource.path("devicejobs").type(MediaType.APPLICATION_JSON_TYPE)
+				.post(ClientResponse.class, deviceJob);
 		logger.info("Response of change to WAITING:" + response);
 		assertEquals(ClientResponse.Status.OK.getStatusCode(), response.getStatus());
+	}
+
+	@Test
+	public void testWaitingJobExisting() {
+		WebResource webResource = resource();
+		Long deviceId = new Random().nextLong();
+		ClientResponse response = webResource.path("devicejobs/waiting").queryParam("deviceId", deviceId.toString())
+				.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
+		logger.info(response);
+		assertEquals(ClientResponse.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 	}
 
 }
