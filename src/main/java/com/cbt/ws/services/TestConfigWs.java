@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.cbt.ws.dao.TestConfigDao;
 import com.cbt.ws.entity.TestConfig;
+import com.cbt.ws.entity.complex.TestConfigComplex;
 import com.google.inject.servlet.RequestScoped;
 
 /**
@@ -52,7 +53,9 @@ public class TestConfigWs {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestConfig[] get() {		
-		return mDao.getAll();
+	public TestConfigComplex[] get() {		
+		return mDao.getAllComplex();
 	}
+	
+	
 }

@@ -59,21 +59,30 @@ public class TestTargetWs {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public TestTarget uploadFile(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("username") String username) {
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
 
 		// Encapsulate test package info
 		TestTarget testTarget = new TestTarget();
 		// TODO: implement authentication
+		testTarget.setName(name);
 		testTarget.setUserId(1L);
 
 		try {
 			mDao.storeTestTarget(testTarget, uploadedInputStream);
 		} catch (IOException e) {
 			mLogger.error("Error while save file", e);
-		}
-
-		mLogger.info("User: " + username + " uploaded file:" + fileDetail);
-
+		}		
 		return testTarget;
 	}
+	
+	@POST
+	@Path("/add")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.TEXT_HTML)
+	public String uploadFileReturnHtml(@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {		
+		TestTarget testTarget = uploadFile(uploadedInputStream, fileDetail, name);				
+		return "<html><body>File uploaded successfully, new Id: " + testTarget.getId() +"</body></html>";
+	}
+	
 }

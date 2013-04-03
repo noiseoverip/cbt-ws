@@ -35,7 +35,7 @@ public class Main {
 		ResourceHandler resourceHandler = new ResourceHandler();
 		resourceHandler.setDirectoriesListed(true);
 		resourceHandler.setWelcomeFiles(new String[] { "index.html" });
-		resourceHandler.setResourceBase("./src/main/java/com/cbt/ws/html");
+		resourceHandler.setResourceBase("./src/main/resources/html");
 
 		// Setup request log handler
 		RequestLogHandler requestLogHandler = new RequestLogHandler();

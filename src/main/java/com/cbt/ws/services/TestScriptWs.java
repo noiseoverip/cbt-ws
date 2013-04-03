@@ -59,11 +59,12 @@ public class TestScriptWs {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public TestScript uploadFile(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("username") String username) {
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
 
 		// Encapsulate test package info
 		TestScript testScript = new TestScript();
 		// TODO: implement authentication
+		testScript.setName(name);
 		testScript.setUserId(1L);
 
 		try {
@@ -71,10 +72,17 @@ public class TestScriptWs {
 		} catch (IOException e) {
 			mLogger.error("Error while save file", e);
 		}
-
-		mLogger.info("User: " + username + " uploaded file:" + fileDetail);
-
 		return testScript;
 
+	}
+	
+	@POST
+	@Path("/add")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.TEXT_HTML)
+	public String uploadFileReturnHtml(@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {	
+		TestScript testScript = uploadFile(uploadedInputStream, fileDetail, name);
+		return "<html><body>File uploaded successfully, new Id: " + testScript.getId() +"</body></html>";
 	}
 }

@@ -11,9 +11,9 @@
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ISO8601} [%5p] [%c] (%F:%L) %m%n" />
-<!-- 			<param name="ConversionPattern" value="%d{ISO8601} [%5p] %m%n" /> -->
+			<!-- <param name="ConversionPattern" value="%d{ISO8601} [%5p] %m%n" /> -->
 		</layout>
-	</appender>	
+	</appender>
 
 	<!-- A time/date based rolling appender -->
 	<appender name="WIREFILE" class="org.apache.log4j.DailyRollingFileAppender">
@@ -32,11 +32,15 @@
 			<!-- The full pattern: Date MS level [logger] (Thread:NDC) Message\n <param 
 				name="ConversionPattern" value="%d %-5r %-5p [%c] (%t:%x) %m%n"/> -->
 		</layout>
-	</appender>	
+	</appender>
 
 	<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
 		<appender-ref ref="FILE" />
-	</appender>		
+	</appender>
+
+	<logger name="org.jooq">
+		<level value="TRACE" />
+	</logger>
 
 	<!-- ================ -->
 	<!-- Root -->
@@ -44,7 +48,7 @@
 
 	<root>
 		<level value="TRACE" />
-		<appender-ref ref="CONSOLE" />		
+		<appender-ref ref="CONSOLE" />
 	</root>
 
 </log4j:configuration>

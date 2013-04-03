@@ -1,0 +1,61 @@
+<html>
+
+<head>
+<title>User device management page</title>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="/js/cbtclient.js"></script>
+<script src="/js/common.js"></script>
+</head>
+
+<body onload="onLoad();">
+
+	<script type="text/javascript">
+		function onLoad() {
+			loadHeader();
+
+			console.log("loading");
+			// Load list of test runs
+			$.ajax({
+				type : 'GET',
+				url : rootURL + '/testrun',
+				dataType : "json",
+				success : function(json) {
+					$("#devices tbody").remove();
+					$.each(json, function(i, data) {
+						console.log(data);
+						$("#devices").append(
+								"<tr><td>" + data.id + "</td><td>"
+										+ printDate(data.created) + "</td><td>"
+										+ printDate(data.updated) + "</td><td>"
+										+ data.userId + "</td><td>"
+										+ data.testConfigId + "</td><td>"
+										+ data.status + "</td></tr>");
+					})
+				}
+			});
+
+			//setTimeout(updateDeviceTable,1000);
+		}
+	</script>
+	<div id="header"></div>
+	<div id="contents">
+
+		<table border="1" id="devices">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>created</th>
+					<th>updated</th>
+					<th>user</th>
+					<th>testConfig</th>
+					<th>status</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+
+		</table>
+
+	</div>
+
+</body>
+</html>
