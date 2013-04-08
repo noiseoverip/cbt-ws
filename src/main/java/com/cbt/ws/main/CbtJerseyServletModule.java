@@ -6,11 +6,14 @@ import java.util.Map;
 import com.cbt.ws.dao.CheckoutDao;
 import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.dao.DevicejobDao;
+import com.cbt.ws.dao.DevicejobResultDao;
 import com.cbt.ws.dao.TestConfigDao;
 import com.cbt.ws.dao.TestProfileDao;
 import com.cbt.ws.dao.TestRunDao;
 import com.cbt.ws.dao.TestScriptDao;
 import com.cbt.ws.dao.TestTargetDao;
+import com.cbt.ws.dao.UserDao;
+import com.google.inject.Singleton;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
@@ -35,8 +38,11 @@ public class CbtJerseyServletModule extends JerseyServletModule {
 		bind(TestConfigDao.class);
 		bind(TestRunDao.class);
 		bind(DevicejobDao.class);
+		bind(DevicejobResultDao.class);
 		bind(CheckoutDao.class);
 		bind(DeviceDao.class);
+		bind(UserDao.class);
+		bind(AuthenticationFilter.class).in(Singleton.class);
 		
 		 // hook Jackson into Jersey as the POJO <-> JSON mapper
 		//bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
@@ -48,6 +54,7 @@ public class CbtJerseyServletModule extends JerseyServletModule {
 		//params.put("com.sun.jersey.config.property.packages","com.cbt.ws.services");
 		params.put("com.sun.jersey.config.feature.Trace", Boolean.TRUE.toString()); // enable tracing
 		//params.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE.toString());
+        params.put("com.sun.jersey.spi.container.ContainerRequestFilters", AuthenticationFilter.class.getName());
 		
 		// Route all requests through GuiceContainer
 		serve("/*").with(GuiceContainer.class, params);

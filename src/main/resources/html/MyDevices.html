@@ -5,15 +5,13 @@
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="/js/cbtclient.js"></script>
 <script src="/js/common.js"></script>
+<script src="/js/md5.js"></script>
 </head>
 
 <body onload="onLoad();">
 
 	<script type="text/javascript">
-		function onLoad() {
-
-			loadHeader();
-
+		function onLoadPageSpecific() {			
 			console.log("loading");
 			$.ajax({
 				type : 'GET',
@@ -32,7 +30,7 @@
 					})
 				}
 			});
-			setTimeout(onLoad, 1000);
+			//setTimeout(onLoad, 1000);
 		}
 	</script>
 
@@ -50,10 +48,7 @@
 				</tr>
 			</thead>
 			<tbody></tbody>
-
 		</table>
-
 	</div>
-
 </body>
 </html>

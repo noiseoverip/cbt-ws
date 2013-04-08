@@ -5,14 +5,13 @@
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="/js/cbtclient.js"></script>
 <script src="/js/common.js"></script>
+<script src="/js/md5.js"></script>
 </head>
 
 <body onload="onLoad();">
 
 	<script type="text/javascript">
-		function onLoad() {
-			loadHeader();
-
+		function onLoadPageSpecific() {
 			console.log("loading");
 			// Load list of test runs
 			$.ajax({
@@ -29,7 +28,8 @@
 										+ printDate(data.updated) + "</td><td>"
 										+ data.userId + "</td><td>"
 										+ data.testConfigId + "</td><td>"
-										+ data.status + "</td></tr>");
+										+ data.status + "</td><td>"
+										+ '<a href=' + linkTestRunResult(data.id) + ">Results</a></td></tr>");
 					})
 				}
 			});
@@ -49,6 +49,7 @@
 					<th>user</th>
 					<th>testConfig</th>
 					<th>status</th>
+					<th>links</th>
 				</tr>
 			</thead>
 			<tbody></tbody>

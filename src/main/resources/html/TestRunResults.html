@@ -1,0 +1,67 @@
+<html>
+
+<head>
+<title>Test Run result page</title>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="/js/cbtclient.js"></script>
+<script src="/js/cbtclient.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/md5.js"></script>
+</head>
+
+<body onload="onLoad();">
+
+	<script type="text/javascript">
+		function onLoadPageSpecific() {			
+			var testRunId = $.url().param('testRunId');
+
+			// Get related device jobs
+			$.ajax({
+				type : 'GET',
+				url : rootURL + '/devicejob?testRunId=' + testRunId,
+				dataType : "json",
+				success : function(json) {
+					$.each(json, function(i, devicejob) {
+						getDeviceJobResult(devicejob, function(jobresult) {
+							console.log(jobresult);
+							var results = '<div><ul>'
+								+ '<li>Job id:' + devicejob.id + '</li>'
+								+'<li>Tests run:' + jobresult.testsRun + '</li>'
+								+ '<li>Tests failed:' + jobresult.testsFailed+ '</li>'
+								+ '<li>Tests errors:' + jobresult.testsErrors + '</li>'
+								+ '<li>Raw Output:<pre>' + jobresult.output + '</pre></li>'	
+								+ '</ul></div>';							
+							$("#contents").append(results);
+						}, function() {
+							var results = '<div><ul>'
+								+ '<li>Job id:' + devicejob.id + '</li>'
+								+'<li>Result not available yet...</li>'								
+								+ '</ul></div>';							
+							$("#contents").append(results);
+						})
+					})
+				}
+			});
+
+			function getDeviceJobResult(devicejob, onSuccess, onFailure) {
+				$.ajax({
+					type : 'GET',
+					url : rootURL + '/devicejob/' + devicejob.id + '/result',
+					dataType : "json",
+					success : function(json) {
+						onSuccess(json[0]); // pass only first result, since there should be only one result
+					},
+					error: function(jqXHR, textStatus, errorThrown){
+						onFailure();
+			        }
+				});
+			}
+		}
+	</script>
+
+	<div id="header"></div>
+
+	<div id="contents"></div>
+
+</body>
+</html>

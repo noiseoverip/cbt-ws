@@ -7,15 +7,14 @@
 <script src="/jqueryui/ui/jquery-ui.js"></script>
 <script src="/js/cbtclient.js"></script>
 <script src="/js/common.js"></script>
+<script src="/js/md5.js"></script>
 </head>
 
 <body onload="onLoad();">
 
 	<script type="text/javascript">
 		var testRuns;
-		function onLoad() {
-			loadHeader();
-
+		function onLoadPageSpecific() {
 			console.log("loading");
 			// Load list of test runs
 			$.ajax({
