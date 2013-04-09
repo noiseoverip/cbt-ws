@@ -1,6 +1,7 @@
 package com.cbt.ws.services;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -64,6 +65,19 @@ public class DeviceWs {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateDevice(@PathParam("deviceId") Long deviceId, Device device) throws CbtDaoException {
 		mDao.updateDevice(device);
+	}
+	
+	@PUT
+	@Path("/{deviceId}/share/{userId}")
+	public void addSharing(@PathParam("deviceId") Long deviceId, @PathParam("userId") Long userId) {
+		mDao.addSharing(deviceId, userId);
+	}
+	
+	@GET
+	@Path("/{deviceId}/share")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Map<String, Object>> addSharing(@PathParam("deviceId") Long deviceId) {
+		return mDao.getSharedWith(deviceId);
 	}
 
 	@DELETE

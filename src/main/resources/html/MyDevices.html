@@ -25,7 +25,8 @@
 								"<tr><td>" + data.id + "</td><td>"
 										+ data.serialNumber + "</td><td>"
 										+ data.state + "</td><td>"
-										+ printDate(data.updated)
+										+ printDate(data.updated) + "</td><td>"
+										+ '<a href=' + linkDeviceShare(data.id) + '>Sharing</a>'
 										+ "</td></tr>");
 					})
 				}
@@ -45,6 +46,7 @@
 					<th>serial</th>
 					<th>status</th>
 					<th>lastUpdate</th>
+					<th>share</th>
 				</tr>
 			</thead>
 			<tbody></tbody>

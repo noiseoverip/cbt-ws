@@ -13,6 +13,11 @@ function linkTestRunResult(testRunId) {
 			+ "/TestRunResults.html?testRunId=" + testRunId;
 }
 
+function linkDeviceShare(deviceId) {
+	return location.protocol + '//' + location.hostname + ":" + location.port
+	+ "/DeviceShare.html?deviceId=" + deviceId;
+}
+
 function setHeaders(request) {
 	request.setRequestHeader('username', 'saulius');
 	request.setRequestHeader('password', 'win2k');
