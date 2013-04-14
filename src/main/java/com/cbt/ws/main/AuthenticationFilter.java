@@ -23,13 +23,18 @@ class AuthenticationFilter implements ContainerRequestFilter {
 	public AuthenticationFilter(UserDao userDao) {
 		mUserDao = userDao;
 	}
-
+	
+	//TODO: find a better, more declarative way to configure which pages need auth and which not !
 	@Override
 	public ContainerRequest filter(ContainerRequest request) {
-		if (authenticateByCookie(request) || authenticateWithHeaders(request)) {
-			return request;
+		mLogger.info("Method:" + request.getPathSegments().get(0).getPath());
+		if (!"public".equals(request.getPathSegments().get(0).getPath())) {
+			if (authenticateByCookie(request) || authenticateWithHeaders(request)) {
+				return request;
+			}
+			throw new WebApplicationException(Status.UNAUTHORIZED);
 		}
-		throw new WebApplicationException(Status.UNAUTHORIZED);
+		return request;
 	}
 
 	private boolean authenticateByCookie(ContainerRequest request) {
@@ -37,7 +42,7 @@ class AuthenticationFilter implements ContainerRequestFilter {
 		if (cookies.containsKey("auth")) {
 			Cookie authCookie = cookies.get("auth");
 			String[] up = authCookie.getValue().split(":");
-			if (mUserDao.authenticate(up[0], up[1])) {
+			if (null != mUserDao.authenticate(up[0], up[1])) {
 				return true;
 			}
 		}
@@ -48,7 +53,7 @@ class AuthenticationFilter implements ContainerRequestFilter {
 		List<String> username = request.getRequestHeader("username");
 		List<String> password = request.getRequestHeader("password");
 		mLogger.info("Req u:" + username + " p:" + password);
-		if (null != username && null != password && mUserDao.authenticate(username.get(0), password.get(0))) {
+		if (null != username && null != password && null != mUserDao.authenticate(username.get(0), password.get(0))) {
 			return true;
 		}
 		return false;

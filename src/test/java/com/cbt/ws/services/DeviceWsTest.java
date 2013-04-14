@@ -41,9 +41,9 @@ public class DeviceWsTest extends JerseyTest {
 		WebResource webResource = resource();
 		Device device = new Device();
 		device.setUserId(1L);
-		device.setDeviceTypeId(1L);
-		device.setDeviceOsId(1L);
-		device.setSerialNumber(String.valueOf(new Random().nextLong()));
+		device.setDevicetypeId(1L);
+		device.setDeviceosId(1L);
+		device.setSerialnumber(String.valueOf(new Random().nextLong()));
 		
 		//Add device
 		ClientResponse response = webResource.path("device").type(MediaType.APPLICATION_JSON_TYPE)

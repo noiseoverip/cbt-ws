@@ -93,7 +93,7 @@ public class DeviceWs {
 	public Response updateDevice(Device device) throws CbtDaoException, DataAccessException {
 		// Generate device unique id
 		String uniqueId = Utils.Md5(Utils.buildContentForDeviceUniqueId(device));
-		device.setDeviceUniqueId(uniqueId);
+		device.setDeviceuniqueId(uniqueId);
 		Long response = null;
 		try {
 			response = mDao.add(device);

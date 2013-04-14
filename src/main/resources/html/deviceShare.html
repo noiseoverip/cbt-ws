@@ -1,0 +1,75 @@
+<script type="text/javascript">
+	function onLoadPageSpecific(params) {
+		var deviceId = params;
+		$("#title").append("Sharing setting for device id:" + deviceId);
+		var currentlySharedWith;
+		// Get exsiting sharing settings
+		$.ajax({
+			type : 'GET',
+			url : rootURL + '/device/' + deviceId + "/share",
+			dataType : "json",
+			success : function(json) {
+				currentlySharedWith = json;
+				$.each(json, function(i, data) {
+					$("#sharedwith").append('<li>' + data.name + '</li>');
+				});
+			}
+		});
+
+		// Produce list of users
+		$.ajax({
+			type : 'GET',
+			url : rootURL + '/user',
+			dataType : "json",
+			success : function(json) {
+				$.each(json, function(i, data) {
+					var alreadyShared = false;
+					for ( var i = 0; i < currentlySharedWith.length; i++) {
+						if (currentlySharedWith[i].user_id == data.user_id) {
+							alreadyShared = true;
+							break;
+						}
+					}
+					if (!alreadyShared) {
+						$("#users").append(
+								'<option value="' + data.user_id + '">'
+										+ data.name + '</option>');
+					}
+				});
+			}
+		});
+
+		$("button.add").button().click(
+				function(event) {
+					var userId = $("#users").val();
+					console.log("Add sharing for device id:" + deviceId
+							+ " user:" + userId);
+					$.ajax({
+						type : 'PUT',
+						url : rootURL + '/device/' + deviceId + '/share/'
+								+ userId,
+						dataType : "json",
+						statusCode : {
+							204 : function() {
+								alert("Share added");
+							}
+						},
+						error : function() {
+							alert("Server error");
+						}
+					});
+				});
+	}
+</script>
+
+<div id="title"></div>
+
+Select user
+<select id="users">
+</select>
+<button class="add" value="">Share</button>
+
+<br />
+Currently shared with:
+<ul id="sharedwith">
+</ul>

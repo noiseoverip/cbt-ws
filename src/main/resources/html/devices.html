@@ -1,0 +1,66 @@
+<script type="text/javascript">
+	function onLoadPageSpecific() {
+		var userId = CMS.getUser();
+		$.ajax({
+			type : 'GET',
+			url : url('/device?userId={userId}'),
+			dataType : "json",
+			success : function(json) {
+				$("#devicesUser tbody").remove();
+				$("#devicesShared tbody").remove();
+				$.each(json, function(i, data) {				    
+					if (data.userId == userId) {
+						$("#devicesUser").append(
+								"<tr><td>" + data.id + "</td><td>"
+										+ data.serialNumber + "</td><td>"
+										+ data.state + "</td><td>"
+										+ printDate(data.updated) + "</td><td>"
+										+ '<a href="#" onClick="openDeviceSharePage(\'' + data.id + '\')">Share</a></td></tr>")');
+					} else {
+						$("#devicesShared").append(
+								"<tr><td>" + data.id + "</td><td>"
+										+ data.serialNumber + "</td><td>"
+										+ data.state + "</td><td>"
+										+ printDate(data.updated)
+										+ "</td></tr>");
+					}
+				})
+			}
+		});
+		//setTimeout(onLoad, 1000);
+	}
+	
+	function openDeviceSharePage(deviceId) {
+		CMS.openPage("deviceShare", deviceId);
+	}
+	
+</script>
+
+You devices:
+<table id="devicesUser" class="ui-widget ui-widget-content">
+	<thead>
+		<tr class="ui-widget-header">
+			<th>id</th>
+			<th>serial</th>
+			<th>status</th>
+			<th>lastUpdate</th>
+			<th>share</th>
+		</tr>
+	</thead>
+	<tbody></tbody>
+</table>
+<br />
+<br />
+
+Devices shared with you:
+<table id="devicesShared" class="ui-widget ui-widget-content">
+	<thead class="ui-widget-header">
+		<tr>
+			<th>id</th>
+			<th>serial</th>
+			<th>status</th>
+			<th>lastUpdate</th>
+		</tr>
+	</thead>
+	<tbody></tbody>
+</table>

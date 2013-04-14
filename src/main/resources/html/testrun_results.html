@@ -1,0 +1,48 @@
+<script type="text/javascript">
+    function onLoadPageSpecific(params) {
+	var testRunId = params;
+
+	// Get related device jobs
+	$.ajax({
+	    type : 'GET',
+	    url : url('/devicejob?testRunId=' + testRunId),
+	    dataType : "json",
+	    success : function(json) {
+		$.each(json, function(i, devicejob) {
+		    getDeviceJobResult(devicejob, function(jobresult) {
+			console.log(jobresult);
+			var results = '<div><ul>' + '<li>Job id:'
+				+ devicejob.id + '</li>' + '<li>Tests run:'
+				+ jobresult.testsRun + '</li>'
+				+ '<li>Tests failed:' + jobresult.testsFailed
+				+ '</li>' + '<li>Tests errors:'
+				+ jobresult.testsErrors + '</li>'
+				+ '<li>Raw Output:<pre>' + jobresult.output
+				+ '</pre></li>' + '</ul></div>';
+			$("#contents").append(results);
+		    }, function() {
+			var results = '<div><ul>' + '<li>Job id:'
+				+ devicejob.id + '</li>'
+				+ '<li>Result not available yet...</li>'
+				+ '</ul></div>';
+			$("#contents").append(results);
+		    })
+		})
+	    }
+	});
+
+	function getDeviceJobResult(devicejob, onSuccess, onFailure) {
+	    $.ajax({
+		type : 'GET',
+		url : url('/devicejob/' + devicejob.id + '/result'),
+		dataType : "json",
+		success : function(json) {
+		    onSuccess(json[0]); // pass only first result, since there should be only one result
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+		    onFailure();
+		}
+	    });
+	}
+    }
+</script>

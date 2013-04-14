@@ -7,9 +7,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.cbt.ws.dao.UserDao;
+import com.cbt.ws.entity.User;
 import com.google.inject.Inject;
 
 /**
@@ -36,6 +38,12 @@ public class AccessWs {
 	}
 	
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public User getUserByName(@QueryParam("name") String userName) {
+		return mDao.getUserByName(userName);
+	}
+	
+	@GET
 	@Path("/{userId}/stats/hosted")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> getStatsHosted(@PathParam("userId") Long userId) {
@@ -49,9 +57,9 @@ public class AccessWs {
 		return mDao.getUserRunTestStats(userId);
 	}
 	
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Map<String, Object>> getAllUsers() {
-		return mDao.getAllUsers();
-	}	
+//	@GET
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public List<Map<String, Object>> getAllUsers() {
+//		return mDao.getAllUsers();
+//	}	
 }
