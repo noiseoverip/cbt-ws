@@ -6,7 +6,7 @@
 		// Get exsiting sharing settings
 		$.ajax({
 			type : 'GET',
-			url : rootURL + '/device/' + deviceId + "/share",
+			url : url('/device/' + deviceId + "/share"),
 			dataType : "json",
 			success : function(json) {
 				currentlySharedWith = json;
@@ -19,20 +19,20 @@
 		// Produce list of users
 		$.ajax({
 			type : 'GET',
-			url : rootURL + '/user',
+			url : url('/user/all'),
 			dataType : "json",
 			success : function(json) {
 				$.each(json, function(i, data) {
 					var alreadyShared = false;
 					for ( var i = 0; i < currentlySharedWith.length; i++) {
-						if (currentlySharedWith[i].user_id == data.user_id) {
+						if (currentlySharedWith[i].id == data.id) {
 							alreadyShared = true;
 							break;
 						}
 					}
 					if (!alreadyShared) {
 						$("#users").append(
-								'<option value="' + data.user_id + '">'
+								'<option value="' + data.id + '">'
 										+ data.name + '</option>');
 					}
 				});
@@ -46,8 +46,7 @@
 							+ " user:" + userId);
 					$.ajax({
 						type : 'PUT',
-						url : rootURL + '/device/' + deviceId + '/share/'
-								+ userId,
+						url : url('/device/' + deviceId + '/share/' + userId),
 						dataType : "json",
 						statusCode : {
 							204 : function() {

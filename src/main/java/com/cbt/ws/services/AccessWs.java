@@ -76,9 +76,10 @@ public class AccessWs {
 		return mTestProfileDao.add(testProfile);
 	}
 	
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public List<Map<String, Object>> getAllUsers() {
-//		return mDao.getAllUsers();
-//	}	
+	@GET
+	@Path("/all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Map<String, Object>> getAllUsers() {
+		return mUserDao.getAllUsers();
+	}	
 }
