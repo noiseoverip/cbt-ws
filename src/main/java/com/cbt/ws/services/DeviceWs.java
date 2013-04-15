@@ -38,7 +38,7 @@ public class DeviceWs {
 	public DeviceWs(DeviceDao dao) {
 		mDao = dao;
 	}
-
+	
 	@GET
 	@Path("/{deviceId}")
 	@Produces(MediaType.APPLICATION_JSON)

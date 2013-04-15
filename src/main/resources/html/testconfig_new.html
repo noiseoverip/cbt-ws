@@ -3,7 +3,7 @@
 		// Get test profiles
 		$.ajax({
 			type : 'GET',
-			url : rootURL + '/testprofile',
+			url : url('/user/{userId}/testprofile'),
 			dataType : "json",
 			success : function(json) {					
 				$.each(json, function(i, data) {
