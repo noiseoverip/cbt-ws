@@ -46,7 +46,7 @@
 					        dataType: "json",
 					        data: JSON.stringify({ "name": name.val(), "password": md5(password.val())}),
 					        success: function(data, textStatus, jqXHR){
-					        	openPage("login");
+					        	CMS.openPage("login");
 					        },
 					        error: function(jqXHR, textStatus, errorThrown){
 					            alert('Error: ' + textStatus);

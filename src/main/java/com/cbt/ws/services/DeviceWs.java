@@ -22,6 +22,7 @@ import org.jooq.exception.DataAccessException;
 
 import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.entity.Device;
+import com.cbt.ws.entity.DeviceType;
 import com.cbt.ws.exceptions.CbtDaoException;
 import com.cbt.ws.utils.Utils;
 import com.google.inject.servlet.RequestScoped;
@@ -38,6 +39,15 @@ public class DeviceWs {
 	public DeviceWs(DeviceDao dao) {
 		mDao = dao;
 	}
+	
+	@PUT
+	@Path("/type")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public DeviceType getDeviceTypeId(DeviceType deviceType) {
+		return mDao.getOrCreateDeviceType(deviceType.getManufacture(), deviceType.getModel());
+	}
+	
 	
 	@GET
 	@Path("/{deviceId}")

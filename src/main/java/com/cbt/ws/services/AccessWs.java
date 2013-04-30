@@ -11,10 +11,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.cbt.ws.dao.TestConfigDao;
 import com.cbt.ws.dao.TestProfileDao;
+import com.cbt.ws.dao.TestRunDao;
 import com.cbt.ws.dao.UserDao;
 import com.cbt.ws.entity.TestProfile;
+import com.cbt.ws.entity.TestRun;
 import com.cbt.ws.entity.User;
+import com.cbt.ws.entity.complex.TestConfigComplex;
 import com.google.inject.Inject;
 
 /**
@@ -28,11 +32,15 @@ public class AccessWs {
 	
 	private UserDao mUserDao;
 	private TestProfileDao mTestProfileDao;
+	private TestRunDao mTestRunDao;
+	private TestConfigDao mTestConfigDao;
 	
 	@Inject
-	public AccessWs(UserDao dao, TestProfileDao testProfileDao) {
+	public AccessWs(UserDao dao, TestProfileDao testProfileDao, TestRunDao testRunDao, TestConfigDao testConfigDao) {
 		mUserDao = dao;
 		mTestProfileDao = testProfileDao;
+		mTestRunDao = testRunDao;
+		mTestConfigDao = testConfigDao;
 	}
 	
 	@GET
@@ -67,6 +75,20 @@ public class AccessWs {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<TestProfile> getTestProfiles(@PathParam("userId") Long userId) {
 		return mTestProfileDao.getByUserId(userId);
+	}
+	
+	@GET
+	@Path("/{userId}/testrun")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<TestRun> getTestRuns(@PathParam("userId") Long userId) {
+		return mTestRunDao.getByUserId(userId);
+	}
+	
+	@GET
+	@Path("/{userId}/testconfig")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TestConfigComplex[] getTestConfigs(@PathParam("userId") Long userId) {
+		return mTestConfigDao.getByUserId(userId);
 	}
 	
 	@PUT

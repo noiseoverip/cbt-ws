@@ -14,7 +14,7 @@
 	// Load list of test runs
 	$.ajax({
 	    type : 'GET',
-	    url : url('/testrun?userId={userId}'),
+	    url : url('/user/{userId}/testrun'),
 	    dataType : "json",
 	    success : function(json) {
 			$("#devices tbody").remove();

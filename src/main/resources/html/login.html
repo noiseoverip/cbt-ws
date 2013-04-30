@@ -50,7 +50,7 @@
 				        success: function(json){				            
 				            CMS.setUser(json);
 				            dialog.dialog( "close" );
-				            CMS.openPage(targetPage);				            
+				            CMS.openPage((targetPage != null) ? targetPage : defaultPage);				            
 				        },
 				        error: function(jqXHR, textStatus, errorThrown){
 				            updateTips("Login failed");

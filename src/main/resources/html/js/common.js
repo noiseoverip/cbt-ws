@@ -1,12 +1,13 @@
 var currentPageParams;
 var debug = $("#debug");
 var CMS = new ContentManager("hhh");
+var defaultPage = "devices";
 
 function ContentManager(username) {  
     this.onLoad = function() {
 	//$("#header").load("/Navigation.html"); // load header contents
 	$( "#menu" ).menu();	
-	this.openPage("devices");
+	this.openPage(defaultPage);
     };
     
     this.getUser = function() {
