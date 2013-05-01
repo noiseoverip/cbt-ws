@@ -72,17 +72,33 @@ public class TestScriptWs {
 		} catch (IOException e) {
 			mLogger.error("Error while save file", e);
 		}
-		return testScript;
 
+		return testScript;
 	}
-	
+
 	@POST
 	@Path("/add")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.TEXT_HTML)
 	public String uploadFileReturnHtml(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {	
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
 		TestScript testScript = uploadFile(uploadedInputStream, fileDetail, name);
-		return "<html><body>File uploaded successfully, new Id: " + testScript.getId() +"</body></html>";
+		return buildResponse(testScript);
+	}
+
+	/**
+	 * Build Html response containing test script id and extracted test classes
+	 * 
+	 * @param testScript
+	 * @return
+	 */
+	private String buildResponse(TestScript testScript) {
+		StringBuilder sb = new StringBuilder("<html><body>File uploaded successfully, new Id: " + testScript.getId());
+		sb.append("<br />Found test classes: <ul>");
+		for (String testClass : testScript.getTestClasses()) {
+			sb.append("<li>" + testClass + "</li>");
+		}
+		sb.append("<ul></body></html>");
+		return sb.toString();
 	}
 }
