@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 
 import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.dao.UserDao;
-import com.cbt.ws.entity.Device;
 import com.cbt.ws.entity.User;
 import com.google.inject.Inject;
 

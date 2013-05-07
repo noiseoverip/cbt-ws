@@ -35,10 +35,12 @@
 				dataType : "json",
 				data : JSON.stringify(testRun),
 				success : function(data, textStatus, jqXHR) {
-				    alert('Test has been scheduled');
+				    alert('Test has been scheduled on ' + data.devices.length + ' devices');
 				},
-				error : function(jqXHR, textStatus, errorThrown) {
-				    alert('Error:' + textStatus);
+				statusCode: {
+				    503: function(jqXHR, textStatus, errorThrown) {
+				      alert("No devices found to run tests on :(");
+				    }
 				}
 		    });
 

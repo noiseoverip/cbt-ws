@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -25,6 +24,7 @@ import com.cbt.ws.entity.TestProfile;
 import com.cbt.ws.entity.TestRun;
 import com.cbt.ws.entity.TestScript;
 import com.cbt.ws.entity.complex.TestRunComplex;
+import com.cbt.ws.jooq.enums.DeviceState;
 import com.cbt.ws.jooq.enums.TestprofileMode;
 
 public class TestRunWsTest {
@@ -34,7 +34,7 @@ public class TestRunWsTest {
 			add(1L);
 		}
 	};
-
+	private final int deviceCountForType = 5;
 	private final Logger logger = Logger.getLogger(TestRunWsTest.class);
 
 	@Test
@@ -52,27 +52,20 @@ public class TestRunWsTest {
 		testRunComplex.setTestProfile(testProfile);
 		testRunComplex.setTestConfig(testConfig);
 		TestScript testScript = new TestScript();
-		testScript.setTestClasses(Arrays.asList("testClass1", "testClass2", "testClass3", "testClass4", "testClass5",
-				"testClass6", "testClass7", "testClass8"));
+		testScript.setTestClasses(new String[] {"testClass1", "testClass2", "testClass3", "testClass4", "testClass5",
+				"testClass6", "testClass7", "testClass8"});
 
 		when(testRunDao.getTestRunComplex(anyLong())).thenReturn(testRunComplex);
 		when(testScriptDao.getById(anyLong())).thenReturn(testScript);
-		when(deviceDao.getDevicesOfType(anyLong())).thenAnswer(new Answer<List<Device>>() {
+		when(deviceDao.getDevicesOfType(anyLong(), any(DeviceState.class))).thenAnswer(new Answer<List<Device>>() {
 
 			@Override
 			public List<Device> answer(InvocationOnMock invocation) throws Throwable {
-				Long deviceId = Long.valueOf(invocation.getArguments()[0].toString());
+				//Long deviceId = Long.valueOf(invocation.getArguments()[0].toString());
 				List<Device> devices = new ArrayList<Device>();
-				devices.add(new Device());
-				devices.add(new Device());
-				devices.add(new Device());
-				devices.add(new Device());
-				devices.add(new Device());
-				devices.add(new Device());
-				devices.add(new Device());
-				devices.add(new Device());
-				devices.add(new Device());
-				devices.add(new Device());
+				for (int i =0; i<deviceCountForType; i++) {
+					devices.add(new Device());
+				}				
 				return devices;
 			}
 		});
@@ -81,7 +74,7 @@ public class TestRunWsTest {
 
 			@Override
 			public Long answer(InvocationOnMock invocation) throws Throwable {
-				logger.info("Called add devicejob");
+				logger.info("Called add devicejob:" + invocation.getArguments()[0]);
 				return null;
 			}
 		});

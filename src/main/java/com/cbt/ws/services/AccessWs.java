@@ -49,7 +49,7 @@ public class AccessWs {
 	public Map<String, Object> getUser(@PathParam("userId") Long userId) {
 		return mUserDao.getUserById(userId);
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public User getUserByName(@QueryParam("name") String userName) {
