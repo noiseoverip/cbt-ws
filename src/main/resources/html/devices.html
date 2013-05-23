@@ -9,7 +9,7 @@
 				$("#devicesUser tbody").remove();
 				$("#devicesShared tbody").remove();
 				$.each(json, function(i, data) {				    
-					if (data.userId == userId) {
+					if (data.ownerId == userId) {
 						$("#devicesUser").append(
 								"<tr><td>" + data.id + "</td><td>"
 										+ data.serialNumber + "</td><td>"

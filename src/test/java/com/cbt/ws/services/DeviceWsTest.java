@@ -19,7 +19,6 @@ import com.sun.jersey.test.framework.AppDescriptor;
 import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
 
-//TODO: figure out how to slip in fake database...
 /**
  * Unit test for {@link DeviceWs}
  * 
@@ -41,9 +40,9 @@ public class DeviceWsTest extends JerseyTest {
 		WebResource webResource = resource();
 		Device device = new Device();
 		device.setUserId(1L);
-		device.setDevicetypeId(1L);
-		device.setDeviceosId(1L);
-		device.setSerialnumber(String.valueOf(new Random().nextLong()));
+		device.setDeviceTypeId(1L);
+		device.setDeviceOsId(1L);
+		device.setSerialNumber(String.valueOf(new Random().nextLong()));
 		
 		//Add device
 		ClientResponse response = webResource.path("device").type(MediaType.APPLICATION_JSON_TYPE)

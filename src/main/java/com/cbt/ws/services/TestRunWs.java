@@ -11,8 +11,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.log4j.Logger;
 
@@ -28,6 +30,8 @@ import com.cbt.ws.entity.complex.TestRunComplex;
 import com.cbt.ws.jooq.enums.DeviceState;
 import com.cbt.ws.jooq.enums.TestprofileMode;
 import com.cbt.ws.main.CbtNoDevicesException;
+import com.cbt.ws.security.CbtPrinciple;
+import com.cbt.ws.tools.Utils;
 import com.google.inject.servlet.RequestScoped;
 
 /**
@@ -47,15 +51,17 @@ public class TestRunWs {
 	private DeviceDao mDeviceDao;
 	private final Logger mLogger = Logger.getLogger(TestRunWs.class);
 	private TestScriptDao mTestScriptDao;
+	private SecurityContext mContext;
 
 	@Inject
-	public TestRunWs(TestRunDao testRunDao, DevicejobDao devicejobDao, DeviceDao deviceDao, TestScriptDao testScripDao) {
+	public TestRunWs(TestRunDao testRunDao, DevicejobDao devicejobDao, DeviceDao deviceDao, TestScriptDao testScripDao, @Context SecurityContext context) {
 		mTestrunDao = testRunDao;
 		mDevicejobDao = devicejobDao;
 		mDeviceDao = deviceDao;
 		mTestScriptDao = testScripDao;
-	}
-
+		mContext = context;
+	}	
+	
 	/**
 	 * 
 	 * Add new test run
@@ -69,8 +75,7 @@ public class TestRunWs {
 	@Produces(MediaType.APPLICATION_JSON)
 	public TestRun add(TestRun testRun) {
 		// TODO: move logic to dedicated class
-		// TODO: implement authentication
-		testRun.setUserId(1L);
+		testRun.setUserId(((CbtPrinciple)mContext.getUserPrincipal()).getId());
 
 		Long testRunId = mTestrunDao.add(testRun);
 		testRun.setId(testRunId);
@@ -79,9 +84,9 @@ public class TestRunWs {
 		TestScript testScript = mTestScriptDao.getById(testRunComplex.getTestConfig().getTestScriptId());
 		try {
 			if (testRunComplex.getTestProfile().getMode().equals(TestprofileMode.NORMAL)) {
-				testRun.setDevices(handleNormalMode(testRunComplex, testScript));
+				testRun.setDevices(handleNormalMode(testRunComplex, testScript, testRun.getUserId()));
 			} else {
-				testRun.setDevices(handleFastMode(testRunComplex, testScript));
+				testRun.setDevices(handleFastMode(testRunComplex, testScript,  testRun.getUserId()));
 			}
 		} catch (CbtNoDevicesException e) {
 			mLogger.error(e);
@@ -99,26 +104,27 @@ public class TestRunWs {
 	 * @param testRunComplex
 	 * @throws CbtNoDevicesException
 	 */
-	private List<Device> handleFastMode(TestRunComplex testRunComplex, TestScript testScript)
+	private List<Device> handleFastMode(TestRunComplex testRunComplex, TestScript testScript, Long userId)
 			throws CbtNoDevicesException {
 		mLogger.debug("Handling FAST mode ");
 		List<DeviceJob> jobs = new ArrayList<DeviceJob>();
 		List<Device> devicesAll = new ArrayList<Device>();
 		List<Long> deviceTypes = testRunComplex.getDeviceTypes();
 		for (Long deviceType : deviceTypes) {
-			List<Device> devices = mDeviceDao.getDevicesOfType(deviceType, DeviceState.ONLINE);
-			// Do this for each of device types
-			int numberOfAvailableDevices = devices.size();
-			String[] testClasses = testScript.getTestClasses();
-			int numberOfTestCases = testClasses.length;
-			mLogger.info("Found " + devices + " of type id:" + deviceType);
-			mLogger.info("Will split test classes:" + Arrays.toString(testClasses));
-			int testClassesPerDevice = (int) Math.floor(numberOfTestCases / numberOfAvailableDevices);
-			if (testClassesPerDevice == 0) {
-				testClassesPerDevice = 1;
-			}
-			mLogger.info("TestClassesPerDevice:" + testClassesPerDevice);
-			if (null != devices) {
+			List<Device> devices = mDeviceDao.getAllAvailableForUser(userId, deviceType, DeviceState.ONLINE);			
+			if (null != devices && devices.size() > 0) {
+				// Do this for each of device types
+				int numberOfAvailableDevices = devices.size();
+				String[] testClasses = testScript.getTestClasses();
+				int numberOfTestCases = testClasses.length;
+				mLogger.info("Found " + devices + " of type id:" + deviceType);
+				mLogger.info("Will split test classes:" + Arrays.toString(testClasses));
+				int testClassesPerDevice = (int) Math.floor(numberOfTestCases / numberOfAvailableDevices);
+				if (testClassesPerDevice == 0) {
+					testClassesPerDevice = 1;
+				}
+				mLogger.info("TestClassesPerDevice:" + testClassesPerDevice);
+				
 				int testClassIndex = 0;
 				int deviceIndex = 0;
 				for (Device device : devices) {
@@ -136,6 +142,7 @@ public class TestRunWs {
 								testClassesForDevice.add(testClasses[testClassIndex]);
 								testClassIndex++;
 							}
+							break;
 						}
 					}
 					job.getMetadata().setTestClasses(
@@ -163,14 +170,14 @@ public class TestRunWs {
 		return devicesAll;
 	}
 
-	private List<Device> handleNormalMode(TestRunComplex testRunComplex, TestScript testScript)
+	private List<Device> handleNormalMode(TestRunComplex testRunComplex, TestScript testScript, Long userId)
 			throws CbtNoDevicesException {
 		List<DeviceJob> jobs = new ArrayList<DeviceJob>();
 		List<Device> devicesAll = new ArrayList<Device>();
 		List<Long> deviceTypes = testRunComplex.getDeviceTypes();
 		for (Long deviceType : deviceTypes) {
-			List<Device> devices = mDeviceDao.getDevicesOfType(deviceType, DeviceState.ONLINE);
-			if (null != devices) {
+			List<Device> devices = mDeviceDao.getAllAvailableForUser(userId, deviceType, DeviceState.ONLINE);
+			if (null != devices && devices.size() > 0) {
 				for (Device device : devices) {
 					DeviceJob job = new DeviceJob();
 					job.setDeviceId(device.getId());

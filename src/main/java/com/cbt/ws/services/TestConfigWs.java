@@ -6,11 +6,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 
 import com.cbt.ws.dao.TestConfigDao;
 import com.cbt.ws.entity.TestConfig;
 import com.cbt.ws.entity.complex.TestConfigComplex;
+import com.cbt.ws.security.CbtPrinciple;
 import com.google.inject.servlet.RequestScoped;
 
 /**
@@ -22,9 +25,7 @@ import com.google.inject.servlet.RequestScoped;
 @Path("/testconfig/")
 @RequestScoped
 public class TestConfigWs {
-
 	//private final Logger mLogger = Logger.getLogger(TestConfigWs.class);
-
 	private TestConfigDao mDao;
 
 	@Inject
@@ -43,9 +44,8 @@ public class TestConfigWs {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestConfig add(TestConfig testConfig) {
-		//TODO: implement authentication
-		testConfig.setUserId(1L);
+	public TestConfig add(TestConfig testConfig, @Context SecurityContext context) {
+		testConfig.setUserId(((CbtPrinciple)context.getUserPrincipal()).getId());
 		Long testConfigId = mDao.add(testConfig);
 		testConfig.setId(testConfigId);
 		return testConfig;
@@ -53,9 +53,7 @@ public class TestConfigWs {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestConfigComplex[] get() {		
+	public TestConfigComplex[] get() {
 		return mDao.getAllComplex();
-	}
-	
-	
+	}	
 }

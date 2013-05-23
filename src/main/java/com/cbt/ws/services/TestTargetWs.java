@@ -9,12 +9,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.log4j.Logger;
 
 import com.cbt.ws.dao.TestTargetDao;
 import com.cbt.ws.entity.TestTarget;
+import com.cbt.ws.security.CbtPrinciple;
 import com.google.inject.servlet.RequestScoped;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -22,18 +25,15 @@ import com.sun.jersey.multipart.FormDataParam;
 /**
  * Test package web service
  * 
- * Test packages to be kept in: /username/testpackage/testpackage_id
- * 
  * @author SauliusAlisauskas 2013-02-25 Initial version
  * 
  */
 @Path("/testtarget/")
 @RequestScoped
 public class TestTargetWs {
-
 	private TestTargetDao mDao;
-
 	private final Logger mLogger = Logger.getLogger(TestTargetWs.class);
+	private @Context SecurityContext mContext;
 
 	@Inject
 	public TestTargetWs(TestTargetDao dao) {
@@ -62,10 +62,9 @@ public class TestTargetWs {
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
 
 		// Encapsulate test package info
-		TestTarget testTarget = new TestTarget();
-		// TODO: implement authentication
+		TestTarget testTarget = new TestTarget();		
 		testTarget.setName(name);
-		testTarget.setUserId(1L);
+		testTarget.setUserId(((CbtPrinciple)mContext.getUserPrincipal()).getId());
 
 		try {
 			mDao.storeTestTarget(testTarget, uploadedInputStream);

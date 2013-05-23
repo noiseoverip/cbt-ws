@@ -19,7 +19,6 @@ import com.sun.jersey.test.framework.AppDescriptor;
 import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
 
-//TODO: figure out how to slip in fake database...
 /**
  * Unit test for {@link DeviceJobsWs}
  * 

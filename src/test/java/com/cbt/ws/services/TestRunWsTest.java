@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -26,6 +27,8 @@ import com.cbt.ws.entity.TestScript;
 import com.cbt.ws.entity.complex.TestRunComplex;
 import com.cbt.ws.jooq.enums.DeviceState;
 import com.cbt.ws.jooq.enums.TestprofileMode;
+import com.cbt.ws.security.CbtPrinciple;
+import com.cbt.ws.security.CbtSecurityContext;
 
 public class TestRunWsTest {
 	private static ArrayList<Long> DEVICETYPES = new ArrayList<Long>() {
@@ -43,7 +46,7 @@ public class TestRunWsTest {
 		DevicejobDao devicejobDao = mock(DevicejobDao.class);
 		DeviceDao deviceDao = mock(DeviceDao.class);
 		TestScriptDao testScriptDao = mock(TestScriptDao.class);
-		TestRunWs testRunWs = new TestRunWs(testRunDao, devicejobDao, deviceDao, testScriptDao);
+		TestRunWs testRunWs = new TestRunWs(testRunDao, devicejobDao, deviceDao, testScriptDao, new CbtSecurityContext(CbtPrinciple.build(1L, "dddd")));
 		TestProfile testProfile = new TestProfile();
 		testProfile.setMode(TestprofileMode.FAST);
 		TestConfig testConfig = new TestConfig();
@@ -57,7 +60,7 @@ public class TestRunWsTest {
 
 		when(testRunDao.getTestRunComplex(anyLong())).thenReturn(testRunComplex);
 		when(testScriptDao.getById(anyLong())).thenReturn(testScript);
-		when(deviceDao.getDevicesOfType(anyLong(), any(DeviceState.class))).thenAnswer(new Answer<List<Device>>() {
+		when(deviceDao.getAllAvailableForUser(anyLong(), anyLong(),  any(DeviceState.class))).thenAnswer(new Answer<List<Device>>() {
 
 			@Override
 			public List<Device> answer(InvocationOnMock invocation) throws Throwable {
@@ -75,7 +78,7 @@ public class TestRunWsTest {
 			@Override
 			public Long answer(InvocationOnMock invocation) throws Throwable {
 				logger.info("Called add devicejob:" + invocation.getArguments()[0]);
-				return null;
+				return new Random().nextLong();
 			}
 		});
 		TestRun testRun = new TestRun();

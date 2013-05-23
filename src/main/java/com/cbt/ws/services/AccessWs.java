@@ -9,7 +9,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
+
+import org.apache.log4j.Logger;
 
 import com.cbt.ws.dao.TestConfigDao;
 import com.cbt.ws.dao.TestProfileDao;
@@ -34,6 +38,8 @@ public class AccessWs {
 	private TestProfileDao mTestProfileDao;
 	private TestRunDao mTestRunDao;
 	private TestConfigDao mTestConfigDao;
+	private @Context SecurityContext context;
+	private final Logger mLogger = Logger.getLogger(AccessWs.class);
 	
 	@Inject
 	public AccessWs(UserDao dao, TestProfileDao testProfileDao, TestRunDao testRunDao, TestConfigDao testConfigDao) {
@@ -81,6 +87,7 @@ public class AccessWs {
 	@Path("/{userId}/testrun")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<TestRun> getTestRuns(@PathParam("userId") Long userId) {
+		mLogger.info("Request came from user:" + context.getUserPrincipal());
 		return mTestRunDao.getByUserId(userId);
 	}
 	
@@ -88,6 +95,7 @@ public class AccessWs {
 	@Path("/{userId}/testconfig")
 	@Produces(MediaType.APPLICATION_JSON)
 	public TestConfigComplex[] getTestConfigs(@PathParam("userId") Long userId) {
+		mLogger.info("Request came from user:" + context.getUserPrincipal());
 		return mTestConfigDao.getByUserId(userId);
 	}
 	
@@ -95,6 +103,7 @@ public class AccessWs {
 	@Path("/{userId}/testprofile")
 	@Produces(MediaType.APPLICATION_JSON)
 	public TestProfile putTestProfile(@PathParam("userId") Long userId, TestProfile testProfile) {
+		mLogger.info("Request came from user:" + context.getUserPrincipal());
 		return mTestProfileDao.add(testProfile);
 	}
 	

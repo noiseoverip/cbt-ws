@@ -9,12 +9,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.log4j.Logger;
 
 import com.cbt.ws.dao.TestScriptDao;
 import com.cbt.ws.entity.TestScript;
+import com.cbt.ws.security.CbtPrinciple;
 import com.google.inject.servlet.RequestScoped;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -34,6 +37,7 @@ public class TestScriptWs {
 	private TestScriptDao mDao;
 
 	private final Logger mLogger = Logger.getLogger(TestScriptWs.class);
+	private @Context SecurityContext mContext;
 
 	@Inject
 	public TestScriptWs(TestScriptDao dao) {
@@ -63,9 +67,8 @@ public class TestScriptWs {
 
 		// Encapsulate test package info
 		TestScript testScript = new TestScript();
-		// TODO: implement authentication
 		testScript.setName(name);
-		testScript.setUserId(1L);
+		testScript.setUserId(((CbtPrinciple)mContext.getUserPrincipal()).getId());
 
 		try {
 			mDao.storeTestScript(testScript, uploadedInputStream);

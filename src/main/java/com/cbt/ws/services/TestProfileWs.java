@@ -4,11 +4,14 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import com.cbt.ws.dao.TestProfileDao;
 import com.cbt.ws.entity.TestProfile;
+import com.cbt.ws.security.CbtPrinciple;
 import com.google.inject.servlet.RequestScoped;
 
 /**
@@ -41,10 +44,8 @@ public class TestProfileWs {
 	@POST
 	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(TestProfile testProfile) {
-
-		// TODO: implement authentication
-		testProfile.setUserId(1L);
+	public Response add(TestProfile testProfile, @Context SecurityContext context) {
+		testProfile.setUserId(((CbtPrinciple)context.getUserPrincipal()).getId());
 		mDao.add(testProfile);
 		return Response.status(200).build();
 

@@ -59,7 +59,7 @@ public class DeviceWs {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Device> getDeviceByUserId(@QueryParam("userId") Long userId) {
-		return mDao.getDevicesByUser(userId);
+		return mDao.getAllAvailableForUser(userId, null, null);
 	}
 
 	@POST
@@ -103,7 +103,7 @@ public class DeviceWs {
 	public Response updateDevice(Device device) throws CbtDaoException, DataAccessException {
 		// Generate device unique id
 		String uniqueId = Utils.Md5(Utils.buildContentForDeviceUniqueId(device));
-		device.setDeviceuniqueId(uniqueId);
+		device.setDeviceUniqueId(uniqueId);
 		Long response = null;
 		try {
 			response = mDao.add(device);
