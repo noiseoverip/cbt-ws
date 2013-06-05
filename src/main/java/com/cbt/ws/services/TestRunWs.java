@@ -31,7 +31,6 @@ import com.cbt.ws.jooq.enums.DeviceState;
 import com.cbt.ws.jooq.enums.TestprofileMode;
 import com.cbt.ws.main.CbtNoDevicesException;
 import com.cbt.ws.security.CbtPrinciple;
-import com.cbt.ws.tools.Utils;
 import com.google.inject.servlet.RequestScoped;
 
 /**
@@ -78,20 +77,21 @@ public class TestRunWs {
 		testRun.setUserId(((CbtPrinciple)mContext.getUserPrincipal()).getId());
 
 		Long testRunId = mTestrunDao.add(testRun);
-		testRun.setId(testRunId);
-
-		TestRunComplex testRunComplex = mTestrunDao.getTestRunComplex(testRun.getId());
-		TestScript testScript = mTestScriptDao.getById(testRunComplex.getTestConfig().getTestScriptId());
-		try {
-			if (testRunComplex.getTestProfile().getMode().equals(TestprofileMode.NORMAL)) {
-				testRun.setDevices(handleNormalMode(testRunComplex, testScript, testRun.getUserId()));
-			} else {
-				testRun.setDevices(handleFastMode(testRunComplex, testScript,  testRun.getUserId()));
+		if (testRunId != null && testRunId > 0) {
+			testRun.setId(testRunId);
+			TestRunComplex testRunComplex = mTestrunDao.getTestRunComplex(testRun.getId());
+			TestScript testScript = mTestScriptDao.getById(testRunComplex.getTestConfig().getTestScriptId());
+			try {
+				if (testRunComplex.getTestProfile().getMode().equals(TestprofileMode.NORMAL)) {
+					testRun.setDevices(handleNormalMode(testRunComplex, testScript, testRun.getUserId()));
+				} else {
+					testRun.setDevices(handleFastMode(testRunComplex, testScript,  testRun.getUserId()));
+				}
+			} catch (CbtNoDevicesException e) {
+				mLogger.error(e);
+				throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
 			}
-		} catch (CbtNoDevicesException e) {
-			mLogger.error(e);
-			throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
-		}
+		}		
 
 		return testRun;
 	}

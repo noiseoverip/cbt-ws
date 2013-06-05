@@ -88,9 +88,9 @@ public class DeviceJobsWs {
 		
 		// Update testrun status
 		mLogger.debug("Checking if all jobs have finished");
-		DeviceJob[] jobsIfThisTestRun = mDao.getByTestRunId(deviceJob.getTestRunId());
+		DeviceJob[] jobsOfThisTestRun = mDao.getByTestRunId(deviceJob.getTestRunId());
 		boolean allFinished = true;
-		for (DeviceJob job : jobsIfThisTestRun) {
+		for (DeviceJob job : jobsOfThisTestRun) {
 			mLogger.debug(job);
 			if (!job.getStatus().equals(DeviceJobStatus.FINISHED)) {
 				allFinished = false;

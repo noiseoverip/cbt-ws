@@ -24,8 +24,9 @@
 				    '<tr testRunId="' +  data.id + '""><td>' + data.id + "</td><td>"
 					    + printDate(data.created) + "</td><td>"
 					    + printDate(data.updated) + "</td><td>"					    
-					    + data.testConfigId + "</td><td>"
-					    + data.status + "</td></tr>");
+					    + data.test_config_name + "</td><td>"
+					    + data.status + "</td><td>"
+					    + timeDifference(data.created, data.updated) + "</td></tr>");
 			});
 			$("#devices tr").click(function() {
 			    var id = $(this).attr('testRunId');
@@ -35,6 +36,9 @@
 	});	
 
 	//setTimeout(updateDeviceTable,1000);
+    }
+    function timeDifference(time1, time2) {
+		return (time2 - time1) / 1000;
     }
 </script>
 
@@ -47,6 +51,7 @@
 			<th>updated</th>			
 			<th>testConfig</th>
 			<th>status</th>
+			<th>duration(s)</th>
 		</tr>
 	</thead>
 	<tbody></tbody>

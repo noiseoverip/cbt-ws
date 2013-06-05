@@ -86,9 +86,9 @@ public class AccessWs {
 	@GET
 	@Path("/{userId}/testrun")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<TestRun> getTestRuns(@PathParam("userId") Long userId) {
+	public List<Map<String, Object>> getTestRuns(@PathParam("userId") Long userId) {
 		mLogger.info("Request came from user:" + context.getUserPrincipal());
-		return mTestRunDao.getByUserId(userId);
+		return mTestRunDao.getMapsByUserId(userId);
 	}
 	
 	@GET
