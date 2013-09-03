@@ -2,6 +2,7 @@ cbt-ws
 ======
 
 PROJECT SETUP
+
 1. Fix unresolved Maven dependencies
 Library for parsing DEX files (https://code.google.com/p/smali/) is not available in MAVEN CENTRAL, copy is included in /lib folder
 Add lib\baksmali-1.4.2.jar to local maven repository with:
@@ -31,15 +32,15 @@ mvn install:install-file -Dfile=lib\baksmali-1.4.2.jar -DgroupId=org.jf.dexlib -
 3. Run integration tests (this is needed to compile the project since it generated JOOQ classes)
 maven verify -P prepareForTest,jooqgenerate
 This will:
-* Create database
-* Populate it with test data
-* Re-generate JOOQ libraries
-* Run integration tests (*IT.java)
-* Delete database
+ - Create database
+ - Populate it with test data
+ - Re-generate JOOQ libraries
+ - Run integration tests (*IT.java)
+ - Delete database
 
 4. Setup production database
-4.1 Create database where name=${cbt.db.name} (from Maven settings.xml)
-4.2 Run: maven initialize -P setupProductionDbSchema
+ 1. Create database where name=${cbt.db.name} (from Maven settings.xml)
+ 2. Run: maven initialize -P setupProductionDbSchema
 
 5. One more nasty thing to do is:
 Go to /src/main/webapp/js/cbtclient.js and modify variable rootURL according to where you have deployed the web app
@@ -57,23 +58,22 @@ API used by Client application (deprecated)
 ### Testing procedure:
 execute: maven tests
 
---->drops existing CBT database
-
---->creates database named "cbttest" from src/main/resources/cbt.sql
-
---->generate JOOQ classes using created database
-
---->executes tests
-
---->removes database
+1. drops existing CBT database
+2. creates database named "cbttest" from src/main/resources/cbt.sql
+3. generate JOOQ classes using created database
+4. executes tests
+5. removes database
 
 ### Using RIP
 For authentication, need to add the following headers:
-username - provide your user name
-password - provide MD% of your password
+
+* username - provide your user name
+* password - provide MD% of your password
 
 Testing user accounts:
-name: testuser1 password:41da76f0fc3ec62a6939e634bfb6a342 (MD5 of testuser1)
+
+* name: testuser1 
+* password:41da76f0fc3ec62a6939e634bfb6a342 (MD5 of testuser1)
 
 
 
