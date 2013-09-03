@@ -44,7 +44,7 @@ This will:
 5. One more nasty thing to do is:
 Go to /src/main/webapp/js/cbtclient.js and modify variable rootURL according to where you have deployed the web app
 
-API used by Client application
+API used by Client application (deprecated)
 /user?name
 /checkout/testpackage
 /checkout/testpackage.zip
@@ -54,95 +54,22 @@ API used by Client application
 /devicejob/waiting
 /devicejob/{id}/result
 
-
-API used in WEB GUI by page:
-device.html
-	GET /device?userId={userId}
-deviceShare.html
-	GET /device/{id}/share
-	GET /user/all
-login.html
-	GET /user + JSON
-register.html
-	PUT /public/user + JSON
-statistics.html
-	GET /user/{userId}/stats/hosted
-	GET /user/{userId}/stats/used
-testconfig_new.html
-	GET /user/{userId}/testprofile
-	GET /testscript
-	GET /testtarget
-	PUT /testconfig + JSON
-testconfigs.html
-	GET /user/{userId}/testconfig
-	PUT /testrun
-testprofile_new.html
-	GET /public/device-types
-	PUT /user/{userId}/testprofile
-testprofiles.html
-	GET /user/{userId}/testprofile
-	PUT /testrun
-testrun_results.html
-	GET /devicejob?testRunId={testRunId}
-	GET devicejob/{deviceJobId}/result
-testruns.html
-	GET /user/{userId}/testrun
-testScriptUpload.html
-	POST /testscript/add
-testTargetUpload.html
-	POST /testtarget/add
-	
-Complete API:
-PUT 	/public/user + JSON
-GET 	/public/device-types
-
-GET 	/device?userId={userId}
-GET 	/device/{id}/share
-
-GET 	/user/all
-GET 	/user + JSON
-GET 	/user?name
-
-GET 	/user/{userId}/stats/hosted
-GET 	/user/{userId}/stats/used
-
-GET 	/user/{userId}/testprofile
-PUT 	/user/{userId}/testprofile
-
-GET 	/user/{userId}/testconfig
-TODO PUT 	/user/{userId}/testconfig + JSON
-PUT 	/testconfig + JSON TBR
-
-GET 	/user/{userId}/testrun
-PUT 	/user/{userId}/testrun + JSON
-
-GET 	/user/{userId}/devicejob
-	Params: testRunId
-	or status and deviceId
-PUT 	/user/{userId}/devicejob/{deviceJobId}/result
-GET 	/user/{userId}/devicejob/{deviceJobId}/result
-
-GET /user/{userId}/testscript
-POST /user/{userId}/testscript
-
-GET /user/{userId}/testtarget
-POST /user/{userId}/testtarget
-
-GET /checkout/testpackage?deviceJobId={deviceJobId}
-GET /checkout/testpackage.zip?deviceJobId={deviceJobId}
-
-PUT 	/device
-PUT 	/device/type
-POST 	/device/{deviceId}
-GET 	/device/{id}/share
-PUT 	/device/{id}/share/{userShareWithId}
-
-
-Testing procedure:
+### Testing procedure:
 execute: maven tests
 
 --->drops existing CBT database
---->creates database names "cbt" from src/main/resources/cbt.sql
+--->creates database named "cbttest" from src/main/resources/cbt.sql
 --->generate JOOQ classes using created database
 --->executes tests
 --->removes database
+
+### Using RIP
+For authentication, need to add the following headers:
+username - provide your user name
+password - provide MD% of your password
+
+Testing user accounts:
+name: testuser1 password:41da76f0fc3ec62a6939e634bfb6a342 (MD5 of testuser1)
+
+
+
