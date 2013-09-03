@@ -46,8 +46,7 @@ public class DeviceWs {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public DeviceType getDeviceTypeId(DeviceType deviceType) {
 		return mDao.getOrCreateDeviceType(deviceType.getManufacture(), deviceType.getModel());
-	}
-	
+	}	
 	
 	@GET
 	@Path("/{deviceId}")

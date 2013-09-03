@@ -8,8 +8,16 @@
 	<name>cbt-ws</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<mysql.connector.version>5.1.17</mysql.connector.version>
+		<jooq.version>3.1.0</jooq.version>
+		<c3p0.version>0.9.1.2</c3p0.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.jf.dexlib</groupId>
+			<artifactId>baksmali</artifactId>
+			<version>1.4.2</version>
+		</dependency>
 		<dependency>
 			<groupId>com.cbt</groupId>
 			<artifactId>cbt-ws-dao</artifactId>
@@ -23,7 +31,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.17</version>
+			<version>${mysql.connector.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.jersey-test-framework</groupId>
@@ -59,22 +67,38 @@
 		<dependency>
 			<groupId>org.jooq</groupId>
 			<artifactId>jooq</artifactId>
-			<version>3.0.0-RC1</version>
+			<version>${jooq.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jooq</groupId>
 			<artifactId>jooq-meta</artifactId>
-			<version>3.0.0-RC1</version>
+			<version>${jooq.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jooq</groupId>
 			<artifactId>jooq-codegen</artifactId>
-			<version>3.0.0-RC1</version>
+			<version>${jooq.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>${c3p0.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -87,12 +111,6 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
-					<systemProperties>
-						<systemProperty>
-							<name>log4j.configuration</name>
-							<value>log4j.properties</value>
-						</systemProperty>
-					</systemProperties>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -139,8 +157,195 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
 	</build>
 	<profiles>
+		<profile>
+			<id>setupProductionDbSchema</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>sql-maven-plugin</artifactId>
+						<version>1.5</version>
+						<dependencies>
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>${mysql.connector.version}</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<driver>com.mysql.jdbc.Driver</driver>
+							<url>${cbt.db.url}</url>
+							<username>${cbt.db.user}</username>
+							<password>${cbt.db.password}</password>
+							<settingsKey>sensibleKey</settingsKey>
+						</configuration>
+						<executions>
+							<execution>
+								<id>create-schema</id>
+								<phase>initialize</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<autocommit>true</autocommit>
+									<srcFiles>
+										<srcFile>src/main/resources/cbt.sql</srcFile>
+									</srcFiles>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>prepareForTest</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.14.1</version>
+						<configuration>
+							<systemPropertyVariables>
+								<cbt.run.mode>integration</cbt.run.mode>
+							</systemPropertyVariables>							
+						</configuration>
+						<executions>
+							<execution>
+								<id>failsafe-integration-tests</id>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>sql-maven-plugin</artifactId>
+						<version>1.5</version>
+
+						<dependencies>
+							<!-- specify the dependent jdbc driver here -->
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>${mysql.connector.version}</version>
+							</dependency>
+						</dependencies>
+
+						<!-- common configuration shared by all executions -->
+						<configuration>
+							<driver>com.mysql.jdbc.Driver</driver>
+							<url>${cbt.dbtest.url}</url>
+							<username>${cbt.dbtest.user}</username>
+							<password>${cbt.dbtest.password}</password>
+							<settingsKey>sensibleKey</settingsKey>
+							<!--all executions are ignored if -Dmaven.test.skip=true -->
+							<skip>${maven.test.skip}</skip>
+						</configuration>
+
+						<executions>
+							<!-- <execution> -->
+							<!-- <id>drop-db-before-test-if-any</id> -->
+							<!-- <phase>process-test-resources</phase> -->
+							<!-- <goals> -->
+							<!-- <goal>execute</goal> -->
+							<!-- </goals> -->
+							<!-- <configuration> -->
+							<!-- Need to use existing db, otherwise will get error -->
+							<!-- <url>${cbt.dbbootstrap.url}</url> -->
+							<!-- <autocommit>true</autocommit> -->
+							<!-- <sqlCommand>drop database if exists ${cbt.db.name}</sqlCommand> -->
+							<!-- ignore error when database is not available -->
+							<!-- <onError>continue</onError> -->
+							<!-- </configuration> -->
+							<!-- </execution> -->
+
+							<execution>
+								<id>create-db</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<!-- Need to use existing db, otherwise will get error -->
+									<url>${cbt.dbbootstrap.url}</url>
+									<!-- no transaction -->
+									<autocommit>true</autocommit>
+									<sqlCommand>create database ${cbt.dbtest.name}</sqlCommand>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>create-schema</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<autocommit>true</autocommit>
+									<srcFiles>
+										<srcFile>src/test/resources/cbt-test.sql</srcFile>
+									</srcFiles>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>create-data</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<orderFile>ascending</orderFile>
+									<fileset>
+										<basedir>${basedir}</basedir>
+										<includes>
+											<include>src/test/resources/cbt-test-data.sql</include>
+										</includes>
+									</fileset>
+								</configuration>
+							</execution>
+
+							<!-- drop db after test -->
+<!-- 							<execution> -->
+<!-- 								<id>drop-db-after-test</id> -->
+<!-- 								<phase>post-integration-test</phase> -->
+<!-- 								<goals> -->
+<!-- 									<goal>execute</goal> -->
+<!-- 								</goals> -->
+<!-- 								<configuration> -->
+<!-- 									<autocommit>true</autocommit> -->
+<!-- 									<sqlCommand>drop database ${cbt.dbtest.name}</sqlCommand> -->
+<!-- 								</configuration> -->
+<!-- 							</execution> -->
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
 		<profile>
 			<id>jooqgenerate</id>
 			<build>
@@ -149,26 +354,23 @@
 						<!-- Specify the maven code generator plugin -->
 						<groupId>org.jooq</groupId>
 						<artifactId>jooq-codegen-maven</artifactId>
-						<version>3.0.0-RC1</version>
+						<version>${jooq.version}</version>
 
 						<!-- The plugin should hook into the generate goal -->
 						<executions>
 							<execution>
-								<id>exec1</id>
-								<phase>generate-sources</phase>
+								<id>jooq-generate-classes</id>
+								<phase>pre-integration-test</phase>
 								<goals>
 									<goal>generate</goal>
 								</goals>
 							</execution>
 						</executions>
-
-						<!-- Manage the plugin's dependency. In this example, we'll use a Postgres 
-							database -->
 						<dependencies>
 							<dependency>
 								<groupId>mysql</groupId>
 								<artifactId>mysql-connector-java</artifactId>
-								<version>5.1.23</version>
+								<version>${mysql.connector.version}</version>
 							</dependency>
 						</dependencies>
 
@@ -178,9 +380,9 @@
 							<!-- JDBC connection parameters -->
 							<jdbc>
 								<driver>com.mysql.jdbc.Driver</driver>
-								<url>jdbc:mysql://localhost:3306/cbt</url>
-								<user>root</user>
-								<password></password>
+								<url>${cbt.dbtest.url}</url>
+								<user>${cbt.dbtest.user}</user>
+								<password>${cbt.dbtest.password}</password>
 							</jdbc>
 
 							<!-- Generator parameters -->
@@ -189,9 +391,11 @@
 								<database>
 									<name>org.jooq.util.mysql.MySQLDatabase</name>
 									<includes>.*</includes>
-									<excludes></excludes>
-									<inputSchema>cbt</inputSchema>
+									<excludes />
+									<inputSchema>${cbt.dbtest.name}</inputSchema>
+									<outputSchema>cbt</outputSchema> 
 								</database>
+								
 								<generate>
 									<relations>true</relations>
 									<deprecated>false</deprecated>

@@ -1,0 +1,162 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 35.0,
+		"selected_items":
+		[
+			[
+				"",
+				"Convert Case: Upper Case"
+			]
+		],
+		"width": 416.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/D/Dev/Git/cbt-ws/src/main/resources/html/js/common.js",
+		"/D/Dev/Git/cbt-ws/README.md",
+		"/D/Dev/Git/cbt-ws/src/main/resources/html/deviceShare.html",
+		"/D/Dev/Git/cbt-ws/src/main/resources/html/login.html",
+		"/D/Dev/Git/cbt-ws/src/main/resources/html/devices.html",
+		"/C/Dev/Git/cbt-ws/src/main/resources/html/js/cbtclient.js",
+		"/C/Dev/Git/cbt-ws/src/main/resources/html/js/common.js",
+		"/C/Dev/Git/cbt-ws/src/main/resources/html/index.html",
+		"/C/Dev/Git/cbt-ws/src/main/resources/html/deviceShare.html",
+		"/C/Dev/Git/cbt-ws/src/main/resources/html/devices.html",
+		"/C/Dev/Git/cbt-ws/src/main/resources/html/login.html",
+		"/C/Users/esauali/AppData/Roaming/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/C/wamp/www/da/index.html",
+		"/C/wamp/www/da/css/style.css",
+		"/C/wamp/www/da/js/script.js"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"devicejob",
+			"ajax",
+			"toTop",
+			"Proxima",
+			"empty",
+			"SwampyFoot",
+			"messageField",
+			"network-security",
+			"font",
+			"slideP",
+			"appendTo"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 247.0,
+	"status_bar_visible": true
+}

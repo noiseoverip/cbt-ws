@@ -2,7 +2,7 @@ package com.cbt.ws.services;
 
 import javax.ws.rs.ext.Provider;
 
-import com.cbt.ws.main.WorkerManager;
+import com.cbt.ws.WorkerManager;
 import com.google.inject.Inject;
 import com.sun.jersey.api.model.AbstractResourceModelContext;
 import com.sun.jersey.api.model.AbstractResourceModelListener;
