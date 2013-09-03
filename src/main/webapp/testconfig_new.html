@@ -1,0 +1,89 @@
+<script type="text/javascript">
+	function onLoadPageSpecific() {
+		// Get test profiles
+		$.ajax({
+			type : 'GET',
+			url : url('/testprofile'),
+			dataType : "json",
+			success : function(json) {					
+				$.each(json, function(i, data) {
+					console.log(data);
+					$("#testProfileId").append('<option value="' + data.id + '">' + data.name +'</option>');
+				})
+			}
+		});
+		// Get test scripts
+		$.ajax({
+			type : 'GET',
+			url : url('/testscript'),
+			dataType : "json",
+			success : function(json) {					
+				$.each(json, function(i, data) {
+					console.log(data);
+					$("#testScriptId").append('<option value="' + data.id + '">' + data.name +'</option>');
+				})
+			}
+		});
+		// Get Test targets
+		$.ajax({
+			type : 'GET',
+			url : url('/testtarget'),
+			dataType : "json",
+			success : function(json) {					
+				$.each(json, function(i, data) {
+					console.log(data);
+					$("#testTargetId").append('<option value="' + data.id + '">' + data.name +'</option>');
+				})
+			}
+		});
+		
+		$("button").button().click(function(event) {
+			console.log("....");
+			$.ajax({
+		        type: 'PUT',
+		        contentType: 'application/json',
+		        url: url('/testconfig'),
+		        dataType: "json",
+		        data: formToJSON(),
+		        success: function(data, textStatus, jqXHR){
+		            alert('Test config added');
+		        },
+		        error: function(jqXHR, textStatus, errorThrown){
+		            alert('Error: ' + textStatus);
+		        }
+		    });
+
+		});	
+	}		
+	
+	function formToJSON() {
+	    return JSON.stringify({
+	        "testProfileId": $('#testProfileId').val(),
+	        "testScriptId": $('#testScriptId').val(),
+	        "testTargetId": $('#testTargetId').val(),
+	        "name": $('#name').val()
+	        });
+	}
+</script>
+
+Name:
+<input type="text" name="name" id="name">
+<br />
+
+Test profile:
+<select id="testProfileId">
+</select>
+<br />
+
+Test script:
+<select id="testScriptId">
+</select>
+<a href="#uploadTestScipt" onClick="CMS.openPage('testScriptUpload');">Upload new</a>
+<br />
+
+Test Target:
+<select id="testTargetId">
+</select>
+<a href="#uploadTestTarget" onClick="CMS.openPage('testTargetUpload');">Upload new</a>
+<br />
+<button id="submit">SUBMIT</button>

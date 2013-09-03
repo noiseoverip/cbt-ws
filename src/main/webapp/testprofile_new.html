@@ -1,0 +1,89 @@
+<script type="text/javascript">
+	function onLoadPageSpecific() {
+	    var deviceTypes;
+	    var selectedDeviceTypesIds = new Array();
+		// Get device types
+		$.ajax({
+			type : 'GET',
+			url : url("/public/device-types"),
+			dataType : "json",
+			success : function(json) {
+			    deviceTypes = json;
+				$.each(json, function(i, data) {
+					console.log(data);
+					$("#deviceTypes").append('<option value="' + i + '">' + data.manufacture + " -> " + data.model +'</option>');
+				})
+			}
+		});		
+		
+		$("#submit").button().click(function(event) {
+			console.log("....");
+			$.ajax({
+		        type: 'PUT',
+		        contentType: 'application/json',
+		        url: url("/testprofile"),
+		        dataType: "json",
+		        data: formToJSON(),
+		        success: function(data, textStatus, jqXHR){
+		            alert('Test profile has been created');
+		        },
+		        error: function(jqXHR, textStatus, errorThrown){
+		            alert('Error: ' + textStatus);
+		        }
+		    });
+
+		});
+		$("#addDeviceType").button().click(function(event) {
+		    console.log("selected id:" + $("#deviceTypes option:selected").val());
+		    var deviceType = deviceTypes[$("#deviceTypes option:selected").val()];
+		    console.log(deviceType);
+			$("#deviceTypesTable").append("<tr><td>" + deviceType.model + "</td><td>" + deviceType.manufacture + "</td></tr>");
+			selectedDeviceTypesIds[selectedDeviceTypesIds.length] = deviceType.id
+			console.log(selectedDeviceTypesIds);
+		});
+		
+		function formToJSON() {
+		    return JSON.stringify({
+		        "mode": $('#mode').val(),
+		        "name": $('#name').val(),
+		        "userId": CMS.getUser(),
+		        "deviceTypes" : selectedDeviceTypesIds});
+		}
+		
+		function ArrayToJson(array) {
+		    return "{" + array.join(",") + "}";
+		}
+		
+	}		
+	
+	
+</script>
+
+Name:
+<input type="text" name="name" id="name">
+<br />
+
+Select device types on which test will be run
+<select id="deviceTypes">
+</select>
+<button id="addDeviceType">ADD</button>
+
+<table id="deviceTypesTable" class="ui-widget ui-widget-content">
+	<thead class="ui-widget-header">
+		<tr>
+			<th>model</th>
+			<th>manufacture</th>			
+		</tr>
+	</thead>
+	<tbody></tbody>
+</table>
+
+<br />
+Mode
+<select id="mode">
+<option value="NORMAL">NORMAL</option>
+<option value="FAST">FAST</option>
+</select>
+<br />
+
+<button id="submit">SUBMIT</button>
