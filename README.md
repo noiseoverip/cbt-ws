@@ -31,11 +31,11 @@ mvn install:install-file -Dfile=lib\baksmali-1.4.2.jar -DgroupId=org.jf.dexlib -
 3. Run integration tests (this is needed to compile the project since it generated JOOQ classes)
 maven verify -P prepareForTest,jooqgenerate
 This will:
-1. Create database
-2. Populate it with test data
-3. Re-generate JOOQ libraries
-3. Run integration tests (*IT.java)
-4. Delete database
+* Create database
+* Populate it with test data
+* Re-generate JOOQ libraries
+* Run integration tests (*IT.java)
+* Delete database
 
 4. Setup production database
 4.1 Create database where name=${cbt.db.name} (from Maven settings.xml)
@@ -58,9 +58,13 @@ API used by Client application (deprecated)
 execute: maven tests
 
 --->drops existing CBT database
+
 --->creates database named "cbttest" from src/main/resources/cbt.sql
+
 --->generate JOOQ classes using created database
+
 --->executes tests
+
 --->removes database
 
 ### Using RIP
