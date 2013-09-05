@@ -25,7 +25,7 @@ public class ClientAuthFilter extends ClientFilter {
 	public ClientResponse handle(ClientRequest request) {
 		if (null == mAuthCookie) {
 			// This user must be present on testing system
-			mAuthCookie = createAuthCookie("testuser1", Utils.Md5("testuser1"));
+			mAuthCookie = createAuthCookie("testuser1", Utils.md5("testuser1"));
 			mCookies.add(mAuthCookie);
 		}
 		request.getHeaders().put("Cookie", mCookies);

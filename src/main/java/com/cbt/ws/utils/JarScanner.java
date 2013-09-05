@@ -19,7 +19,7 @@ public class JarScanner {
 
 	private final Logger logger = Logger.getLogger(JarScanner.class);
 	private String filePath;
-	private static final String TestClassSuperType = "Lcom/android/uiautomator/testrunner/UiAutomatorTestCase;";
+	private static final String TEST_CLASS_SUPER_TYPE = "Lcom/android/uiautomator/testrunner/UiAutomatorTestCase;";
 
 	public JarScanner(String filePath) {
 		this.filePath = filePath;
@@ -35,7 +35,7 @@ public class JarScanner {
 		}
 		for (ClassDefItem cds : dxFile.ClassDefsSection.getItems()) {
 			// logger.info(">>" + cds.getSuperclass().getTypeDescriptor());
-			if (TestClassSuperType.equals(cds.getSuperclass().getTypeDescriptor())) {
+			if (TEST_CLASS_SUPER_TYPE.equals(cds.getSuperclass().getTypeDescriptor())) {
 				String testClassRaw = cds.getClassType().getTypeDescriptor();
 				// Raw format is: Lcom/test/TestButton2;
 				String testClass = testClassRaw.substring(1, testClassRaw.length() - 1).replaceAll("/", "\\.");

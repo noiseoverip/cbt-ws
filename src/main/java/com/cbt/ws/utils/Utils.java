@@ -35,11 +35,10 @@ public final class Utils {
 	 * @throws IOException
 	 */
 	public static void writeToFile(final InputStream uploadedInputStream, final String filePath) throws IOException {
-		OutputStream out = new FileOutputStream(new File(filePath));
 		int read = 0;
 		byte[] bytes = new byte[1024];
 
-		out = new FileOutputStream(new File(filePath));
+      OutputStream out = new FileOutputStream(new File(filePath));
 		while ((read = uploadedInputStream.read(bytes)) != -1) {
 			out.write(bytes, 0, read);
 		}
@@ -57,7 +56,7 @@ public final class Utils {
 	 * @param string
 	 * @return
 	 */
-	public static String Md5(String string) {
+	public static String md5(String string) {
 		try {
 			java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
 			byte[] array = md.digest(string.getBytes("UTF-8"));

@@ -16,4 +16,7 @@
 /.classpath
 /.settings
 /target
-
+/.idea
+/*.iml
+/sublime.project.sublime-*
+.DS_Store

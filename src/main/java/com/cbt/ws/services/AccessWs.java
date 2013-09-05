@@ -311,7 +311,7 @@ public class AccessWs {
 	@Produces(MediaType.TEXT_HTML)
 	public Response putDevice(Device device) throws CbtDaoException, DataAccessException {
 		// Generate device unique id
-		String uniqueId = Utils.Md5(Utils.buildContentForDeviceUniqueId(device));
+		String uniqueId = Utils.md5(Utils.buildContentForDeviceUniqueId(device));
 		device.setDeviceUniqueId(uniqueId);
 		Long response = null;
 		try {
