@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <mirrors>
+        <mirror>
+            <id>rus-nexus</id>
+            <mirrorOf>*</mirrorOf>
+            <name>Rus Nexus Server</name>
+            <url>http://nexus.rus.lt/content/groups/public</url>
+        </mirror>
+    </mirrors>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <repositories>
+                <repository>
+                    <id>rus-nexus-snapshots</id>
+                    <name>Rus Nexus Snapshot reposiory</name>
+                    <url>http://nexus.rus.lt/content/repositories/snapshots/</url>
+                    <layout>default</layout>
+                </repository>
+            </repositories>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>rus-nexus-snapshots</id>
+                    <name>Rus Nexus Snapshot reposiory</name>
+                    <url>http://nexus.rus.lt/content/repositories/snapshots/</url>
+                    <layout>default</layout>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+
+        <profile>
+            <id>inject-db-properties</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Name of database to be used to testing-->
+                <cbt.dbtest.name>cbttest</cbt.dbtest.name>
+                <!-- Name of database to be used for production-->
+                <cbt.dbtest.url>jdbc:mysql://127.0.0.1:3306/cbttest</cbt.dbtest.url>
+                <!-- JDBC url to EXISTING database in same MySQL instance as testing database -->
+                <cbt.dbbootstrap.url>jdbc:mysql://127.0.0.1:3306/bootstrap</cbt.dbbootstrap.url>
+                <cbt.dbtest.user>root</cbt.dbtest.user>
+                <cbt.dbtest.password>NpaVKuQL</cbt.dbtest.password>
+                <!-- JDBC url to production database -->
+                <cbt.db.url>jdbc:mysql://127.0.0.1:3306/cbt</cbt.db.url>
+                <cbt.db.name>cbt</cbt.db.name>
+                <cbt.db.user>root</cbt.db.user>
+                <cbt.db.password></cbt.db.password>
+            </properties>
+        </profile>
+    </profiles>
+</settings>
