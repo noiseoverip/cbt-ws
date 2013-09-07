@@ -23,13 +23,13 @@ import com.google.inject.Inject;
  *
  */
 @Path("/public")
-public class Public {
+public class PublicWs {
 	
 	private UserDao mUserDao;
 	private DeviceDao mDeviceDao;
 	
 	@Inject
-	public Public(UserDao dao, DeviceDao deviceDao) {
+	public PublicWs(UserDao dao, DeviceDao deviceDao) {
 		mUserDao = dao;
 		mDeviceDao = deviceDao;
 	}	
