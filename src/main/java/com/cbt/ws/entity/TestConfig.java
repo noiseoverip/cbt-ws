@@ -1,6 +1,5 @@
 package com.cbt.ws.entity;
 
-import com.cbt.ws.utils.Utils;
 import com.google.common.base.Objects;
 
 /**
