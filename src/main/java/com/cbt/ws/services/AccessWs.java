@@ -101,18 +101,65 @@ public class AccessWs {
 		mDeviceDao = deviceDao;
 	}
 
+	/**
+	 * Delete device by device id
+	 * 
+	 * @param deviceId
+	 * @throws CbtDaoException
+	 */
+	@DELETE
+	@Path("/device/{deviceId}")
+	public void deleteDevice(@PathParam("deviceId") Long deviceId) throws CbtDaoException {
+		mDeviceDao.deleteDevice(deviceId);
+	}
+	
+	/**
+	 * Delete devicJob
+	 * 
+	 * @param deviceJobId
+	 * @throws CbtDaoException
+	 */
 	@DELETE
 	@Path("/devicejob/{deviceJobId}")
 	public void deleteDeviceJob(@PathParam("deviceJobId") Long deviceJobId) throws CbtDaoException {
 		mDeviceJobDao.delete(deviceJobId);
 		mDeviceJobResultDao.delete(deviceJobId);
 	}
-
+	
 	@GET
 	@Path("/user/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> getAllUsers() {
 		return mUserDao.getAllUsers();
+	}
+	
+	/**
+	 * Get device by device Id
+	 * 
+	 * @param deviceId
+	 * @return
+	 */
+	@GET
+	@Path("/device/{deviceId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Device getDevice(@PathParam("deviceId") Long deviceId) {
+		return mDeviceDao.getDevice(deviceId);
+	}
+	
+	//TODO: change to GET and use UID as parameter
+	/**
+	 * Get device by UID
+	 * 
+	 * @param device
+	 * @return
+	 */
+	@POST
+	@Path("/device")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Device getDeviceByUid(Device device) {
+		String uniqueId = Utils.Md5(Utils.buildContentForDeviceUniqueId(device));
+		return mDeviceDao.getDeviceByUid(uniqueId);
 	}
 
 	/**
@@ -212,19 +259,6 @@ public class AccessWs {
 		return mTestRunDao.getByUserIdFull(getUserId());
 	}
 
-	/**
-	 * Get test script metadata
-	 * 
-	 * @return
-	 */
-	@GET
-	@Path("/testscript")
-	@Produces(MediaType.APPLICATION_JSON)
-	public TestScript[] getTestScriptMetadata() {
-		// TODO: should not return all !!!
-		return mTestScriptDao.getAll();
-	}
-
 	// /**
 	// * Update single {@link DeviceJob} entry
 	// *
@@ -238,6 +272,19 @@ public class AccessWs {
 	// mDeviceJobDao.update(deviceJob);
 	// return Response.ok().build();
 	// }
+
+	/**
+	 * Get test script metadata
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("/testscript")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TestScript[] getTestScriptMetadata() {
+		// TODO: should not return all !!!
+		return mTestScriptDao.getAll();
+	}
 
 	/**
 	 * Get test target meta data
@@ -567,7 +614,7 @@ public class AccessWs {
 		TestTarget testTarget = putTestTarget(uploadedInputStream, fileDetail, name);
 		return "<html><body>File uploaded successfully, new Id: " + testTarget.getId() + "</body></html>";
 	}
-
+	
 	// TODO: should return something, since now it return 204 NO CONTENT
 	/**
 	 * Update device

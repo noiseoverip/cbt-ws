@@ -62,7 +62,8 @@ public class WebServiceIT extends JerseyTest {
 		super.setUp();
 		client().addFilter(authFilter);
 	}
-
+	
+	//TODO: move to separate IT
 	@Test
 	public void testAddGetUpdateGetByUidDevice() throws InterruptedException {
 		// Create device object for testing
@@ -90,7 +91,7 @@ public class WebServiceIT extends JerseyTest {
 		assertEquals(ClientResponse.Status.CONFLICT.getStatusCode(), responseAd2.getStatus());
 
 		// Get device
-		Device fetchedDevice = getWebResource().path("device/" + deviceId).accept(MediaType.APPLICATION_JSON)
+		Device fetchedDevice = getWebResource().path("device").path(deviceId.toString()).accept(MediaType.APPLICATION_JSON)
 				.get(Device.class);
 		assertEquals(device, fetchedDevice);
 
@@ -216,8 +217,8 @@ public class WebServiceIT extends JerseyTest {
 
 		// Remove devices
 		for (Device device : devices) {
-			logger.info("Removing device:" + device.getSerialNumber());
-			ClientResponse deleteResponse = getWebResource().path("device/" + device.getId()).delete(ClientResponse.class);
+			logger.info("Removing device:" + device);
+			ClientResponse deleteResponse = getWebResource().path("device").path(device.getId().toString()).delete(ClientResponse.class);
 			assertEquals(ClientResponse.Status.NO_CONTENT.getStatusCode(), deleteResponse.getStatus());
 		}
 	}
