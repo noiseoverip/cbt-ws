@@ -99,6 +99,7 @@ public class AccessWs {
 		mTestScriptDao = testScriptDao;
 		mTestTargetDao = testTargetDao;
 		mDeviceDao = deviceDao;
+		mCheckoutDao = checkoutDao;
 	}
 
 	/**
@@ -163,7 +164,7 @@ public class AccessWs {
 	}
 
 	/**
-	 * Get oldest waiting device job
+	 * Get awayting device jobs
 	 * 
 	 * @param deviceId
 	 * @return JSON string containing device job properties if any jobs available, 204 otherwise
@@ -238,7 +239,7 @@ public class AccessWs {
 	@Path("/testpackage.zip")
 	@GET
 	@Produces("application/x-zip-compressed")
-	public InputStream getTestPackageZip(@QueryParam("devicejob_id") Long devicejobId) throws FileNotFoundException {
+	public InputStream getTestPackageZip(@QueryParam("devicejobId") Long devicejobId) throws FileNotFoundException {
 		// build package using paths to files extracted previously
 		TestPackage testPackage = mCheckoutDao.getTestPackage(devicejobId);
 		String[] paths = new String[] { testPackage.getTestScriptPath(), testPackage.getTestTargetPath() };
@@ -258,20 +259,6 @@ public class AccessWs {
 	public TestRun[] getTestRuns() {
 		return mTestRunDao.getByUserIdFull(getUserId());
 	}
-
-	// /**
-	// * Update single {@link DeviceJob} entry
-	// *
-	// * @param deviceJob
-	// * @return
-	// * @throws CbtDaoException
-	// */
-	// @POST
-	// @Path("/{userId}/devicejob")
-	// public Response updateJob(@PathParam(QPARAM_USERID) Long userId, DeviceJob deviceJob) throws CbtDaoException {
-	// mDeviceJobDao.update(deviceJob);
-	// return Response.ok().build();
-	// }
 
 	/**
 	 * Get test script metadata
@@ -440,20 +427,6 @@ public class AccessWs {
 	}
 
 	/**
-	 * Create new device type
-	 * 
-	 * @param deviceType
-	 * @return
-	 */
-	@PUT
-	@Path("/device/type")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public DeviceType putDeviceType(DeviceType deviceType) {
-		return mDeviceDao.getOrCreateDeviceType(deviceType.getManufacture(), deviceType.getModel());
-	}
-
-	/**
 	 * Create new test configuration
 	 * 
 	 * @param testConfig
@@ -470,7 +443,7 @@ public class AccessWs {
 		testConfig.setId(testConfigId);
 		return testConfig;
 	}
-
+	
 	/**
 	 * 
 	 * Create new test profile
@@ -613,6 +586,20 @@ public class AccessWs {
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
 		TestTarget testTarget = putTestTarget(uploadedInputStream, fileDetail, name);
 		return "<html><body>File uploaded successfully, new Id: " + testTarget.getId() + "</body></html>";
+	}
+
+	/**
+	 * Sync device type object
+	 * 
+	 * @param deviceType
+	 * @return
+	 */
+	@POST
+	@Path("/device/type")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public DeviceType syncDeviceType(DeviceType deviceType) {
+		return mDeviceDao.getOrCreateDeviceType(deviceType.getManufacture(), deviceType.getModel());
 	}
 	
 	// TODO: should return something, since now it return 204 NO CONTENT
