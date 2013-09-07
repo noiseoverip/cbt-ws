@@ -158,7 +158,7 @@ public class AccessWs {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Device getDeviceByUid(Device device) {
-		String uniqueId = Utils.Md5(Utils.buildContentForDeviceUniqueId(device));
+		String uniqueId = Utils.md5(Utils.buildContentForDeviceUniqueId(device));
 		return mDeviceDao.getDeviceByUid(uniqueId);
 	}
 
@@ -358,7 +358,7 @@ public class AccessWs {
 	@Produces(MediaType.TEXT_HTML)
 	public Response putDevice(Device device) throws CbtDaoException, DataAccessException {
 		// Generate device unique id
-		String uniqueId = Utils.Md5(Utils.buildContentForDeviceUniqueId(device));
+		String uniqueId = Utils.md5(Utils.buildContentForDeviceUniqueId(device));
 		device.setDeviceUniqueId(uniqueId);
 		Long response = null;
 		try {
