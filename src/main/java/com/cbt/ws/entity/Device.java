@@ -19,10 +19,6 @@ public class Device extends CbtEntity {
 	private String serialNumber;
 	private DeviceState state;
 	private Date updated;
-	
-	public Device() {
-
-	}
 
 	@Override
 	public boolean equals(Object object) {

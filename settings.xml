@@ -52,7 +52,7 @@
                 <cbt.db.url>jdbc:mysql://127.0.0.1:3306/cbt</cbt.db.url>
                 <cbt.db.name>cbt</cbt.db.name>
                 <cbt.db.user>root</cbt.db.user>
-                <cbt.db.password></cbt.db.password>
+                <cbt.db.password>NpaVKuQL</cbt.db.password>
             </properties>
         </profile>
     </profiles>

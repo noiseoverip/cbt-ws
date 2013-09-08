@@ -243,5 +243,6 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 -- Constraints for table `testrun`
 --
-ALTER TABLE `testrun`
-  ADD CONSTRAINT `testrun_ibfk_1` FOREIGN KEY (`test_config_id`) REFERENCES `testconfig` (`test_config_id`);
+--ALTER TABLE `testrun`
+--  ADD CONSTRAINT `testrun_ibfk_1` FOREIGN KEY (`test_config_id`) REFERENCES `testconfig` (`test_config_id`);
+-- Results: ERROR 1005 (HY000): Can't create table 'cbt.#sql-3e3_37' (errno: 121)
