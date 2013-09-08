@@ -17,10 +17,10 @@ import org.jooq.Record;
 import org.jooq.RecordMapper;
 import org.jooq.Result;
 
+import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.ws.JooqDao;
 import com.cbt.ws.entity.DeviceJob;
 import com.cbt.ws.entity.DeviceJobMetadata;
-import com.cbt.ws.exceptions.CbtDaoException;
 import com.cbt.ws.jooq.enums.DeviceJobStatus;
 import com.cbt.ws.jooq.tables.records.DeviceJobRecord;
 import com.fasterxml.jackson.core.JsonProcessingException;

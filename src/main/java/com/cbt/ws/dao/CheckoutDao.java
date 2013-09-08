@@ -21,8 +21,8 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.jooq.Record;
 
+import com.cbt.core.annotations.TestFileStorePath;
 import com.cbt.ws.JooqDao;
-import com.cbt.ws.annotations.TestFileStorePath;
 import com.cbt.ws.entity.TestPackage;
 
 /**

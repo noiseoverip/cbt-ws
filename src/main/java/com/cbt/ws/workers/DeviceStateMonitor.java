@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.entity.Device;
-import com.cbt.ws.exceptions.CbtDaoException;
 import com.cbt.ws.jooq.enums.DeviceState;
 import com.google.inject.Inject;
 

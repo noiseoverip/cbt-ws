@@ -2,7 +2,7 @@ package com.cbt.ws.entity;
 
 import java.util.Arrays;
 
-import com.cbt.ws.utils.Utils;
+import com.cbt.core.utils.Utils;
 
 
 public class DeviceJobMetadata {

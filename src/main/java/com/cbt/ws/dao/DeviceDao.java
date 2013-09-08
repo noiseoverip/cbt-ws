@@ -20,10 +20,10 @@ import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 
+import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.ws.JooqDao;
 import com.cbt.ws.entity.Device;
 import com.cbt.ws.entity.DeviceType;
-import com.cbt.ws.exceptions.CbtDaoException;
 import com.cbt.ws.jooq.enums.DeviceState;
 import com.cbt.ws.jooq.tables.records.DeviceRecord;
 import com.cbt.ws.jooq.tables.records.DeviceTypeRecord;

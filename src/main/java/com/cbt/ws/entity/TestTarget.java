@@ -1,6 +1,6 @@
 package com.cbt.ws.entity;
 
-import com.cbt.ws.utils.Utils;
+import com.cbt.core.utils.Utils;
 
 /**
  * Entity representing test target (application) data (file name, path)

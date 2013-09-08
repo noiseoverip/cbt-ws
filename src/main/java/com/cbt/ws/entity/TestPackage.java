@@ -1,6 +1,6 @@
 package com.cbt.ws.entity;
 
-import com.cbt.ws.utils.Utils;
+import com.cbt.core.utils.Utils;
 
 /**
  * Entity class representing a Test package data (test scripts, test targets, other).

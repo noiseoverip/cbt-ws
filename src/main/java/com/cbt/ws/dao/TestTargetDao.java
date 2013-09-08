@@ -15,11 +15,11 @@ import org.apache.log4j.Logger;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import com.cbt.core.annotations.TestFileStorePath;
+import com.cbt.core.utils.Utils;
 import com.cbt.ws.JooqDao;
-import com.cbt.ws.annotations.TestFileStorePath;
 import com.cbt.ws.entity.TestTarget;
 import com.cbt.ws.jooq.tables.records.TesttargetRecord;
-import com.cbt.ws.utils.Utils;
 
 /**
  * Test target(aplication) DAO

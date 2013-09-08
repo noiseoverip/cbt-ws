@@ -1,9 +1,9 @@
 package com.cbt.ws.entity.complex;
 
+import com.cbt.core.utils.Utils;
 import com.cbt.ws.entity.CbtEntity;
 import com.cbt.ws.entity.TestScript;
 import com.cbt.ws.entity.TestTarget;
-import com.cbt.ws.utils.Utils;
 
 /**
  * Entity representing test configuration data.

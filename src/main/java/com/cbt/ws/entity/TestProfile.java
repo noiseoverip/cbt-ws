@@ -2,8 +2,8 @@ package com.cbt.ws.entity;
 
 import java.util.List;
 
+import com.cbt.core.utils.Utils;
 import com.cbt.ws.jooq.enums.TestprofileMode;
-import com.cbt.ws.utils.Utils;
 
 //TODO: need to add max number of devices to execute on
 /**

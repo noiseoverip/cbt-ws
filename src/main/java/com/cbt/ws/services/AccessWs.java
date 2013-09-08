@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.log4j.Logger;
 import org.jooq.exception.DataAccessException;
 
+import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.ws.dao.CheckoutDao;
 import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.dao.DevicejobDao;
@@ -49,7 +50,6 @@ import com.cbt.ws.entity.TestScript;
 import com.cbt.ws.entity.TestTarget;
 import com.cbt.ws.entity.User;
 import com.cbt.ws.entity.complex.TestConfigComplex;
-import com.cbt.ws.exceptions.CbtDaoException;
 import com.cbt.ws.exceptions.CbtNoDevicesException;
 import com.cbt.ws.jooq.enums.DeviceJobStatus;
 import com.cbt.ws.jooq.enums.TestrunStatus;

@@ -2,10 +2,10 @@ package com.cbt.ws.entity.complex;
 
 import java.util.List;
 
+import com.cbt.core.utils.Utils;
 import com.cbt.ws.entity.CbtEntity;
 import com.cbt.ws.entity.TestConfig;
 import com.cbt.ws.entity.TestProfile;
-import com.cbt.ws.utils.Utils;
 
 /**
  * Entity representing detailed test run information

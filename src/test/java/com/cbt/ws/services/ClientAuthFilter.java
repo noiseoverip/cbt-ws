@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.ws.rs.core.Cookie;
 
-import com.cbt.ws.utils.Utils;
+import com.cbt.core.utils.Utils;
 import com.sun.jersey.api.client.ClientRequest;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.ClientFilter;

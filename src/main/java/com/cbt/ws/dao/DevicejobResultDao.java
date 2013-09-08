@@ -11,9 +11,9 @@ import org.apache.log4j.Logger;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.ws.JooqDao;
 import com.cbt.ws.entity.DeviceJobResult;
-import com.cbt.ws.exceptions.CbtDaoException;
 import com.cbt.ws.jooq.enums.DeviceJobResultState;
 import com.google.inject.Inject;
 

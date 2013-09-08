@@ -1,6 +1,5 @@
 package com.cbt.ws.dao;
 
-import static com.cbt.ws.jooq.tables.DeviceJob.DEVICE_JOB;
 import static com.cbt.ws.jooq.tables.Testconfig.TESTCONFIG;
 import static com.cbt.ws.jooq.tables.Testprofile.TESTPROFILE;
 import static com.cbt.ws.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
@@ -8,28 +7,23 @@ import static com.cbt.ws.jooq.tables.Testrun.TESTRUN;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.RecordMapper;
 import org.jooq.Result;
 
+import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.ws.JooqDao;
-import com.cbt.ws.entity.DeviceJob;
-import com.cbt.ws.entity.DeviceJobMetadata;
 import com.cbt.ws.entity.TestConfig;
 import com.cbt.ws.entity.TestProfile;
 import com.cbt.ws.entity.TestRun;
 import com.cbt.ws.entity.complex.TestRunComplex;
-import com.cbt.ws.exceptions.CbtDaoException;
 import com.cbt.ws.jooq.enums.TestrunStatus;
 import com.cbt.ws.jooq.tables.records.TestrunRecord;
 

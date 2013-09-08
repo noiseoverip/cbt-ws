@@ -1,6 +1,6 @@
 package com.cbt.ws;
 
-import com.cbt.ws.annotations.TestFileStorePath;
+import com.cbt.core.annotations.TestFileStorePath;
 import com.google.inject.AbstractModule;
 
 public class ConfigModule extends AbstractModule {
