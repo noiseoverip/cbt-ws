@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 import org.jooq.Record;
 import org.jooq.Result;
 
-import com.cbt.core.annotations.TestFileStorePath;
 import com.cbt.core.utils.Utils;
+import com.cbt.ws.Configuration;
 import com.cbt.ws.JooqDao;
 import com.cbt.ws.entity.TestTarget;
 import com.cbt.ws.jooq.tables.records.TesttargetRecord;
@@ -27,16 +27,15 @@ import com.cbt.ws.jooq.tables.records.TesttargetRecord;
  * @author SauliusALisauskas 2013-03-03 Initial version
  * 
  */
-public class TestTargetDao extends JooqDao{
+public class TestTargetDao extends JooqDao {
 
-	private String mFileStorePath;
-
+	private Configuration mConfiguration;
 	private final Logger mLogger = Logger.getLogger(TestTargetDao.class);
 
 	@Inject
-	public TestTargetDao(@TestFileStorePath String testFileStorePath, DataSource datasource) {
+	public TestTargetDao(Configuration configuration, DataSource datasource) {
 		super(datasource);
-		mFileStorePath = testFileStorePath;
+		mConfiguration = configuration;
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class TestTargetDao extends JooqDao{
 	 */
 	private String createTestTargetFolder(Long targetId, Long userId) {
 		// create user folder if not existing
-		String path = mFileStorePath + userId + "//tt-" + targetId;
+		String path = mConfiguration.getWorkspace() + userId + "//tt-" + targetId;
 		if (new File(path).mkdirs()) {
 			mLogger.info("New folder created:" + path);
 			return path;

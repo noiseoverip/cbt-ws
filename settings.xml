@@ -53,6 +53,7 @@
                 <cbt.db.name>cbt</cbt.db.name>
                 <cbt.db.user>root</cbt.db.user>
                 <cbt.db.password>NpaVKuQL</cbt.db.password>
+                <cbt.ws.workspace>~/cbtwsworkspace</cbt.ws.workspace>
             </properties>
         </profile>
     </profiles>

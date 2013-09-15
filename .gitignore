@@ -20,3 +20,4 @@
 /*.iml
 /sublime.project.sublime-*
 .DS_Store
+/test-output

@@ -7,12 +7,12 @@ import com.google.inject.servlet.GuiceServletContextListener;
 /**
  * Guice servler context listener for creating injector and setting required modules
  * 
- * @author saulius
+ * @author SauliusAlisauskas
  *
  */
 public class GuiceContextListener extends GuiceServletContextListener {
 	@Override
 	protected Injector getInjector() {
-		return Guice.createInjector(new GuiceJerseyModule(), new ConfigModule());
+		return Guice.createInjector(new GuiceJerseyModule(), new GuiceConfigModule());
 	}
 }

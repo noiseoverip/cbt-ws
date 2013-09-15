@@ -49,7 +49,6 @@ public class GuiceJerseyModule extends JerseyServletModule {
 		bind(DeviceStateMonitor.class);
 		// bind(AuthenticationFilter.class).in(Singleton.class);
 		bind(DataSource.class).toProvider(DatabaseConnectionProvider.class).in(Singleton.class);
-		bind(Configuration.class).in(Singleton.class);
 
 		// hook Jackson into Jersey as the POJO <-> JSON mapper
 		// bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);

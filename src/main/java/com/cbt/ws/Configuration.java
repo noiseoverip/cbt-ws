@@ -1,10 +1,9 @@
 package com.cbt.ws;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import com.google.common.base.Objects;
+import com.google.inject.name.Named;
 
 /**
  * Class for keeping all configuration options
@@ -13,39 +12,153 @@ import org.apache.log4j.Logger;
  * 
  */
 public class Configuration {
+	private int dbAcquireIncrement;
+	private String dbDriverClass;
+	private int dbInitialPoolSize;
+	private String dbJdbcUrl;
+	private int dbMaxIdleTime;
+	private int dbMaxPoolSize;
+	private int dbMaxStatements;
+	private int dbMinPoolSize;
+	
+	private String dbPassword;
 
-	private static Logger mLogger = Logger.getLogger(Configuration.class);
-	private Properties mProperties;
-	private boolean mInTestingMode = false;
-
-	public Properties getProperties() {
-		if (null == mProperties) {
-			mProperties = new Properties();
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			InputStream stream = loader.getResourceAsStream("datasource.properties");
-			try {
-				mProperties.load(stream);
-			} catch (IOException e) {
-				mLogger.fatal("Could not read project properties !!!");
-			}
+	private String dbTestJdbcUrl;
+	private String dbTestPassword;
+	private String dbTestUser;
+	private String dbUser;
+	private boolean inTestingEnvironment = false;
+	private String workspace;
+	public Configuration() {
+		// Override certain properties if provided as JVA arguments
+		if ("integration".equals(System.getProperty("cbt.ws.environment"))) {
+			inTestingEnvironment = true;
 		}
-		return mProperties;
+	}
+	public int getDbAcquireIncrement() {
+		return dbAcquireIncrement;
 	}
 
-	/**
-	 * This system property is to be set during execution, used to differentiate integration testing from deployment
-	 * 
-	 * @return
-	 */
-	public String getExecutionMode() {
-		return System.getProperty("cbt.run.mode");
+	public String getDbDriverClass() {
+		return dbDriverClass;
 	}
+
+	public int getDbInitialPoolSize() {
+		return dbInitialPoolSize;
+	}
+
+	public String getDbJdbcUrl() {
+		return isInTestingMode() ? dbTestJdbcUrl : dbJdbcUrl;
+	}
+
+	public int getDbMaxIdleTime() {
+		return dbMaxIdleTime;
+	}
+
+	public int getDbMaxPoolSize() {
+		return dbMaxPoolSize;
+	}
+
+	public int getDbMaxStatements() {
+		return dbMaxStatements;
+	}
+
+	public int getDbMinPoolSize() {
+		return dbMinPoolSize;
+	}
+
+	public String getDbPassword() {
+		return isInTestingMode() ? dbTestPassword : dbPassword;
+	}
+
+	public String getDbUser() {
+		return isInTestingMode() ? dbTestUser : dbUser;
+	}	
+
+	public String getWorkspace() {
+		return workspace;
+	}	
 
 	public boolean isInTestingMode() {
-		return mInTestingMode;
+		return inTestingEnvironment;
 	}
 
-	public void setInTestingMode(boolean inTestingMode) {
-		mInTestingMode = inTestingMode;
+	@Inject
+	public void setDbAcquireIncrement(@Named("cbt.ws.db.acquireIncrement") int dbAcquireIncrement) {
+		this.dbAcquireIncrement = dbAcquireIncrement;
 	}
+
+	@Inject
+	public void setDbDriverClass(@Named("cbt.ws.db.driverClass") String dbDriverClass) {
+		this.dbDriverClass = dbDriverClass;
+	}
+
+	@Inject
+	public void setDbInitialPoolSize(@Named("cbt.ws.db.initialPoolSize") int dbInitialPoolSize) {
+		this.dbInitialPoolSize = dbInitialPoolSize;
+	}
+
+	@Inject
+	public void setDbJdbcUrl(@Named("cbt.ws.db.jdbc_url") String dbJdbcUrl) {
+		this.dbJdbcUrl = dbJdbcUrl;
+	}
+
+	@Inject
+	public void setDbMaxIdleTime(@Named("cbt.ws.db.maxIdleTime") int dbMaxIdleTime) {
+		this.dbMaxIdleTime = dbMaxIdleTime;
+	}
+
+	@Inject
+	public void setDbMaxPoolSize(@Named("cbt.ws.db.maxPoolSize") int dbMaxPoolSize) {
+		this.dbMaxPoolSize = dbMaxPoolSize;
+	}
+
+	@Inject
+	public void setDbMaxStatements(@Named("cbt.ws.db.maxStatements") int dbMaxStatements) {
+		this.dbMaxStatements = dbMaxStatements;
+	}
+
+	@Inject
+	public void setDbMinPoolSize(@Named("cbt.ws.db.minPoolSize") int dbMinPoolSize) {
+		this.dbMinPoolSize = dbMinPoolSize;
+	}
+
+	@Inject
+	public void setDbPassword(@Named("cbt.ws.db.password") String dbPassword) {
+		this.dbPassword = dbPassword;
+	}
+
+	@Inject
+	public void setDbTestJdbcUrl(@Named("cbt.ws.db.test.jdbc.url") String dbTestJdbcUrl) {
+		this.dbTestJdbcUrl = dbTestJdbcUrl;
+	}
+
+	@Inject
+	public void setDbTestPassword(@Named("cbt.ws.db.test.password") String dbTestPassword) {
+		this.dbTestPassword = dbTestPassword;
+	}
+
+	@Inject
+	public void setDbTestUser(@Named("cbt.ws.db.test.user") String dbTestUser) {
+		this.dbTestUser = dbTestUser;
+	}
+
+	@Inject
+	public void setDbUser(@Named("cbt.ws.db.user") String dbUser) {
+		this.dbUser = dbUser;
+	}
+
+	@Inject
+	public void setWorkspace(@Named("cbt.ws.workspace") String workspace) {
+		this.workspace = workspace;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).add("cbt.ws.workspace", getWorkspace())
+			.add("cbt.ws.db.jdbc_url", getDbJdbcUrl())
+			.add("cbt.ws.db.user", getDbUser())
+			.toString();
+	}
+
 }

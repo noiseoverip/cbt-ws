@@ -28,15 +28,15 @@ public class DeviceStateMonitor implements Runnable {
 
 	@Override
 	public void run() {
-		logger.info(this.getClass().getSimpleName() + " checking device states");
+		logger.debug(this.getClass().getSimpleName() + " checking device states");
 		List<Device> devices = mDeviceDao.getAllActive();
 		long currentTime = System.currentTimeMillis();
 		if (null != devices && devices.size() > 0) {
 			for (Device device : devices) {
-				logger.info("Checking time for device:" + device);
+				logger.debug("Checking time for device:" + device);
 				long timePassed = currentTime - device.getUpdated().getTime();
 				if (timePassed >= timeDeviceTimeout) {
-					logger.info("Device id:" + device.getId() + " timeouted, last seen " + timePassed / 1000
+					logger.debug("Device id:" + device.getId() + " timeouted, last seen " + timePassed / 1000
 							+ " seconds ago");
 					device.setState(DeviceState.OFFLINE);
 					try {

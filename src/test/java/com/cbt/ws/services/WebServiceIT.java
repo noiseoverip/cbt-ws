@@ -216,11 +216,11 @@ public class WebServiceIT extends JerseyTest {
 		}
 
 		// Remove devices
-		for (Device device : devices) {
-			logger.info("Removing device:" + device);
-			ClientResponse deleteResponse = getWebResource().path("device").path(device.getId().toString()).delete(ClientResponse.class);
-			assertEquals(ClientResponse.Status.NO_CONTENT.getStatusCode(), deleteResponse.getStatus());
-		}
+//		for (Device device : devices) {
+//			logger.info("Removing device:" + device);
+//			ClientResponse deleteResponse = getWebResource().path("device").path(device.getId().toString()).delete(ClientResponse.class);
+//			assertEquals(ClientResponse.Status.NO_CONTENT.getStatusCode(), deleteResponse.getStatus());
+//		}
 	}
 	
 	/**

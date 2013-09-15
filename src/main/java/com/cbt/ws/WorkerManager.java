@@ -10,7 +10,7 @@ import com.cbt.ws.workers.DeviceStateMonitor;
 import com.google.inject.Inject;
 
 /**
- * Class for scheduling worksers
+ * Class for scheduling workers
  * 
  * @author SauliusAlisauskas
  *
@@ -19,10 +19,12 @@ public class WorkerManager {
 	private final Logger logger = Logger.getLogger(WorkerManager.class);
 	private ScheduledExecutorService mDeviceMonitorExecutor;
 	private DeviceStateMonitor mDeviceStateMonitor;
+	private Configuration mConfiguration;
 	
 	@Inject
-	public WorkerManager(DeviceStateMonitor deviceStateMonitor) {
+	public WorkerManager(DeviceStateMonitor deviceStateMonitor, Configuration configuration) {
 		mDeviceStateMonitor = deviceStateMonitor;
+		mConfiguration = configuration;
 	}
 	
 	/**
@@ -30,6 +32,10 @@ public class WorkerManager {
 	 */
 	public void start() {
 		logger.info("Starting up " + this.getClass().getSimpleName());
+		
+		// Print out configuration
+		logger.info(mConfiguration.toString());
+		
 		mDeviceMonitorExecutor = Executors.newScheduledThreadPool(1);
 		mDeviceMonitorExecutor.scheduleAtFixedRate(mDeviceStateMonitor, 1, 30, TimeUnit.SECONDS);
 	}

@@ -10,14 +10,14 @@
 	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-<!-- 			<param name="ConversionPattern" value="%d{ISO8601} [%5p] [%c] (%F:%L) %m%n" /> -->
-			<param name="ConversionPattern" value="%d{ISO8601} [%5p] %m%n" />
+			<param name="ConversionPattern" value="%d{ISO8601} [%5p] [%c] (%F:%L) %m%n" />
+<!-- 			<param name="ConversionPattern" value="%d{ISO8601} [%5p] %m%n" /> -->
 		</layout>
 	</appender>
 
 	<!-- A time/date based rolling appender -->
-	<appender name="WIREFILE" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="target/test-data/jclouds-wire.log" />
+	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="console.log" />
 		<param name="Append" value="true" />
 
 		<!-- Rollover at midnight each day -->
@@ -32,23 +32,31 @@
 			<!-- The full pattern: Date MS level [logger] (Thread:NDC) Message\n <param 
 				name="ConversionPattern" value="%d %-5r %-5p [%c] (%t:%x) %m%n"/> -->
 		</layout>
-	</appender>
+	</appender>	
 
-	<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
-		<appender-ref ref="FILE" />
-	</appender>
-
+	<!-- 3PP -->
 	<logger name="org.jooq">
-		<level value="TRACE" />
+		<level value="WARN" />
 	</logger>
-
+	
+	<!-- JDBC connection pool manager -->
+	<logger name="com.mchange">
+		<level value="WARN" />
+	</logger>
+	
+	<!-- CBT -->
+	<logger name="com.cbt.ws.workers.DeviceStateMonitor">
+		<level value="INFO" />
+	</logger>
+	
 	<!-- ================ -->
 	<!-- Root -->
 	<!-- ================ -->
 
 	<root>
-		<level value="TRACE" />
+		<level value="INFO" />
 		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
 	</root>
 
 </log4j:configuration>

@@ -17,8 +17,8 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.tools.json.JSONArray;
 
-import com.cbt.core.annotations.TestFileStorePath;
 import com.cbt.core.utils.Utils;
+import com.cbt.ws.Configuration;
 import com.cbt.ws.JooqDao;
 import com.cbt.ws.entity.TestScript;
 import com.cbt.ws.jooq.tables.records.TestscriptRecord;
@@ -37,14 +37,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TestScriptDao extends JooqDao {
 
 	private final Logger mLogger = Logger.getLogger(TestScriptDao.class);
-
-	private String mTestScriptStorePath;
 	private ObjectMapper objectMapper = new ObjectMapper();
+	private Configuration mConfiguration;
 
 	@Inject
-	public TestScriptDao(@TestFileStorePath String testPackageStorePath, DataSource datasource) {
+	public TestScriptDao(Configuration configuration, DataSource datasource) {
 		super(datasource);
-		mTestScriptStorePath = testPackageStorePath;
+		mConfiguration = configuration;
 	}
 
 	/**
@@ -68,7 +67,7 @@ public class TestScriptDao extends JooqDao {
 	 */
 	private String createTestPackageFolder(Long packagId, Long userId) {
 		// create user folder if not existing
-		String path = mTestScriptStorePath + userId + "//ts-" + packagId;
+		String path = mConfiguration.getWorkspace() + userId + "//ts-" + packagId;
 		if (new File(path).mkdirs()) {
 			mLogger.info("New folder created:" + path);
 			return path;
