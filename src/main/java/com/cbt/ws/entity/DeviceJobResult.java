@@ -26,11 +26,11 @@ public class DeviceJobResult extends CbtEntity {
 //		DeviceJobResult job = new DeviceJobResult();
 //		job.setId(r.getDevicejobresultId());
 //		job.setCreated(r.getCreated());
-//		job.setDevicejobId(r.getDevicejobid());
+//		job.setDevicejobid(r.getDevicejobId());
 //		job.setOutput(r.getOutput());
-//		job.setTestsErrors(r.getTestserrors());
-//		job.setTestsFailed(r.getTestsfailed());
-//		job.setTestsRun(r.getTestsrun());
+//		job.setTestserrors(r.getTestsErrors());
+//		job.setTestsfailed(r.getTestsFailed());
+//		job.setTestsrun(r.getTestsRun());
 //		job.setState(State.valueOf(r.getState().toString()));
 //		return job;
 //	}
@@ -39,7 +39,7 @@ public class DeviceJobResult extends CbtEntity {
 		return devicejobId;
 	}
 
-	public void setDevicejobId(Long devicejobId) {
+	public void setDevicejobid(Long devicejobId) {
 		this.devicejobId = devicejobId;
 	}
 
@@ -69,7 +69,7 @@ public class DeviceJobResult extends CbtEntity {
 		return testsRun;
 	}
 
-	public void setTestsRun(Integer testsRun) {
+	public void setTestsrun(Integer testsRun) {
 		this.testsRun = testsRun;
 	}
 
@@ -77,7 +77,7 @@ public class DeviceJobResult extends CbtEntity {
 		return testsFailed;
 	}
 
-	public void setTestsFailed(Integer testsFailed) {
+	public void setTestsfailed(Integer testsFailed) {
 		this.testsFailed = testsFailed;
 	}
 
@@ -85,7 +85,7 @@ public class DeviceJobResult extends CbtEntity {
 		return testsErrors;
 	}
 
-	public void setTestsErrors(Integer testsErrors) {
+	public void setTestserrors(Integer testsErrors) {
 		this.testsErrors = testsErrors;
 	}
 

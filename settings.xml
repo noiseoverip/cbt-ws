@@ -45,7 +45,7 @@
                 <!-- Name of database to be used for production-->
                 <cbt.dbtest.url>jdbc:mysql://127.0.0.1:3306/cbttest</cbt.dbtest.url>
                 <!-- JDBC url to EXISTING database in same MySQL instance as testing database -->
-                <cbt.dbbootstrap.url>jdbc:mysql://127.0.0.1:3306/bootstrap</cbt.dbbootstrap.url>
+                <cbt.dbbootstrap.url>jdbc:mysql://127.0.0.1:3306/mysql</cbt.dbbootstrap.url>
                 <cbt.dbtest.user>root</cbt.dbtest.user>
                 <cbt.dbtest.password>NpaVKuQL</cbt.dbtest.password>
                 <!-- JDBC url to production database -->

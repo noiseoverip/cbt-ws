@@ -376,7 +376,7 @@ public class AccessWs {
 	public DeviceJobResult putDeviceJobResult(@PathParam("deviceJobId") Long deviceJobId,
 			DeviceJobResult deviceJobResult) {
 		mLogger.debug("Received:" + deviceJobResult);
-		deviceJobResult.setDevicejobId(deviceJobId);
+		deviceJobResult.setDevicejobid(deviceJobId);
 		Long id = mDeviceJobResultDao.add(deviceJobResult);
 		deviceJobResult.setId(id);
 
