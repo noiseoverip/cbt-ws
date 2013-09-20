@@ -271,12 +271,12 @@ public class WebServiceIT extends JerseyTest {
 		// Post device job results
 		for (DeviceJob deviceJob : deviceJobs) {
 			DeviceJobResult result = new DeviceJobResult();
-			result.setDevicejobId(deviceJob.getId());
+			result.setDevicejobid(deviceJob.getId());
 			result.setOutput(UUID.randomUUID().toString());
 			result.setState(DeviceJobResultState.PASSED);
-			result.setTestsRun(1);
-			result.setTestsErrors(1);
-			result.setTestsFailed(1);
+			result.setTestsrun(1);
+			result.setTestserrors(1);
+			result.setTestsfailed(1);
 			DeviceJobResult newDeviceJobResult = getWebResource().path("devicejob").path(String.valueOf(deviceJob.getId()))
 					.path("result").type(MediaType.APPLICATION_JSON_TYPE).accept(MediaType.APPLICATION_JSON_TYPE)
 					.put(DeviceJobResult.class, result);
