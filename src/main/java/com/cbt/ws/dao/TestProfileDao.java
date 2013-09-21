@@ -19,7 +19,7 @@ import org.jooq.Result;
 import com.cbt.ws.JooqDao;
 import com.cbt.ws.entity.DeviceType;
 import com.cbt.ws.entity.TestProfile;
-import com.cbt.ws.jooq.enums.TestprofileMode;
+import com.cbt.ws.jooq.enums.TestprofileTestprofileMode;
 
 /**
  * Test profile DAO
@@ -48,9 +48,9 @@ public class TestProfileDao extends JooqDao {
 		DSLContext context = getDbContext();
 		
 		Long id = context
-				.insertInto(TESTPROFILE, TESTPROFILE.USER_ID, TESTPROFILE.MODE, TESTPROFILE.NAME)
-				.values(testProfile.getUserId(), TestprofileMode.valueOf(testProfile.getMode().toString()), testProfile.getName())
-				.returning(TESTPROFILE.ID).fetchOne().getId();
+				.insertInto(TESTPROFILE, TESTPROFILE.TESTPROFILE_USER_ID, TESTPROFILE.TESTPROFILE_MODE, TESTPROFILE.TESTPROFILE_NAME)
+				.values(testProfile.getUserId(), TestprofileTestprofileMode.valueOf(testProfile.getMode().toString()), testProfile.getName())
+				.returning(TESTPROFILE.TESTPROFILE_ID).fetchOne().getTestprofileId();
 		mLogger.trace("Added test configuration, enw id:" + id);
 		mLogger.trace("Adding device list to test configuration:" + id);
 		if (null != testProfile.getDeviceTypes() && testProfile.getDeviceTypes().size() > 0) {
@@ -92,13 +92,13 @@ public class TestProfileDao extends JooqDao {
 	 */
 	public TestProfile[] getAll() {
 		List<TestProfile> testProfiles = new ArrayList<TestProfile>();
-		Result<Record> result = getDbContext().select().from(TESTPROFILE).orderBy(TESTPROFILE.UPDATED.desc()).fetch();
+		Result<Record> result = getDbContext().select().from(TESTPROFILE).orderBy(TESTPROFILE.TESTPROFILE_UPDATED.desc()).fetch();
 		for (Record r : result) {
 			TestProfile tp = new TestProfile();
-			tp.setId(r.getValue(TESTPROFILE.ID));
-			tp.setName(r.getValue(TESTPROFILE.NAME));
-			tp.setUserId(r.getValue(TESTPROFILE.USER_ID));
-			tp.setMode(r.getValue(TESTPROFILE.MODE));
+			tp.setId(r.getValue(TESTPROFILE.TESTPROFILE_ID));
+			tp.setName(r.getValue(TESTPROFILE.TESTPROFILE_NAME));
+			tp.setUserId(r.getValue(TESTPROFILE.TESTPROFILE_USER_ID));
+			tp.setMode(r.getValue(TESTPROFILE.TESTPROFILE_MODE));
 			// Get devices of this test profile
 			List<DeviceType> devices = getDeviceTypesByTestProfile(tp.getId());
 			if (null != devices) {
@@ -118,8 +118,8 @@ public class TestProfileDao extends JooqDao {
 	 * @return
 	 */
 	public TestProfile[] getByUserId(Long userId) {
-		List<TestProfile> result = getDbContext().select().from(TESTPROFILE).where(TESTPROFILE.USER_ID.eq(userId))
-				.orderBy(TESTPROFILE.UPDATED.desc()).fetch(new RecordMapper<Record, TestProfile>() {
+		List<TestProfile> result = getDbContext().select().from(TESTPROFILE).where(TESTPROFILE.TESTPROFILE_USER_ID.eq(userId))
+				.orderBy(TESTPROFILE.TESTPROFILE_UPDATED.desc()).fetch(new RecordMapper<Record, TestProfile>() {
 					@Override
 					public TestProfile map(Record record) {
 						TestProfile tp = record.into(TestProfile.class);
@@ -140,7 +140,7 @@ public class TestProfileDao extends JooqDao {
 	 * @return
 	 */
 	public TestProfile getById(Long testProfileId) {
-		Record result = getDbContext().select().from(TESTPROFILE).where(TESTPROFILE.ID.eq(testProfileId))
+		Record result = getDbContext().select().from(TESTPROFILE).where(TESTPROFILE.TESTPROFILE_ID.eq(testProfileId))
 				.fetchOne();		
 		return result.into(TestProfile.class);
 	}

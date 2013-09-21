@@ -1,4 +1,4 @@
-package com.cbt.ws.services;
+package com.cbt.ws;
 
 import org.apache.log4j.Logger;
 
@@ -16,5 +16,6 @@ public class ConfigurationTest {
 		Injector injector = Guice.createInjector(new GuiceConfigModule());
 		Configuration configuration = injector.getInstance(Configuration.class);
 		logger.info(configuration.toString());
+		//TODO: add assert values not null
 	}
 }

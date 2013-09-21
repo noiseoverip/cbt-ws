@@ -24,11 +24,12 @@ import com.cbt.ws.entity.TestConfig;
 import com.cbt.ws.entity.TestProfile;
 import com.cbt.ws.entity.TestRun;
 import com.cbt.ws.entity.complex.TestConfigComplex;
+import com.cbt.ws.jooq.enums.DeviceJobDeviceJobStatus;
 import com.cbt.ws.jooq.enums.DeviceJobResultState;
-import com.cbt.ws.jooq.enums.DeviceJobStatus;
 import com.cbt.ws.jooq.enums.DeviceState;
-import com.cbt.ws.jooq.enums.TestprofileMode;
-import com.cbt.ws.jooq.enums.TestrunStatus;
+import com.cbt.ws.jooq.enums.TestprofileTestprofileMode;
+import com.cbt.ws.jooq.enums.TestrunTestrunStatus;
+import com.cbt.ws.testtools.ClientAuthFilter;
 import com.google.inject.servlet.GuiceFilter;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -42,8 +43,8 @@ import com.sun.jersey.test.framework.WebAppDescriptor;
  * @author SauliusAlisauskas 2013-03-24 Initial version
  * 
  */
-public class WebServiceIT extends JerseyTest {
-	private final Logger logger = Logger.getLogger(WebServiceIT.class);
+public class ITscenarios extends JerseyTest {
+	private final Logger logger = Logger.getLogger(ITscenarios.class);
 	private ClientAuthFilter authFilter = new ClientAuthFilter();
 	private long testUser1Id = 1L;
 	private long testScriptId = 1L;
@@ -156,9 +157,8 @@ public class WebServiceIT extends JerseyTest {
 		// Create test profile
 		TestProfile testprofile = new TestProfile();
 		testprofile.setDeviceTypes(Arrays.asList(new Long[] { 1L }));
-		testprofile.setMode(TestprofileMode.NORMAL);
-		testprofile.setName(UUID.randomUUID().toString());
-		testprofile.setTitle(UUID.randomUUID().toString());
+		testprofile.setMode(TestprofileTestprofileMode.NORMAL);
+		testprofile.setName(UUID.randomUUID().toString());		
 		ClientResponse response = getWebResource().path("testprofile").type(MediaType.APPLICATION_JSON_TYPE)
 				.accept(MediaType.APPLICATION_JSON_TYPE).put(ClientResponse.class, testprofile);
 		assertEquals(ClientResponse.Status.OK.getStatusCode(), response.getStatus());
@@ -235,7 +235,7 @@ public class WebServiceIT extends JerseyTest {
 		// Create test run
 		TestRun testRun = new TestRun();
 		testRun.setName(UUID.randomUUID().toString());
-		testRun.setTestConfigId(testConfigId);
+		testRun.setTestconfigId(testConfigId);
 		logger.info("Creating test run:" + testRun);
 		TestRun newTestRun = getWebResource().path("testrun").type(MediaType.APPLICATION_JSON_TYPE)
 				.accept(MediaType.APPLICATION_JSON_TYPE).put(TestRun.class, testRun);
@@ -243,8 +243,8 @@ public class WebServiceIT extends JerseyTest {
 		logger.info("Created test run:" + newTestRun);
 		testRun.setId(newTestRun.getId());
 		assertEquals(testRun.getName(), newTestRun.getName());
-		assertEquals(testRun.getTestConfigId(), newTestRun.getTestConfigId());
-		assertEquals(TestrunStatus.WAITING, newTestRun.getStatus());
+		assertEquals(testRun.getTestconfigId(), newTestRun.getTestconfigId());
+		assertEquals(TestrunTestrunStatus.WAITING, newTestRun.getStatus());
 
 		// Verify that test run will be performed our created devices
 		assertEquals(devices.length, newTestRun.getDevices().size());
@@ -264,19 +264,19 @@ public class WebServiceIT extends JerseyTest {
 					.get(DeviceJob[].class);
 			assertNotNull(deviceJobsTemp);
 			assertTrue(deviceJobsTemp.length == 1);
-			assertEquals(deviceJobsTemp[0].getStatus(), DeviceJobStatus.WAITING);
+			assertEquals(deviceJobsTemp[0].getStatus(), DeviceJobDeviceJobStatus.WAITING);
 			deviceJobs.add(deviceJobsTemp[0]);
 		}
 
 		// Post device job results
 		for (DeviceJob deviceJob : deviceJobs) {
 			DeviceJobResult result = new DeviceJobResult();
-			result.setDevicejobid(deviceJob.getId());
+			result.setDevicejobId(deviceJob.getId());
 			result.setOutput(UUID.randomUUID().toString());
 			result.setState(DeviceJobResultState.PASSED);
-			result.setTestsrun(1);
-			result.setTestserrors(1);
-			result.setTestsfailed(1);
+			result.setTestsRun(1);
+			result.setTestsErrors(1);
+			result.setTestsFailed(1);
 			DeviceJobResult newDeviceJobResult = getWebResource().path("devicejob").path(String.valueOf(deviceJob.getId()))
 					.path("result").type(MediaType.APPLICATION_JSON_TYPE).accept(MediaType.APPLICATION_JSON_TYPE)
 					.put(DeviceJobResult.class, result);
@@ -295,7 +295,7 @@ public class WebServiceIT extends JerseyTest {
 		for (TestRun testRunTemp : userTestRuns) {
 			if (testRunTemp.getId().equals(testRun.getId())) {
 				foundOurTestRun = true;
-				assertTrue(testRunTemp.getStatus().equals(TestrunStatus.FINISHED));
+				assertTrue(testRunTemp.getStatus().equals(TestrunTestrunStatus.FINISHED));
 			}
 		}
 		assertTrue(foundOurTestRun);

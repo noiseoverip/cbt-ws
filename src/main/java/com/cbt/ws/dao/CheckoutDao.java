@@ -56,19 +56,19 @@ public class CheckoutDao extends JooqDao {
 	public TestPackage getTestPackage(Long devicejobId) {		
 		// TODO: improve size of returned data, we only need a couple of fields
 		Record result = getDbContext().select().from(DEVICE_JOB)
-				.join(TESTRUN).on(DEVICE_JOB.TEST_RUN_ID.eq(TESTRUN.ID))
-				.join(TESTCONFIG).on(TESTCONFIG.TEST_CONFIG_ID.eq(TESTRUN.TEST_CONFIG_ID))
-				.join(TESTSCRIPT).on(TESTSCRIPT.ID.eq(TESTCONFIG.TEST_SCRIPT_ID))
-				.join(TESTTARGET).on(TESTTARGET.ID.eq(TESTCONFIG.TEST_TARGET_ID))
-				.where(DEVICE_JOB.ID.eq(devicejobId))
+				.join(TESTRUN).on(DEVICE_JOB.DEVICE_JOB_TESTRUN_ID.eq(TESTRUN.TESTRUN_ID))
+				.join(TESTCONFIG).on(TESTCONFIG.TEST_CONFIG_ID.eq(TESTRUN.TESTRUN_TESTCONFIG_ID))
+				.join(TESTSCRIPT).on(TESTSCRIPT.TESTSCRIPT_ID.eq(TESTCONFIG.TEST_SCRIPT_ID))
+				.join(TESTTARGET).on(TESTTARGET.TESTTARGET_ID.eq(TESTCONFIG.TEST_TARGET_ID))
+				.where(DEVICE_JOB.DEVICE_JOB_ID.eq(devicejobId))
 				.fetchOne();
 		
 		TestPackage tp = new TestPackage();
 		tp.setDevicejobId(devicejobId);
-		tp.setTestScriptPath(result.getValue(TESTSCRIPT.PATH));
-		tp.setTestTargetPath(result.getValue(TESTTARGET.PATH));
-		tp.setTestScriptFileName(result.getValue(TESTSCRIPT.FILE_NAME));
-		tp.setTestTargetFileName(result.getValue(TESTTARGET.FILE_NAME));
+		tp.setTestScriptPath(result.getValue(TESTSCRIPT.TESTSCRIPT_FILE_PATH));
+		tp.setTestTargetPath(result.getValue(TESTTARGET.TESTTARGET_FILE_PATH));
+		tp.setTestScriptFileName(result.getValue(TESTSCRIPT.TESTSCRIPT_FILE_NAME));
+		tp.setTestTargetFileName(result.getValue(TESTTARGET.TESTTARGET_FILE_NAME));
 		return tp;
 	}	
 	

@@ -12,7 +12,13 @@
 		<jooq.version>3.1.0</jooq.version>
 		<c3p0.version>0.9.1.2</c3p0.version>
 	</properties>
-	<dependencies>
+	<dependencies>		
+		<dependency>
+			<!-- Required for JPA annotation used by JOOQ -->
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<version>1.0.1.Final</version>
+		</dependency>
 		<dependency>
 			<groupId>org.jf.dexlib</groupId>
 			<artifactId>baksmali</artifactId>
@@ -329,17 +335,17 @@
 							</execution>
 
 							<!-- drop db after test -->
-<!-- 							<execution> -->
-<!-- 								<id>drop-db-after-test</id> -->
-<!-- 								<phase>post-integration-test</phase> -->
-<!-- 								<goals> -->
-<!-- 									<goal>execute</goal> -->
-<!-- 								</goals> -->
-<!-- 								<configuration> -->
-<!-- 									<autocommit>true</autocommit> -->
-<!-- 									<sqlCommand>drop database ${cbt.dbtest.name}</sqlCommand> -->
-<!-- 								</configuration> -->
-<!-- 							</execution> -->
+							<execution>
+								<id>drop-db-after-test</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<autocommit>true</autocommit>
+									<sqlCommand>drop database ${cbt.dbtest.name}</sqlCommand>
+								</configuration>
+							</execution>
 						</executions>
 					</plugin>
 				</plugins>
@@ -393,12 +399,13 @@
 									<includes>.*</includes>
 									<excludes />
 									<inputSchema>${cbt.dbtest.name}</inputSchema>
-									<outputSchema>cbt</outputSchema> 
-								</database>
-								
+									<outputSchema>cbt</outputSchema>
+								</database>								
 								<generate>
 									<relations>true</relations>
 									<deprecated>false</deprecated>
+<!-- 									<pojos>true</pojos> -->
+<!-- 									<daos>true</daos> -->
 								</generate>
 								<target>
 									<packageName>com.cbt.ws.jooq</packageName>

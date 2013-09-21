@@ -67,8 +67,8 @@ public class TestConfigDao extends JooqDao {
 	public TestConfigComplex[] getAllComplex() {
 		List<TestConfigComplex> testExecutions = new ArrayList<TestConfigComplex>();
 		Result<Record> result =  getDbContext().select().from(TESTCONFIG).join(TESTSCRIPT)
-				.on(TESTSCRIPT.ID.eq(TESTCONFIG.TEST_SCRIPT_ID)).join(TESTTARGET)
-				.on(TESTTARGET.ID.eq(TESTCONFIG.TEST_TARGET_ID)).orderBy(TESTCONFIG.UPDATED.desc()).fetch();
+				.on(TESTSCRIPT.TESTSCRIPT_ID.eq(TESTCONFIG.TEST_SCRIPT_ID)).join(TESTTARGET)
+				.on(TESTTARGET.TESTTARGET_ID.eq(TESTCONFIG.TEST_TARGET_ID)).orderBy(TESTCONFIG.UPDATED.desc()).fetch();
 
 		for (Record r : result) {
 			TestConfigComplex tc = new TestConfigComplex();
@@ -94,15 +94,15 @@ public class TestConfigDao extends JooqDao {
 	public TestConfigComplex[] getByUserId(Long userId) {
 		List<TestConfigComplex> testExecutions = new ArrayList<TestConfigComplex>();
 		Result<Record> result =  getDbContext().select().from(TESTCONFIG).join(TESTSCRIPT)
-				.on(TESTSCRIPT.ID.eq(TESTCONFIG.TEST_SCRIPT_ID)).join(TESTTARGET)
-				.on(TESTTARGET.ID.eq(TESTCONFIG.TEST_TARGET_ID)).where(TESTCONFIG.USER_ID.eq(userId))
+				.on(TESTSCRIPT.TESTSCRIPT_ID.eq(TESTCONFIG.TEST_SCRIPT_ID)).join(TESTTARGET)
+				.on(TESTTARGET.TESTTARGET_ID.eq(TESTCONFIG.TEST_TARGET_ID)).where(TESTCONFIG.USER_ID.eq(userId))
 				.orderBy(TESTCONFIG.UPDATED.desc()).fetch();
 
 		for (Record r : result) {
 			TestConfigComplex tc = new TestConfigComplex();
 			tc.setId(r.getValue(TESTCONFIG.TEST_CONFIG_ID));
-			tc.setTestTarget(new TestTarget(r.getValue(TESTTARGET.ID), r.getValue(TESTTARGET.NAME), r.getValue(TESTTARGET.FILE_NAME), r.getValue(TESTTARGET.PATH)));
-			tc.setTestScript((new TestScript(r.getValue(TESTSCRIPT.ID), r.getValue(TESTSCRIPT.NAME), r.getValue(TESTSCRIPT.FILE_NAME), r.getValue(TESTSCRIPT.PATH))));
+			tc.setTestTarget(new TestTarget(r.getValue(TESTTARGET.TESTTARGET_ID), r.getValue(TESTTARGET.TESTTARGET_NAME), r.getValue(TESTTARGET.TESTTARGET_FILE_NAME), r.getValue(TESTTARGET.TESTTARGET_FILE_PATH)));
+			tc.setTestScript((new TestScript(r.getValue(TESTSCRIPT.TESTSCRIPT_ID), r.getValue(TESTSCRIPT.TESTSCRIPT_NAME), r.getValue(TESTSCRIPT.TESTSCRIPT_FILE_NAME), r.getValue(TESTSCRIPT.TESTSCRIPT_FILE_PATH))));
 			tc.setTestProfileId(r.getValue(TESTCONFIG.TEST_PROFILE_ID));
 			tc.setName(r.getValue(TESTCONFIG.TEST_CONFIG_NAME));
 			tc.setUserId(r.getValue(TESTCONFIG.USER_ID));

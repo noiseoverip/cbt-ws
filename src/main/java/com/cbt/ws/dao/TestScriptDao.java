@@ -53,9 +53,9 @@ public class TestScriptDao extends JooqDao {
 	 * @return
 	 */
 	private Long createNewTestScriptRecord(Long userid) {
-		TestscriptRecord result = getDbContext().insertInto(TESTSCRIPT, TESTSCRIPT.USER_ID).values(userid)
-				.returning(TESTSCRIPT.ID).fetchOne();
-		return result.getId();
+		TestscriptRecord result = getDbContext().insertInto(TESTSCRIPT, TESTSCRIPT.TESTSCRIPT_USER_ID).values(userid)
+				.returning(TESTSCRIPT.TESTSCRIPT_ID).fetchOne();
+		return result.getTestscriptId();
 	}
 
 	/**
@@ -96,14 +96,19 @@ public class TestScriptDao extends JooqDao {
 	 * Get by id
 	 */
 	public TestScript getById(Long testScriptId) {
-		Record result = getDbContext().select().from(TESTSCRIPT).where(TESTSCRIPT.ID.eq(testScriptId)).fetchOne();
+		Record result = getDbContext().select().from(TESTSCRIPT).where(TESTSCRIPT.TESTSCRIPT_ID.eq(testScriptId)).fetchOne();
 		TestScript testScript = result.into(TestScript.class);
 		// Need to parse test classes separately since those are in JSON format
+		String classesJson = result.getValue(TESTSCRIPT.TESTSCRIPT_CLASSES);		
+		testScript.setTestClasses(parseTestClasses(classesJson));		
+		return testScript;
+	}
 
-		String classesJson = result.getValue(TESTSCRIPT.CLASSES);
+	public String[] parseTestClasses(String classesJson) {
+		String[] classes = null;
 		if (null != classesJson) {
 			try {
-				testScript.setTestClasses(objectMapper.readValue(classesJson, String[].class));
+				classes = objectMapper.readValue(classesJson, String[].class);
 			} catch (JsonParseException e) {
 				mLogger.error(e);
 			} catch (JsonMappingException e) {
@@ -112,9 +117,9 @@ public class TestScriptDao extends JooqDao {
 				mLogger.error(e);
 			}
 		}
-		return testScript;
+		return classes;
 	}
-
+	
 	/**
 	 * Save test package
 	 * 
@@ -141,11 +146,11 @@ public class TestScriptDao extends JooqDao {
 		try {
 			testScript.setTestClasses(new JarScanner(filePath).getTestClasseNames());
 		} catch (JarScannerException e) {
-			mLogger.error("Could not parse test class names from " + testScript.getPath());
+			mLogger.error("Could not parse test class names from " + testScript.getFilePath());
 		}
 
 		// Update test package path and other info
-		testScript.setPath(filePath);
+		testScript.setFilePath(filePath);
 		testScript.setFileName(fileName);
 		updateTestScript(testScript);
 	}
@@ -156,10 +161,10 @@ public class TestScriptDao extends JooqDao {
 	 * @param testScript
 	 */
 	private void updateTestScript(TestScript testScript) {
-		if (getDbContext().update(TESTSCRIPT).set(TESTSCRIPT.PATH, testScript.getPath())
-				.set(TESTSCRIPT.FILE_NAME, testScript.getFileName()).set(TESTSCRIPT.NAME, testScript.getName())
-				.set(TESTSCRIPT.CLASSES, JSONArray.toJSONString(Arrays.asList(testScript.getTestClasses())))
-				.where(TESTSCRIPT.ID.eq(testScript.getId())).execute() != 1) {
+		if (getDbContext().update(TESTSCRIPT).set(TESTSCRIPT.TESTSCRIPT_FILE_PATH, testScript.getFilePath())
+				.set(TESTSCRIPT.TESTSCRIPT_FILE_NAME, testScript.getFileName()).set(TESTSCRIPT.TESTSCRIPT_NAME, testScript.getName())
+				.set(TESTSCRIPT.TESTSCRIPT_CLASSES, JSONArray.toJSONString(Arrays.asList(testScript.getTestClasses())))
+				.where(TESTSCRIPT.TESTSCRIPT_ID.eq(testScript.getId())).execute() != 1) {
 			mLogger.error("Failed to update package:" + testScript);
 		} else {
 			mLogger.debug("Test package updated:" + testScript);

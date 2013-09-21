@@ -18,7 +18,7 @@ import com.cbt.ws.entity.TestScript;
 import com.cbt.ws.entity.complex.TestRunComplex;
 import com.cbt.ws.exceptions.CbtNoDevicesException;
 import com.cbt.ws.jooq.enums.DeviceState;
-import com.cbt.ws.jooq.enums.TestprofileMode;
+import com.cbt.ws.jooq.enums.TestprofileTestprofileMode;
 
 /**
  * Test run logic handler
@@ -55,7 +55,7 @@ public class TestRunProccessor {
 		TestRunComplex testRunComplex = mTestrunDao.getTestRunComplex(testRunId);
 		TestScript testScript = mTestScriptDao.getById(testRunComplex.getTestConfig().getTestScriptId());
 
-		if (testRunComplex.getTestProfile().getMode().equals(TestprofileMode.NORMAL)) {
+		if (testRunComplex.getTestProfile().getMode().equals(TestprofileTestprofileMode.NORMAL)) {
 			devices = handleNormalMode(testRunComplex, testScript, userId);
 		} else {
 			devices = handleFastMode(testRunComplex, testScript, userId);
@@ -97,8 +97,7 @@ public class TestRunProccessor {
 				int deviceIndex = 0;
 				for (Device device : devices) {
 					DeviceJob job = new DeviceJob();
-					job.setDeviceId(device.getId());
-					job.setUserId(device.getUserId());
+					job.setDeviceId(device.getId());					
 					job.setTestRunId(testRunComplex.getId());
 					List<String> testClassesForDevice = new ArrayList<String>();
 					for (int i = 0; i < testClassesPerDevice; i++) {
@@ -148,8 +147,7 @@ public class TestRunProccessor {
 			if (null != devices && devices.size() > 0) {
 				for (Device device : devices) {
 					DeviceJob job = new DeviceJob();
-					job.setDeviceId(device.getId());
-					job.setUserId(device.getUserId());
+					job.setDeviceId(device.getId());					
 					job.setTestRunId(testRunComplex.getId());
 					job.getMetadata().setTestClasses(testScript.getTestClasses());
 					Long deviceJobId = mDevicejobDao.add(job);

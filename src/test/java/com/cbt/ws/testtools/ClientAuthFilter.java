@@ -1,4 +1,4 @@
-package com.cbt.ws.services;
+package com.cbt.ws.testtools;
 
 import java.util.ArrayList;
 import java.util.List;

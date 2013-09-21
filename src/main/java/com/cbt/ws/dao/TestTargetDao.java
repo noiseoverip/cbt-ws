@@ -22,7 +22,7 @@ import com.cbt.ws.entity.TestTarget;
 import com.cbt.ws.jooq.tables.records.TesttargetRecord;
 
 /**
- * Test target(aplication) DAO
+ * Test target(application) DAO
  * 
  * @author SauliusALisauskas 2013-03-03 Initial version
  * 
@@ -45,9 +45,9 @@ public class TestTargetDao extends JooqDao {
 	 * @return
 	 */
 	private Long createNewTestPackageRecord(Long userid) {
-		TesttargetRecord result = getDbContext().insertInto(TESTTARGET, TESTTARGET.USER_ID).values(userid)
-				.returning(TESTTARGET.ID).fetchOne();
-		return result.getId();
+		TesttargetRecord result = getDbContext().insertInto(TESTTARGET, TESTTARGET.TESTTARGET_USER_ID).values(userid)
+				.returning(TESTTARGET.TESTTARGET_ID).fetchOne();
+		return result.getTesttargetId();
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class TestTargetDao extends JooqDao {
 		Utils.writeToFile(uploadedInputStream, filePath);
 
 		// Update path and other info
-		testTarget.setPath(filePath);
+		testTarget.setFilePath(filePath);
 		testTarget.setFileName(fileName);
 		updateTestTarget(testTarget);
 	}
@@ -116,9 +116,9 @@ public class TestTargetDao extends JooqDao {
 	 * @param testTarget
 	 */
 	private void updateTestTarget(TestTarget testTarget) {
-		if (getDbContext().update(TESTTARGET).set(TESTTARGET.PATH, testTarget.getPath())
-				.set(TESTTARGET.FILE_NAME, testTarget.getFileName()).set(TESTTARGET.NAME, testTarget.getName())
-				.where(TESTTARGET.ID.eq(testTarget.getId())).execute() != 1) {
+		if (getDbContext().update(TESTTARGET).set(TESTTARGET.TESTTARGET_FILE_PATH, testTarget.getFilePath())
+				.set(TESTTARGET.TESTTARGET_FILE_NAME, testTarget.getFileName()).set(TESTTARGET.TESTTARGET_NAME, testTarget.getName())
+				.where(TESTTARGET.TESTTARGET_ID.eq(testTarget.getId())).execute() != 1) {
 			mLogger.error("Failed to update package:" + testTarget);
 		} else {
 			mLogger.debug("Test package updated:" + testTarget);

@@ -1,8 +1,11 @@
 package com.cbt.ws.entity;
 
+import java.util.Date;
 import java.util.List;
 
-import com.cbt.ws.jooq.enums.TestrunStatus;
+import javax.persistence.Column;
+
+import com.cbt.ws.jooq.enums.TestrunTestrunStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
 
@@ -12,32 +15,35 @@ import com.google.common.base.Objects;
  * @author Saulius Alisauskas 2013-03-24 Initial version
  * 
  */
-public class TestRun extends CbtEntity {
+public class TestRun {
 	public enum Status {FINISHED, RUNNING, WAITING}
 	
+	private Date created;
 	/**
-	 * Devices to be used for this testrun, calculated and assigned by system
+	 * Devices to be used for this test run, calculated and assigned by system
 	 */
-	private List<Device> devices;
-	private TestrunStatus status;	
-	private Long testConfigId;
+	private List<Device> devices;	
 	
+	private Long id;
+
+	private String name;
+
+	private TestrunTestrunStatus status;
+
 	@JsonIgnore
-	private TestConfig testconfig;	
+	private TestConfig testconfig;
 
-	public TestConfig getTestConfig() {
-		return testconfig;
-	}
+	private Long testconfigId;
 
-	public void setTestConfig(TestConfig testConfig) {
-		this.testconfig = testConfig;
-	}
+	private Date updated;
+	
+	private Long userId;
 
 	@Override
 	public boolean equals(Object object) {
 		if (null != object && object instanceof TestRun) {
 			TestRun other = (TestRun) object;
-			if (getId().equals(other.getId()) && getTestConfigId().equals(other.getTestConfigId())
+			if (getId().equals(other.getId()) && getId().equals(other.getId())
 					&& getStatus().equals(other.getStatus())) {
 				return true;
 			}
@@ -45,33 +51,95 @@ public class TestRun extends CbtEntity {
 		return false;
 	}
 
+	public Date getCreated() {
+		return created;
+	}
+
 	public List<Device> getDevices() {
 		return devices;
 	}
 
-	public TestrunStatus getStatus() {
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public TestrunTestrunStatus getStatus() {
 		return status;
 	}
 
-	public Long getTestConfigId() {
-		return testConfigId;
+	public TestConfig getTestconfig() {
+		return testconfig;
 	}
 
+	@Column(name = "testrun_testconfig_id")
+	public Long getTestconfigId() {
+		return testconfigId;
+	}
+	
+	public Date getUpdated() {
+		return updated;
+	}
+
+	@Column(name = "testrun_user_id")
+	public Long getUserId() {
+		return userId;
+	}
+	
+	@Column(name = "testrun_created")
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+	
 	public void setDevices(List<Device> devices) {
 		this.devices = devices;
 	}
 
-	public void setStatus(TestrunStatus status) {
+	@Column(name = "testrun_id")
+	public void setId(Long id) {
+		this.id = id;
+	}	
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@Column(name = "testrun_status")
+	public void setStatus(TestrunTestrunStatus status) {
 		this.status = status;
 	}
 
-	public void setTestConfigId(Long testConfigId) {
-		this.testConfigId = testConfigId;
+	public void setTestconfig(TestConfig testconfig) {
+		this.testconfig = testconfig;
+	}
+	
+	@Column(name = "testrun_testconfig_id")
+	public void setTestconfigId(Long testconfigId) {
+		this.testconfigId = testconfigId;
+	}
+	
+	@Column(name = "testrun_updated")
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}	
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this.getClass()).add("id", getId()).add("devices", devices)
-				.add("status", status).add("testconfig", testconfig).toString();
+		return Objects.toStringHelper(this.getClass())
+				.add("id", getId())
+				.add("userId", getUserId())
+				.add("devices", getDevices())
+				.add("status", getStatus())
+				.add("created", getCreated())
+				.add("updated", getUpdated())
+				.add("testconfigId", getTestconfigId())
+				.add("testconfig", getTestconfig()).toString();
 	}
 }

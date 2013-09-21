@@ -21,8 +21,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.log4j.Logger;
 import org.jooq.exception.DataAccessException;
@@ -51,8 +51,8 @@ import com.cbt.ws.entity.TestTarget;
 import com.cbt.ws.entity.User;
 import com.cbt.ws.entity.complex.TestConfigComplex;
 import com.cbt.ws.exceptions.CbtNoDevicesException;
-import com.cbt.ws.jooq.enums.DeviceJobStatus;
-import com.cbt.ws.jooq.enums.TestrunStatus;
+import com.cbt.ws.jooq.enums.DeviceJobDeviceJobStatus;
+import com.cbt.ws.jooq.enums.TestrunTestrunStatus;
 import com.cbt.ws.security.CbtPrinciple;
 import com.cbt.ws.tools.TestRunProccessor;
 import com.cbt.ws.utils.Utils;
@@ -376,13 +376,13 @@ public class AccessWs {
 	public DeviceJobResult putDeviceJobResult(@PathParam("deviceJobId") Long deviceJobId,
 			DeviceJobResult deviceJobResult) {
 		mLogger.debug("Received:" + deviceJobResult);
-		deviceJobResult.setDevicejobid(deviceJobId);
+		deviceJobResult.setDevicejobId(deviceJobId);
 		Long id = mDeviceJobResultDao.add(deviceJobResult);
 		deviceJobResult.setId(id);
 
 		// Update device job status
 		DeviceJob deviceJob = mDeviceJobDao.getById(deviceJobResult.getDevicejobId());
-		deviceJob.setStatus(DeviceJobStatus.FINISHED);
+		deviceJob.setStatus(DeviceJobDeviceJobStatus.FINISHED);
 		mLogger.debug("Updating devicejob to:" + deviceJob);
 		try {
 			mDeviceJobDao.update(deviceJob);
@@ -396,7 +396,7 @@ public class AccessWs {
 		boolean allFinished = true;
 		for (DeviceJob job : jobsOfThisTestRun) {
 			mLogger.debug(job);
-			if (!job.getStatus().equals(DeviceJobStatus.FINISHED)) {
+			if (!job.getStatus().equals(DeviceJobDeviceJobStatus.FINISHED)) {
 				allFinished = false;
 			}
 		}
@@ -404,7 +404,7 @@ public class AccessWs {
 		if (allFinished) {
 			mLogger.debug("All jobs finished, updating TestRun status");
 			TestRun testRun = mTestRunDao.getTestRun(deviceJob.getTestRunId());
-			testRun.setStatus(TestrunStatus.FINISHED);
+			testRun.setStatus(TestrunTestrunStatus.FINISHED);
 			try {
 				mTestRunDao.update(testRun);
 			} catch (CbtDaoException e) {
@@ -490,7 +490,7 @@ public class AccessWs {
 		testRun.setId(testRunId);
 		testRun.setDevices(devices);
 		// Set to default state
-		testRun.setStatus(TestrunStatus.WAITING);
+		testRun.setStatus(TestrunTestrunStatus.WAITING);
 		return testRun;
 	}
 

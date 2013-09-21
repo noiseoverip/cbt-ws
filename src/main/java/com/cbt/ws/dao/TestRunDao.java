@@ -24,7 +24,7 @@ import com.cbt.ws.entity.TestConfig;
 import com.cbt.ws.entity.TestProfile;
 import com.cbt.ws.entity.TestRun;
 import com.cbt.ws.entity.complex.TestRunComplex;
-import com.cbt.ws.jooq.enums.TestrunStatus;
+import com.cbt.ws.jooq.enums.TestrunTestrunStatus;
 import com.cbt.ws.jooq.tables.records.TestrunRecord;
 
 /**
@@ -51,10 +51,10 @@ public class TestRunDao extends JooqDao {
 	public Long add(TestRun testRun) {
 		mLogger.trace("Starting new test run");
 		Long testRunId = getDbContext()
-				.insertInto(TESTRUN, TESTRUN.USER_ID, TESTRUN.TEST_CONFIG_ID, TESTRUN.CREATED)
-				.values(testRun.getUserId(), testRun.getTestConfigId(),
-						new Timestamp(Calendar.getInstance().getTimeInMillis())).returning(TESTRUN.ID).fetchOne()
-				.getId();
+				.insertInto(TESTRUN, TESTRUN.TESTRUN_USER_ID, TESTRUN.TESTRUN_TESTCONFIG_ID, TESTRUN.TESTRUN_CREATED)
+				.values(testRun.getUserId(), testRun.getTestconfigId(),
+						new Timestamp(Calendar.getInstance().getTimeInMillis())).returning(TESTRUN.TESTRUN_ID).fetchOne()
+				.getTestrunId();
 		mLogger.trace("Added test run, new id:" + testRunId);
 		return testRunId;
 	}
@@ -66,7 +66,7 @@ public class TestRunDao extends JooqDao {
 	 * @throws CbtDaoException
 	 */
 	public void delete(TestRun testRun) throws CbtDaoException {
-		int result = getDbContext().delete(TESTRUN).where(TESTRUN.TEST_CONFIG_ID.eq(testRun.getId())).execute();
+		int result = getDbContext().delete(TESTRUN).where(TESTRUN.TESTRUN_TESTCONFIG_ID.eq(testRun.getId())).execute();
 		if (result != 1) {
 			throw new CbtDaoException("Error while deleting device, result:" + result);
 		}
@@ -79,15 +79,15 @@ public class TestRunDao extends JooqDao {
 	 */
 	public TestRun[] getAll() {
 		List<TestRun> testRuns = new ArrayList<TestRun>();
-		Result<Record> result = getDbContext().select().from(TESTRUN).orderBy(TESTRUN.CREATED.desc()).fetch();
+		Result<Record> result = getDbContext().select().from(TESTRUN).orderBy(TESTRUN.TESTRUN_CREATED.desc()).fetch();
 		for (Record r : result) {
 			TestRun tr = new TestRun();
-			tr.setId(r.getValue(TESTRUN.TEST_CONFIG_ID));
-			tr.setTestConfigId(r.getValue(TESTRUN.TEST_CONFIG_ID));
-			tr.setCreated(r.getValue(TESTRUN.CREATED));
-			tr.setUpdated(r.getValue(TESTRUN.UPDATED));
-			tr.setStatus(r.getValue(TESTRUN.STATUS));
-			tr.setUserId(r.getValue(TESTRUN.USER_ID));
+			tr.setId(r.getValue(TESTRUN.TESTRUN_TESTCONFIG_ID));
+			tr.setTestconfigId(r.getValue(TESTRUN.TESTRUN_TESTCONFIG_ID));
+			tr.setCreated(r.getValue(TESTRUN.TESTRUN_CREATED));
+			tr.setUpdated(r.getValue(TESTRUN.TESTRUN_UPDATED));
+			tr.setStatus(r.getValue(TESTRUN.TESTRUN_STATUS));
+			tr.setUserId(r.getValue(TESTRUN.TESTRUN_USER_ID));
 			testRuns.add(tr);
 			mLogger.debug(tr);
 		}
@@ -101,8 +101,8 @@ public class TestRunDao extends JooqDao {
 	 * @return
 	 */
 	public List<TestRun> getByUserId(Long userId) {
-		List<TestRun> result = getDbContext().select().from(TESTRUN).where(TESTRUN.USER_ID.eq(userId))
-				.orderBy(TESTRUN.UPDATED.desc()).fetch(new RecordMapper<Record, TestRun>() {
+		List<TestRun> result = getDbContext().select().from(TESTRUN).where(TESTRUN.TESTRUN_USER_ID.eq(userId))
+				.orderBy(TESTRUN.TESTRUN_UPDATED.desc()).fetch(new RecordMapper<Record, TestRun>() {
 					@Override
 					public TestRun map(Record record) {
 						TestRun tp = record.into(TestRun.class);
@@ -120,13 +120,13 @@ public class TestRunDao extends JooqDao {
 	 */
 	public TestRun[] getByUserIdFull(Long userId) {
 		List<TestRun> list = getDbContext().select().from(TESTRUN).join(TESTCONFIG).onKey()
-				.where(TESTRUN.USER_ID.eq(userId)).orderBy(TESTRUN.UPDATED.desc())
+				.where(TESTRUN.TESTRUN_USER_ID.eq(userId)).orderBy(TESTRUN.TESTRUN_UPDATED.desc())
 				.fetch(new RecordMapper<Record, TestRun>() {
 
 					@Override
 					public TestRun map(Record record) {
 						TestRun testRun = record.into(TestRun.class);
-						testRun.setTestConfig(record.into(TestConfig.class));
+						testRun.setTestconfig(record.into(TestConfig.class));
 						return testRun;
 					}
 				});
@@ -140,7 +140,7 @@ public class TestRunDao extends JooqDao {
 	 * @return
 	 */
 	public TestRun getTestRun(Long testRunId) {
-		TestrunRecord record = (TestrunRecord) getDbContext().select().from(TESTRUN).where(TESTRUN.ID.eq(testRunId))
+		TestrunRecord record = (TestrunRecord) getDbContext().select().from(TESTRUN).where(TESTRUN.TESTRUN_ID.eq(testRunId))
 				.fetchOne();
 		return record.into(TestRun.class);
 	}
@@ -153,8 +153,8 @@ public class TestRunDao extends JooqDao {
 	 */
 	public TestRunComplex getTestRunComplex(Long testRunId) {
 		Record result = getDbContext().select().from(TESTRUN).join(TESTCONFIG)
-				.on(TESTCONFIG.TEST_CONFIG_ID.eq(TESTRUN.TEST_CONFIG_ID)).join(TESTPROFILE)
-				.on(TESTPROFILE.ID.eq(TESTCONFIG.TEST_PROFILE_ID)).where(TESTRUN.ID.eq(testRunId)).fetchOne();
+				.on(TESTCONFIG.TEST_CONFIG_ID.eq(TESTRUN.TESTRUN_TESTCONFIG_ID)).join(TESTPROFILE)
+				.on(TESTPROFILE.TESTPROFILE_ID.eq(TESTCONFIG.TEST_PROFILE_ID)).where(TESTRUN.TESTRUN_ID.eq(testRunId)).fetchOne();
 
 		TestRunComplex testRun = new TestRunComplex();
 		testRun.setId(testRunId);
@@ -180,8 +180,8 @@ public class TestRunDao extends JooqDao {
 	 */
 	public void update(TestRun testRun) throws CbtDaoException {
 		int count = getDbContext().update(TESTRUN)
-				.set(TESTRUN.STATUS, TestrunStatus.valueOf(testRun.getStatus().toString()))
-				.where(TESTRUN.ID.eq(testRun.getId())).execute();
+				.set(TESTRUN.TESTRUN_STATUS, TestrunTestrunStatus.valueOf(testRun.getStatus().toString()))
+				.where(TESTRUN.TESTRUN_ID.eq(testRun.getId())).execute();
 
 		if (count != 1) {
 			throw new CbtDaoException("Could not update device");

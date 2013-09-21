@@ -1,6 +1,8 @@
 package com.cbt.ws.entity;
 
-import com.cbt.ws.jooq.enums.DeviceJobStatus;
+import javax.persistence.Column;
+
+import com.cbt.ws.jooq.enums.DeviceJobDeviceJobStatus;
 import com.google.common.base.Objects;
 
 /**
@@ -9,51 +11,34 @@ import com.google.common.base.Objects;
  * @author SauliusAlisauskas 2013-03-24 Initial version
  * 
  */
-public class DeviceJob extends CbtEntity {
-
-	// /**
-	// * Constructor to construct entity from Jooq record
-	// *
-	// * @param record
-	// * @return
-	// */
-	// public static DeviceJob fromJooqRecord(DeviceJobRecord record) {
-	// if (null == record) {
-	// return null;
-	// }
-	// DeviceJob job = new DeviceJob();
-	// job.setId(record.getId());
-	// job.setDeviceId(record.getDeviceId());
-	// job.setTestRunId(record.getTestRunId());
-	// job.setStatus(record.getStatus());
-	// job.setCreated(record.getCreated());
-	// job.setUpdated(record.getUpdated());
-	// return job;
-	// }	
-
+public class DeviceJob{	
 	private Long deviceId;
-
+	private Long id;	
 	private DeviceJobMetadata metadata = new DeviceJobMetadata();
-	private DeviceJobStatus status;
-
-	private Long testRunId;;
-
+	private DeviceJobDeviceJobStatus status;
+	private Long testRunId;
+	private TestScript testScript;
+	private TestTarget testTarget;
+	
 	/**
 	 * Default constructor
 	 */
 	public DeviceJob() {
 
 	}
-
 	public Long getDeviceId() {
 		return deviceId;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public DeviceJobMetadata getMetadata() {
 		return metadata;
 	}
 
-	public DeviceJobStatus getStatus() {
+	public DeviceJobDeviceJobStatus getStatus() {
 		return status;
 	}
 
@@ -61,25 +46,56 @@ public class DeviceJob extends CbtEntity {
 		return testRunId;
 	}
 
+	public TestScript getTestScript() {
+		return testScript;
+	}
+
+	public TestTarget getTestTarget() {
+		return testTarget;
+	}
+
+	@Column(name = "device_job_device_id")
 	public void setDeviceId(Long deviceId) {
 		this.deviceId = deviceId;
 	}
-
+	
+	@Column(name = "device_job_id")
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@Column(name = "device_job_meta")
 	public void setMetadata(DeviceJobMetadata metadata) {
 		this.metadata = metadata;
 	}
-
-	public void setStatus(DeviceJobStatus status) {
+	
+	@Column(name = "device_job_status")
+	public void setStatus(DeviceJobDeviceJobStatus status) {
 		this.status = status;
 	}
-
+	
+	@Column(name = "device_job_testrun_id")
 	public void setTestRunId(Long testRunId) {
 		this.testRunId = testRunId;
 	}
 
+	public void setTestScript(TestScript testScript) {
+		this.testScript = testScript;
+	}
+
+	public void setTestTarget(TestTarget testTarget) {
+		this.testTarget = testTarget;
+	}
+
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this.getClass()).add("id", getId()).add("deviceId", deviceId)
-				.add("testRunId", testRunId).add("status", status).add("meta", getMetadata()).toString();
+		return Objects.toStringHelper(this.getClass())
+				.add("id", getId())
+				.add("deviceId", getDeviceId())
+				.add("testRunId", getTestRunId())
+				.add("testScript", getTestScript())
+				.add("testTarget", getTestTarget())
+				.add("status", getStatus())
+				.add("meta", getMetadata()).toString();
 	}
 }

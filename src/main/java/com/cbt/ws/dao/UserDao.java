@@ -90,9 +90,9 @@ public class UserDao extends JooqDao {
 	 * @return
 	 */
 	public List<Map<String, Object>> getUserHostedTestStats(Long userId) {
-		Result<Record2<Long, Integer>> result = getDbContext().select(DEVICE_JOB.DEVICE_ID, DSL.count().as("runs"))
-				.from(DEVICE_JOB).join(DEVICE).on(DEVICE_JOB.DEVICE_ID.eq(DEVICE.ID)).where(DEVICE.OWNER_ID.eq(userId))
-				.groupBy(DEVICE_JOB.DEVICE_ID).fetch();
+		Result<Record2<Long, Integer>> result = getDbContext().select(DEVICE_JOB.DEVICE_JOB_DEVICE_ID, DSL.count().as("runs"))
+				.from(DEVICE_JOB).join(DEVICE).on(DEVICE_JOB.DEVICE_JOB_DEVICE_ID.eq(DEVICE.ID)).where(DEVICE.OWNER_ID.eq(userId))
+				.groupBy(DEVICE_JOB.DEVICE_JOB_DEVICE_ID).fetch();
 		return result.intoMaps();
 	}
 
@@ -104,7 +104,7 @@ public class UserDao extends JooqDao {
 	 */
 	public List<Map<String, Object>> getUserRunTestStats(Long userId) {
 		Result<Record1<Integer>> result = getDbContext().select(DSL.count().as("runs")).from(DEVICE_JOB).join(TESTRUN)
-				.on(DEVICE_JOB.TEST_RUN_ID.eq(TESTRUN.ID)).where(TESTRUN.USER_ID.eq(userId)).fetch();
+				.on(DEVICE_JOB.DEVICE_JOB_TESTRUN_ID.eq(TESTRUN.TESTRUN_ID)).where(TESTRUN.TESTRUN_USER_ID.eq(userId)).fetch();
 		return result.intoMaps();
 	}
 

@@ -1,9 +1,9 @@
 package com.cbt.ws.entity.complex;
 
-import com.cbt.core.utils.Utils;
 import com.cbt.ws.entity.CbtEntity;
 import com.cbt.ws.entity.TestScript;
 import com.cbt.ws.entity.TestTarget;
+import com.google.common.base.Objects;
 
 /**
  * Entity representing test configuration data.
@@ -43,8 +43,12 @@ public class TestConfigComplex extends CbtEntity {
 
 	@Override
 	public String toString() {
-		return Utils.toString("TestConfig", "id", getId(), "testScriptId", testScript.getId(), "testTargetId",
-				testTarget.getId(), "testProfileId", testProfileId);
+		return Objects.toStringHelper(this.getClass())
+				.add("id", getId())
+				.add("userId", getUserId())
+				.add("testScript", getTestScript())
+				.add("testTarget", getTestTarget()).toString();
+				
 	}
 
 }
