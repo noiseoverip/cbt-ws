@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import javax.ws.rs.core.MediaType;
@@ -16,9 +15,6 @@ import org.junit.Test;
 import com.cbt.ws.GuiceContextListener;
 import com.cbt.ws.entity.DeviceJob;
 import com.cbt.ws.testtools.ClientAuthFilter;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.servlet.GuiceFilter;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.test.framework.AppDescriptor;

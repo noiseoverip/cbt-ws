@@ -143,14 +143,14 @@ public class DevicejobDao extends JooqDao {
 				.join(TESTSCRIPT).on(TESTCONFIG.TEST_SCRIPT_ID.eq(TESTSCRIPT.TESTSCRIPT_ID))
 				.join(TESTTARGET).on(TESTCONFIG.TEST_TARGET_ID.eq(TESTTARGET.TESTTARGET_ID))
 				.where(DEVICE_JOB.DEVICE_JOB_DEVICE_ID.eq(deviceId).and(DEVICE_JOB.DEVICE_JOB_STATUS.notEqual(DeviceJobDeviceJobStatus.FINISHED)))				
-				.orderBy(DEVICE_JOB.DEVICE_JOB_CREATED.asc()).fetch(deviceJobMapper);
+				.orderBy(DEVICE_JOB.DEVICE_JOB_CREATED.asc()).fetch(mDeviceJobMapper);
 		return jobs.toArray(new DeviceJob[jobs.size()]);
 	}
 	
 	/**
 	 * Mapper used for constructing lists of {@link DeviceJob} objects from Jooq Record
 	 */
-	private final RecordMapper<Record, DeviceJob> deviceJobMapper = new RecordMapper<Record, DeviceJob>() {
+	private final RecordMapper<Record, DeviceJob> mDeviceJobMapper = new RecordMapper<Record, DeviceJob>() {
 
 		@Override
 		public DeviceJob map(Record record) {
