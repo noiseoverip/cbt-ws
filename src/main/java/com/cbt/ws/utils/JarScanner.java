@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cbt.ws.jooq.enums.TestscriptTestscriptType;
 import org.apache.log4j.Logger;
 import org.jf.dexlib.ClassDefItem;
 import org.jf.dexlib.DexFile;
@@ -19,9 +20,7 @@ public class JarScanner {
 
 	private final Logger logger = Logger.getLogger(JarScanner.class);
 	private String filePath;
-	private static final String TEST_CLASS_SUPER_TYPE_UIA = "Lcom/android/uiautomator/testrunner/UiAutomatorTestCase;";
-   private static final String TEST_CLASS_SUPER_TYPE_INS = "Landroid/test/ActivityTestCase;";
-   private static final String TEST_CLASS_SUPER_TYPE_INS2 = "Landroid/test/ActivityInstrumentationTestCase2;";
+   private TestFramework testFramework = TestFramework.UNKNOWN;
 
 	public JarScanner(String filePath) {
 		this.filePath = filePath;
@@ -37,9 +36,13 @@ public class JarScanner {
 		}
 		for (ClassDefItem cds : dxFile.ClassDefsSection.getItems()) {
 			// logger.info(">>" + cds.getSuperclass().getTypeDescriptor());
-			if (TEST_CLASS_SUPER_TYPE_UIA.equals(cds.getSuperclass().getTypeDescriptor())
-               || TEST_CLASS_SUPER_TYPE_INS.equals(cds.getSuperclass().getTypeDescriptor())
-               || TEST_CLASS_SUPER_TYPE_INS2.equals(cds.getSuperclass().getTypeDescriptor())) {
+         TestFramework tmpTestFramework = getTestFramework(cds.getSuperclass().getTypeDescriptor());
+         if (! TestFramework.UNKNOWN.equals(testFramework) && ! TestFramework.UNKNOWN.equals(tmpTestFramework) && ! testFramework.getTestScriptType().equals(tmpTestFramework.getTestScriptType())) {
+            throw new IllegalStateException("Multiple test framework usage currently not supported!");
+         }
+
+			if (! TestFramework.UNKNOWN.equals(tmpTestFramework)) {
+            testFramework = tmpTestFramework;
 				String testClassRaw = cds.getClassType().getTypeDescriptor();
 				// Raw format is: Lcom/test/TestButton2;
 				String testClass = testClassRaw.substring(1, testClassRaw.length() - 1).replaceAll("/", "\\.");
@@ -49,4 +52,45 @@ public class JarScanner {
 		}
 		return classes.toArray(new String[classes.size()]);
 	}
+
+   private TestFramework getTestFramework(String superClass) {
+      if (null != superClass) {
+         for (TestFramework testFramework: TestFramework.values()) {
+            if (superClass.equals(testFramework.getClassName())) {
+               return testFramework;
+            }
+         }
+      }
+
+      return TestFramework.UNKNOWN;
+   }
+
+   public TestscriptTestscriptType getTestScriptType() {
+      return testFramework.getTestScriptType();
+   }
+
+   private enum TestFramework {
+      UIAUTOMATOR(TestscriptTestscriptType.UIAUTOMATOR), INSTRUMENTATION1(TestscriptTestscriptType.INSTRUMENTATION), INSTRUMENTATION2(TestscriptTestscriptType.INSTRUMENTATION), UNKNOWN(null);
+
+      private String className;
+      private TestscriptTestscriptType testScriptType;
+
+      private TestFramework(TestscriptTestscriptType testScriptType) {
+         this.testScriptType = testScriptType;
+      }
+
+      static {
+         UIAUTOMATOR.className =  "Lcom/android/uiautomator/testrunner/UiAutomatorTestCase;";
+         INSTRUMENTATION1.className =  "Landroid/test/ActivityTestCase;";
+         INSTRUMENTATION2.className = "Landroid/test/ActivityInstrumentationTestCase2;";
+      }
+
+      public TestscriptTestscriptType getTestScriptType() {
+         return testScriptType;
+      }
+
+      public String getClassName() {
+         return className;
+      }
+   }
 }

@@ -144,7 +144,9 @@ public class TestScriptDao extends JooqDao {
 
 		// Parse test class names
 		try {
-			testScript.setTestClasses(new JarScanner(filePath).getTestClasseNames());
+         JarScanner jarScanner = new JarScanner(filePath);
+			testScript.setTestClasses(jarScanner.getTestClasseNames());
+         testScript.setTestScriptType(jarScanner.getTestScriptType());
 		} catch (JarScannerException e) {
 			mLogger.error("Could not parse test class names from " + testScript.getFilePath());
 		}
@@ -164,6 +166,7 @@ public class TestScriptDao extends JooqDao {
 		if (getDbContext().update(TESTSCRIPT).set(TESTSCRIPT.TESTSCRIPT_FILE_PATH, testScript.getFilePath())
 				.set(TESTSCRIPT.TESTSCRIPT_FILE_NAME, testScript.getFileName()).set(TESTSCRIPT.TESTSCRIPT_NAME, testScript.getName())
 				.set(TESTSCRIPT.TESTSCRIPT_CLASSES, JSONArray.toJSONString(Arrays.asList(testScript.getTestClasses())))
+            .set(TESTSCRIPT.TESTSCRIPT_TYPE, testScript.getTestScriptType())
 				.where(TESTSCRIPT.TESTSCRIPT_ID.eq(testScript.getId())).execute() != 1) {
 			mLogger.error("Failed to update package:" + testScript);
 		} else {
