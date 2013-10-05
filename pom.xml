@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cbt</groupId>
     <artifactId>cbt-ws</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>cbt-ws</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -294,7 +293,7 @@
                                 <database>
                                     <name>org.jooq.util.mysql.MySQLDatabase</name>
                                     <includes>.*</includes>
-                                    <excludes/>
+                                    <excludes />
                                     <inputSchema>${cbt.db.name}</inputSchema>
                                     <outputSchema>cbt</outputSchema>
                                 </database>
@@ -330,7 +329,7 @@
                                 <database>
                                     <name>org.jooq.util.mysql.MySQLDatabase</name>
                                     <includes>.*</includes>
-                                    <excludes/>
+                                    <excludes />
                                     <inputSchema>${cbt.dbtest.name}</inputSchema>
                                     <outputSchema>cbt</outputSchema>
                                 </database>
@@ -410,7 +409,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -468,5 +467,6 @@
         <connection>scm:git:ssh://git@github.com/noiseoverip/${project.artifactId}.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/noiseoverip/${project.artifactId}.git</developerConnection>
         <url>scm:git:ssh://git@github.com/noiseoverip/${project.artifactId}.git</url>
-    </scm>
+      <tag>cbt-ws-0.0.1</tag>
+  </scm>
 </project>
