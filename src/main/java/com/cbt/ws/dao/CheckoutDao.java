@@ -106,7 +106,7 @@ public class CheckoutDao extends JooqDao {
 			try {
 				fin = new FileInputStream(paths[i]);
 			} catch (FileNotFoundException e) {
-				mLogger.error("Could not create file output stream to" + paths[i], e);
+				mLogger.error("Could not create file output stream to: " + paths[i], e);
 			}			
 			
 			try {
