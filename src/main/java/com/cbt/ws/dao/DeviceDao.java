@@ -1,9 +1,9 @@
 package com.cbt.ws.dao;
 
-import static com.cbt.ws.jooq.tables.Device.DEVICE;
-import static com.cbt.ws.jooq.tables.DeviceSharing.DEVICE_SHARING;
-import static com.cbt.ws.jooq.tables.DeviceType.DEVICE_TYPE;
-import static com.cbt.ws.jooq.tables.User.USER;
+import static com.cbt.jooq.tables.Device.DEVICE;
+import static com.cbt.jooq.tables.DeviceSharing.DEVICE_SHARING;
+import static com.cbt.jooq.tables.DeviceType.DEVICE_TYPE;
+import static com.cbt.jooq.tables.User.USER;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -22,11 +22,11 @@ import org.jooq.SelectJoinStep;
 
 import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.ws.JooqDao;
-import com.cbt.ws.entity.Device;
-import com.cbt.ws.entity.DeviceType;
-import com.cbt.ws.jooq.enums.DeviceState;
-import com.cbt.ws.jooq.tables.records.DeviceRecord;
-import com.cbt.ws.jooq.tables.records.DeviceTypeRecord;
+import com.cbt.core.entity.Device;
+import com.cbt.core.entity.DeviceType;
+import com.cbt.jooq.enums.DeviceState;
+import com.cbt.jooq.tables.records.DeviceRecord;
+import com.cbt.jooq.tables.records.DeviceTypeRecord;
 import com.google.inject.Inject;
 
 /**
@@ -47,7 +47,7 @@ public class DeviceDao extends JooqDao {
 	/**
 	 * Add new device
 	 * 
-	 * @param userid
+	 * @param device
 	 * @return
 	 */
 	public Long add(Device device) {
@@ -62,7 +62,7 @@ public class DeviceDao extends JooqDao {
 	/**
 	 * Delete specified device
 	 * 
-	 * @param device
+	 * @param deviceId
 	 * @throws CbtDaoException
 	 */
 	public void deleteDevice(Long deviceId) throws CbtDaoException {		
@@ -86,7 +86,7 @@ public class DeviceDao extends JooqDao {
 	/**
 	 * Get device by device unique id
 	 * 
-	 * @param device
+	 * @param uniqueId
 	 * @return
 	 */
 	public Device getDeviceByUid(String uniqueId) {

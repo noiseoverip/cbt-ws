@@ -38,21 +38,21 @@ import com.cbt.ws.dao.TestRunDao;
 import com.cbt.ws.dao.TestScriptDao;
 import com.cbt.ws.dao.TestTargetDao;
 import com.cbt.ws.dao.UserDao;
-import com.cbt.ws.entity.Device;
-import com.cbt.ws.entity.DeviceJob;
-import com.cbt.ws.entity.DeviceJobResult;
-import com.cbt.ws.entity.DeviceType;
-import com.cbt.ws.entity.TestConfig;
-import com.cbt.ws.entity.TestPackage;
-import com.cbt.ws.entity.TestProfile;
+import com.cbt.core.entity.Device;
+import com.cbt.core.entity.DeviceJob;
+import com.cbt.core.entity.DeviceJobResult;
+import com.cbt.core.entity.DeviceType;
+import com.cbt.core.entity.TestConfig;
+import com.cbt.core.entity.TestPackage;
+import com.cbt.core.entity.TestProfile;
 import com.cbt.ws.entity.TestRun;
-import com.cbt.ws.entity.TestScript;
-import com.cbt.ws.entity.TestTarget;
-import com.cbt.ws.entity.User;
-import com.cbt.ws.entity.complex.TestConfigComplex;
+import com.cbt.core.entity.TestScript;
+import com.cbt.core.entity.TestTarget;
+import com.cbt.core.entity.User;
+import com.cbt.core.entity.complex.TestConfigComplex;
 import com.cbt.ws.exceptions.CbtNoDevicesException;
-import com.cbt.ws.jooq.enums.DeviceJobDeviceJobStatus;
-import com.cbt.ws.jooq.enums.TestrunTestrunStatus;
+import com.cbt.jooq.enums.DeviceJobDeviceJobStatus;
+import com.cbt.jooq.enums.TestrunTestrunStatus;
 import com.cbt.ws.security.CbtPrinciple;
 import com.cbt.ws.tools.TestRunProccessor;
 import com.cbt.ws.utils.Utils;
@@ -185,7 +185,6 @@ public class AccessWs {
 	/**
 	 * Get device job result
 	 * 
-	 * @param userId
 	 * @param deviceJobId
 	 * @return
 	 */
@@ -310,7 +309,6 @@ public class AccessWs {
 	/**
 	 * Helper method to extract user id from security context
 	 * 
-	 * @param context
 	 * @return
 	 */
 	private Long getUserId() {
@@ -366,7 +364,8 @@ public class AccessWs {
 	/**
 	 * Update single {@link DeviceJob} entry
 	 * 
-	 * @param deviceJob
+	 * @param deviceJobId
+    * @param deviceJobResult
 	 * @return
 	 */
 	@PUT
@@ -418,7 +417,7 @@ public class AccessWs {
 	 * Share device with specified user
 	 * 
 	 * @param deviceId
-	 * @param userId
+	 * @param userShareWithId
 	 */
 	@PUT
 	@Path("/device/{deviceId}/share/{userShareWithId}")
@@ -430,7 +429,6 @@ public class AccessWs {
 	 * Create new test configuration
 	 * 
 	 * @param testConfig
-	 * @param context
 	 * @return
 	 */
 	@PUT
@@ -448,8 +446,7 @@ public class AccessWs {
 	 * 
 	 * Create new test profile
 	 * 
-	 * @param uploadedInputStream
-	 * @param fileDetail
+	 * @param testProfile
 	 * @return
 	 */
 	@PUT
@@ -465,7 +462,6 @@ public class AccessWs {
 	/**
 	 * Create new test run
 	 * 
-	 * @param userId
 	 * @param testRun
 	 * @return
 	 */

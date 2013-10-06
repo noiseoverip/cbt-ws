@@ -22,3 +22,4 @@
 .DS_Store
 /test-output
 /src/main/java/com/cbt/ws/jooq
+/settings.xml

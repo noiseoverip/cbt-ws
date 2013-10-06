@@ -2,7 +2,7 @@ package com.cbt.ws.security;
 
 import java.security.Principal;
 
-import com.cbt.ws.entity.User;
+import com.cbt.core.entity.User;
 import com.google.common.base.Objects;
 
 /**

@@ -1,6 +1,6 @@
 package com.cbt.ws.dao;
 
-import static com.cbt.ws.jooq.tables.DeviceJobResult.DEVICE_JOB_RESULT;
+import static com.cbt.jooq.tables.DeviceJobResult.DEVICE_JOB_RESULT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.jooq.Result;
 
 import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.ws.JooqDao;
-import com.cbt.ws.entity.DeviceJobResult;
-import com.cbt.ws.jooq.enums.DeviceJobResultState;
+import com.cbt.core.entity.DeviceJobResult;
+import com.cbt.jooq.enums.DeviceJobResultState;
 import com.google.inject.Inject;
 
 /**
@@ -35,7 +35,7 @@ public class DevicejobResultDao extends JooqDao {
 	/**
 	 * Add device job result
 	 * 
-	 * @param userid
+	 * @param deviceJobResult
 	 * @return
 	 */
 	public Long add(DeviceJobResult deviceJobResult) {
@@ -86,7 +86,7 @@ public class DevicejobResultDao extends JooqDao {
 	/**
 	 * Delete device job result record
 	 * 
-	 * @param deviceJobResult
+	 * @param deviceJobId
 	 * @throws CbtDaoException
 	 */
 	public void delete(long deviceJobId) throws CbtDaoException {

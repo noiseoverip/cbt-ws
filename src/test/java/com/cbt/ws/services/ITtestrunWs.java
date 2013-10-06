@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import com.cbt.ws.GuiceContextListener;
 import com.cbt.ws.entity.TestRun;
-import com.cbt.ws.jooq.enums.TestrunTestrunStatus;
+import com.cbt.jooq.enums.TestrunTestrunStatus;
 import com.cbt.ws.testtools.ClientAuthFilter;
 import com.google.inject.servlet.GuiceFilter;
 import com.sun.jersey.api.client.WebResource;

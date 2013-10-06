@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.cbt.ws.GuiceContextListener;
-import com.cbt.ws.entity.complex.TestConfigComplex;
+import com.cbt.core.entity.complex.TestConfigComplex;
 import com.cbt.ws.testtools.ClientAuthFilter;
 import com.google.inject.servlet.GuiceFilter;
 import com.sun.jersey.api.client.WebResource;

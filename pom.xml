@@ -12,13 +12,7 @@
 		<jooq.version>3.1.0</jooq.version>
 		<c3p0.version>0.9.1.2</c3p0.version>
 	</properties>
-	<dependencies>		
-		<dependency>
-			<!-- Required for JPA annotation used by JOOQ -->
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<version>1.0.1.Final</version>
-		</dependency>
+	<dependencies>
 		<dependency>
 			<groupId>org.jf.dexlib</groupId>
 			<artifactId>baksmali</artifactId>
@@ -27,7 +21,7 @@
 		<dependency>
 			<groupId>com.cbt</groupId>
 			<artifactId>cbt-ws-dao</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -69,21 +63,6 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>jooq</artifactId>
-			<version>${jooq.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>jooq-meta</artifactId>
-			<version>${jooq.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>jooq-codegen</artifactId>
-			<version>${jooq.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -264,90 +243,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<!-- Generate JOOQ classes using production database -->
-				<groupId>org.jooq</groupId>
-				<artifactId>jooq-codegen-maven</artifactId>
-				<version>${jooq.version}</version>
-	
-				<!-- The plugin should hook into the generate goal -->
-				<executions>
-					<execution>
-						<id>jooq-generate-classes-production</id>
-						<phase>generate-sources</phase>		
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>	
-							<!-- JDBC connection parameters -->
-							<jdbc>
-								<driver>com.mysql.jdbc.Driver</driver>
-								<url>${cbt.db.url}</url>
-								<user>${cbt.db.user}</user>
-								<password>${cbt.db.password}</password>
-							</jdbc>	
-							<!-- Generator parameters -->
-							<generator>
-								<name>org.jooq.util.DefaultGenerator</name>
-								<database>
-									<name>org.jooq.util.mysql.MySQLDatabase</name>
-									<includes>.*</includes>
-									<excludes />
-									<inputSchema>${cbt.db.name}</inputSchema>
-									<outputSchema>cbt</outputSchema>
-								</database>								
-								<generate>
-									<relations>true</relations>
-									<deprecated>false</deprecated>
-								</generate>
-								<target>
-									<packageName>com.cbt.ws.jooq</packageName>
-									<directory>src/main/java</directory>
-								</target>
-							</generator>
-						</configuration>
-					</execution>
-					<execution>
-							<id>jooq-generate-classes-testing</id>
-							<phase>pre-integration-test</phase>		
-							<goals>
-								<goal>generate</goal>
-							</goals>
-							<configuration>			
-								<!-- JDBC connection parameters -->
-								<jdbc>
-									<driver>com.mysql.jdbc.Driver</driver>
-									<url>${cbt.dbtest.url}</url>
-									<user>${cbt.dbtest.user}</user>
-									<password>${cbt.dbtest.password}</password>
-								</jdbc>
-					
-								<!-- Generator parameters -->
-								<generator>
-									<name>org.jooq.util.DefaultGenerator</name>
-									<database>
-										<name>org.jooq.util.mysql.MySQLDatabase</name>
-										<includes>.*</includes>
-										<excludes />
-										<inputSchema>${cbt.dbtest.name}</inputSchema>
-										<outputSchema>cbt</outputSchema>
-									</database>								
-									<generate>
-										<relations>true</relations>
-										<deprecated>false</deprecated>
-									</generate>
-								</generator>							
-							</configuration>
-						</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>mysql</groupId>
-						<artifactId>mysql-connector-java</artifactId>
-						<version>${mysql.connector.version}</version>
-					</dependency>
-				</dependencies>				
-			</plugin>	
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>

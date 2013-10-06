@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cbt.ws.jooq.enums.TestscriptTestscriptType;
+import com.cbt.jooq.enums.TestscriptTestscriptType;
 import org.apache.log4j.Logger;
 import org.jf.dexlib.ClassDefItem;
 import org.jf.dexlib.DexFile;

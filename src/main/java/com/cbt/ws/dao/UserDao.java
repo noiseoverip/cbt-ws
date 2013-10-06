@@ -1,9 +1,9 @@
 package com.cbt.ws.dao;
 
-import static com.cbt.ws.jooq.tables.Device.DEVICE;
-import static com.cbt.ws.jooq.tables.DeviceJob.DEVICE_JOB;
-import static com.cbt.ws.jooq.tables.Testrun.TESTRUN;
-import static com.cbt.ws.jooq.tables.User.USER;
+import static com.cbt.jooq.tables.Device.DEVICE;
+import static com.cbt.jooq.tables.DeviceJob.DEVICE_JOB;
+import static com.cbt.jooq.tables.Testrun.TESTRUN;
+import static com.cbt.jooq.tables.User.USER;
 
 import java.util.List;
 import java.util.Map;
@@ -17,8 +17,8 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 
 import com.cbt.ws.JooqDao;
-import com.cbt.ws.entity.User;
-import com.cbt.ws.jooq.tables.records.UserRecord;
+import com.cbt.core.entity.User;
+import com.cbt.jooq.tables.records.UserRecord;
 
 /**
  * User Dao

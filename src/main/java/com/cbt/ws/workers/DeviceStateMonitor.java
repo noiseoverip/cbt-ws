@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 
 import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.ws.dao.DeviceDao;
-import com.cbt.ws.entity.Device;
-import com.cbt.ws.jooq.enums.DeviceState;
+import com.cbt.core.entity.Device;
+import com.cbt.jooq.enums.DeviceState;
 import com.google.inject.Inject;
 
 /**
