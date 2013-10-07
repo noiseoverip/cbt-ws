@@ -120,20 +120,22 @@ public class TestProfileDao extends JooqDao {
     */
    public TestProfile[] getByUserId(Long userId) {
       List<TestProfile> result = getDbContext().select().from(TESTPROFILE).where(TESTPROFILE.TESTPROFILE_USER_ID.eq(userId))
-            .orderBy(TESTPROFILE.TESTPROFILE_UPDATED.desc()).fetch(new RecordMapper<Record, TestProfile>() {
-               @Override
-               public TestProfile map(Record record) {
-                  TestProfile tp = record.into(TestProfile.class);
-                  List<DeviceType> devices = mDeviceDao.getDeviceTypesByTestProfile(tp.getId());
-                  if (null != devices) {
-                     tp.setDeviceTypesList(devices);
-                  }
-                  return tp;
-               }
-            });
+            .orderBy(TESTPROFILE.TESTPROFILE_UPDATED.desc()).fetch(mDeviceRecordMapper);
       return result.toArray(new TestProfile[result.size()]);
    }
-
+   
+   RecordMapper<Record, TestProfile> mDeviceRecordMapper = new RecordMapper<Record, TestProfile>() {
+       @Override
+       public TestProfile map(Record record) {
+          TestProfile tp = record.into(TestProfile.class);
+          List<DeviceType> devices = mDeviceDao.getDeviceTypesByTestProfile(tp.getId());
+          if (null != devices) {
+             tp.setDeviceTypesList(devices);
+          }
+          return tp;
+       }
+   };
+   
    /**
     * Get by id
     *
@@ -141,8 +143,8 @@ public class TestProfileDao extends JooqDao {
     * @return
     */
    public TestProfile getById(Long testProfileId) {
-      Record result = getDbContext().select().from(TESTPROFILE).where(TESTPROFILE.TESTPROFILE_ID.eq(testProfileId))
-            .fetchOne();
-      return result.into(TestProfile.class);
+	   TestProfile result = getDbContext().select().from(TESTPROFILE).where(TESTPROFILE.TESTPROFILE_ID.eq(testProfileId))
+            .fetch(mDeviceRecordMapper).get(0);
+      return result;
    }
 }
