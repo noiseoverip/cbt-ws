@@ -5,6 +5,8 @@ import com.cbt.core.utils.Utils;
 import com.cbt.jooq.tables.records.TesttargetRecord;
 import com.cbt.ws.Configuration;
 import com.cbt.ws.JooqDao;
+import com.google.common.io.Files;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -26,13 +28,17 @@ import static com.cbt.jooq.tables.Testtarget.TESTTARGET;
  */
 public class TestTargetDao extends JooqDao {
 
+   private static final String S3_BUCKET_NAME = "tt.cbt";
+   private static final String FILE_EXTENSION = "apk";
    private final Logger mLogger = Logger.getLogger(TestTargetDao.class);
+   private final AwsS3Dao s3Dao;
    private Configuration mConfiguration;
 
    @Inject
-   public TestTargetDao(Configuration configuration, DataSource datasource) {
+   public TestTargetDao(Configuration configuration, DataSource datasource, AwsS3Dao s3Dao) {
       super(datasource);
       mConfiguration = configuration;
+      this.s3Dao = s3Dao;
    }
 
    /**
@@ -45,23 +51,6 @@ public class TestTargetDao extends JooqDao {
       TesttargetRecord result = getDbContext().insertInto(TESTTARGET, TESTTARGET.TESTTARGET_USER_ID).values(userid)
             .returning(TESTTARGET.TESTTARGET_ID).fetchOne();
       return result.getTesttargetId();
-   }
-
-   /**
-    * Create appropriate folder structure for holding test target. e.g. /userid/testtargetid/
-    *
-    * @param targetId
-    * @param userId
-    * @return - path pointing to reated file
-    */
-   private String createTestTargetFolder(Long targetId, Long userId) {
-      // create user folder if not existing
-      String path = mConfiguration.getWorkspace() + userId + "//tt-" + targetId;
-      if (new File(path).mkdirs()) {
-         mLogger.info("New folder created:" + path);
-         return path;
-      }
-      return null;
    }
 
    /**
@@ -93,18 +82,31 @@ public class TestTargetDao extends JooqDao {
 
       // Create appropriate folder structure to store the file
       testTarget.setId(newTestPackageId);
-      String testPackagePath = createTestTargetFolder(newTestPackageId, testTarget.getUserId());
+
+      File testTargetFile = FileUtils.getFile(Files.createTempDir(), newTestPackageId + "." + FILE_EXTENSION);
 
       // Store the file
-      // TODO: manage file names better
-      String fileName = "app-" + testTarget.getId() + ".apk";
-      String filePath = testPackagePath + "//" + fileName;
-      Utils.writeToFile(uploadedInputStream, filePath);
+      Utils.writeToFile(uploadedInputStream, testTargetFile);
+      try {
+         s3Dao.uploadS3(S3_BUCKET_NAME, testTargetFile);
+      } catch (InterruptedException e) {
+         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      }
 
       // Update path and other info
-      testTarget.setFilePath(filePath);
-      testTarget.setFileName(fileName);
+      testTarget.setFilePath(testTargetFile.getAbsolutePath());
+      testTarget.setFileName(testTargetFile.getName());
       updateTestTarget(testTarget);
+   }
+
+   public File getTestTarget(long packageId) {
+      File testTargetFile = null;
+      try {
+         testTargetFile = s3Dao.download(S3_BUCKET_NAME, String.valueOf(packageId), FILE_EXTENSION);
+      } catch (InterruptedException e) {
+         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      }
+      return testTargetFile;
    }
 
    /**

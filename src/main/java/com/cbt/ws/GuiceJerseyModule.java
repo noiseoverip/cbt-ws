@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import com.cbt.ws.dao.AwsS3Dao;
 import com.cbt.ws.dao.CheckoutDao;
 import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.dao.DevicejobDao;
@@ -35,6 +36,7 @@ public class GuiceJerseyModule extends JerseyServletModule {
 		// bind(TestTargetWs.class);
 		// bind(TestConfigWs.class);
 
+      bind(AwsS3Dao.class).in(Singleton.class);
 		bind(TestScriptDao.class);
 		bind(TestTargetDao.class);
 		bind(TestProfileDao.class);

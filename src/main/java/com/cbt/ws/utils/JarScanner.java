@@ -19,20 +19,20 @@ import org.jf.dexlib.DexFile;
 public class JarScanner {
 
 	private final Logger logger = Logger.getLogger(JarScanner.class);
-	private String filePath;
+	private final File file;
    private TestFramework testFramework = TestFramework.UNKNOWN;
 
-	public JarScanner(String filePath) {
-		this.filePath = filePath;
+	public JarScanner(File file) {
+		this.file = file;
 	}
 
 	public String[] getTestClasseNames() throws JarScannerException {
       List<String> classes = new ArrayList<String>();
 		DexFile dxFile;
 		try {
-			dxFile = new DexFile(new File(filePath), false, false);
+			dxFile = new DexFile(file, false, false);
 		} catch (IOException e) {
-			throw new JarScannerException("Could not read DEX file:" + filePath, e);
+			throw new JarScannerException("Could not read DEX file:" + file, e);
 		}
 		for (ClassDefItem cds : dxFile.ClassDefsSection.getItems()) {
 			// logger.info(">>" + cds.getSuperclass().getTypeDescriptor());

@@ -10,6 +10,8 @@ import com.cbt.ws.utils.JarScannerException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Files;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -33,14 +35,18 @@ import static com.cbt.jooq.tables.Testscript.TESTSCRIPT;
  */
 public class TestScriptDao extends JooqDao {
 
+   private static final String S3_BUCKET_NAME = "ts.cbt";
+   private static final String FILE_EXTENSION = "jar";
    private final Logger mLogger = Logger.getLogger(TestScriptDao.class);
+   private final AwsS3Dao s3Dao;
    private ObjectMapper objectMapper = new ObjectMapper();
    private Configuration mConfiguration;
 
    @Inject
-   public TestScriptDao(Configuration configuration, DataSource datasource) {
+   public TestScriptDao(Configuration configuration, DataSource datasource, AwsS3Dao s3Dao) throws IOException {
       super(datasource);
       mConfiguration = configuration;
+      this.s3Dao = s3Dao;
    }
 
    /**
@@ -53,25 +59,6 @@ public class TestScriptDao extends JooqDao {
       TestscriptRecord result = getDbContext().insertInto(TESTSCRIPT, TESTSCRIPT.TESTSCRIPT_USER_ID).values(userid)
             .returning(TESTSCRIPT.TESTSCRIPT_ID).fetchOne();
       return result.getTestscriptId();
-   }
-
-   /**
-    * Create appropriate folder structure for holding test package. e.g. /userid/testpackageid/
-    *
-    * @param packagId
-    * @param userId
-    * @return
-    */
-   private String createTestPackageFolder(Long packagId, Long userId) {
-      // create user folder if not existing
-      String path = mConfiguration.getWorkspace() + userId + "//ts-" + packagId;
-      if (new File(path).mkdirs()) {
-         mLogger.info("New folder created:" + path);
-         return path;
-      } else {
-         mLogger.error("Could not create new folder:" + path);
-      }
-      return null;
    }
 
    /**
@@ -126,32 +113,48 @@ public class TestScriptDao extends JooqDao {
     */
    public void storeTestScript(TestScript testScript, InputStream uploadedInputStream) throws IOException {
       // Create new test package record in db -> get it's id
-      Long newTestPackageId = createNewTestScriptRecord(testScript.getUserId());
+      long newTestPackageId = createNewTestScriptRecord(testScript.getUserId());
       mLogger.debug("Generated new id for test package:" + newTestPackageId);
 
       // Create appropriate folder structure to store the file
       testScript.setId(newTestPackageId);
-      String testPackagePath = createTestPackageFolder(newTestPackageId, testScript.getUserId());
+      File testScriptFile = FileUtils.getFile(Files.createTempDir(), newTestPackageId + "." + FILE_EXTENSION);
 
       // Store the file
-      // TODO: manage file names better
-      String fileName = "uiautomator-" + testScript.getId() + ".jar";
-      String filePath = testPackagePath + "//" + fileName;
-      Utils.writeToFile(uploadedInputStream, filePath);
+      Utils.writeToFile(uploadedInputStream, testScriptFile);
+
+      // Upload to S3
+      try {
+         s3Dao.uploadS3(S3_BUCKET_NAME, testScriptFile);
+      } catch (InterruptedException e) {
+         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      }
 
       // Parse test class names
       try {
-         JarScanner jarScanner = new JarScanner(filePath);
+         JarScanner jarScanner = new JarScanner(testScriptFile);
          testScript.setTestClasses(jarScanner.getTestClasseNames());
          testScript.setTestScriptType(jarScanner.getTestScriptType());
       } catch (JarScannerException e) {
          mLogger.error("Could not parse test class names from " + testScript.getFilePath());
       }
 
+      testScriptFile.delete();
+
       // Update test package path and other info
-      testScript.setFilePath(filePath);
-      testScript.setFileName(fileName);
+      testScript.setFilePath(testScriptFile.getAbsolutePath());
+      testScript.setFileName(testScriptFile.getName());
       updateTestScript(testScript);
+   }
+
+   public File getTestScript(long packageId) {
+      File testScriptFile = null;
+      try {
+         testScriptFile = s3Dao.download(S3_BUCKET_NAME, String.valueOf(packageId), FILE_EXTENSION);
+      } catch (InterruptedException e) {
+         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      }
+      return testScriptFile;
    }
 
    /**
