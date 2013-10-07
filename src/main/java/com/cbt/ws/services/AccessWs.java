@@ -207,7 +207,15 @@ public class AccessWs {
 	public List<Map<String, Object>> getDeviceSharingInfo(@PathParam("deviceId") Long deviceId) {
 		return mDeviceDao.getSharedWith(deviceId);
 	}
-
+	
+	//TODO: to be changed to use testConfigId once database is changed and test profile is removed
+	@GET
+	@Path("/testconfig/{testProfileId}/device-types")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<DeviceType> getTestConfigDeviceTypes(@PathParam("testProfileId") long testProfileId) {
+		return mDeviceDao.getDeviceTypesByTestProfile(testProfileId);
+	}
+	
 	@GET
 	@Path("/testconfig")
 	@Produces(MediaType.APPLICATION_JSON)

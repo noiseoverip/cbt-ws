@@ -26,12 +26,16 @@ import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
  */
 public class TestProfileDao extends JooqDao {
 
-   private final Logger mLogger = Logger.getLogger(TestProfileDao.class);
+   	private final Logger mLogger = Logger.getLogger(TestProfileDao.class);
 
-   @Inject
-   public TestProfileDao(DataSource dataSource) {
-      super(dataSource);
-   }
+  	private DeviceDao mDeviceDao;
+	
+	@Inject
+	public TestProfileDao(DataSource dataSource, DeviceDao deviceDao) {
+		super(dataSource);
+		mDeviceDao = deviceDao;
+	}
+
 
    /**
     * Add new test profile
@@ -40,7 +44,7 @@ public class TestProfileDao extends JooqDao {
     * @return
     */
    public TestProfile add(TestProfile testProfile) {
-      mLogger.trace("Adding new test configuration");
+	  mLogger.trace("Adding new test configuration");
 
       DSLContext context = getDbContext();
 
@@ -97,7 +101,7 @@ public class TestProfileDao extends JooqDao {
          tp.setUserId(r.getValue(TESTPROFILE.TESTPROFILE_USER_ID));
          tp.setMode(r.getValue(TESTPROFILE.TESTPROFILE_MODE));
          // Get devices of this test profile
-         List<DeviceType> devices = getDeviceTypesByTestProfile(tp.getId());
+         List<DeviceType> devices = mDeviceDao.getDeviceTypesByTestProfile(tp.getId());
          if (null != devices) {
             tp.setDeviceTypesList(devices);
          }
@@ -120,7 +124,7 @@ public class TestProfileDao extends JooqDao {
                @Override
                public TestProfile map(Record record) {
                   TestProfile tp = record.into(TestProfile.class);
-                  List<DeviceType> devices = getDeviceTypesByTestProfile(tp.getId());
+                  List<DeviceType> devices = mDeviceDao.getDeviceTypesByTestProfile(tp.getId());
                   if (null != devices) {
                      tp.setDeviceTypesList(devices);
                   }

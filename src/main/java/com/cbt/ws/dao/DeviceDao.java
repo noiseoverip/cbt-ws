@@ -3,6 +3,7 @@ package com.cbt.ws.dao;
 import static com.cbt.jooq.tables.Device.DEVICE;
 import static com.cbt.jooq.tables.DeviceSharing.DEVICE_SHARING;
 import static com.cbt.jooq.tables.DeviceType.DEVICE_TYPE;
+import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
 import static com.cbt.jooq.tables.User.USER;
 
 import java.sql.Timestamp;
@@ -43,7 +44,26 @@ public class DeviceDao extends JooqDao {
 	}
 
 	private final Logger mLogger = Logger.getLogger(DeviceDao.class);
-
+	
+	/**
+	 * Get device types of test profile
+	 * 
+	 * @param testProfileId
+	 * @return
+	 */
+	public List<DeviceType> getDeviceTypesByTestProfile(Long testProfileId) {
+		List<DeviceType> result = getDbContext().select().from(DEVICE_TYPE).join(TESTPROFILE_DEVICES)
+				.on(TESTPROFILE_DEVICES.DEVICETYPE_ID.eq(DEVICE_TYPE.ID))
+				.where(TESTPROFILE_DEVICES.TESTPROFILE_ID.eq(testProfileId))
+				.fetch(new RecordMapper<Record, DeviceType>() {
+					@Override
+					public DeviceType map(Record record) {
+						return record.into(DeviceType.class);
+					}
+				});
+		return result;
+	}
+	
 	/**
 	 * Add new device
 	 * 
