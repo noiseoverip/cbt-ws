@@ -25,6 +25,7 @@ public class Configuration {
    private String dbTestUser;
    private String dbUser;
    private boolean inTestingEnvironment = false;
+   private String awsPropertiesPath;
 
    public Configuration() {
       // Override certain properties if provided as JVA arguments
@@ -71,6 +72,10 @@ public class Configuration {
 
    public String getDbUser() {
       return isInTestingMode() ? dbTestUser : dbUser;
+   }
+
+   public String getAwsPropertiesPath() {
+      return awsPropertiesPath;
    }
 
    public boolean isInTestingMode() {
@@ -142,11 +147,15 @@ public class Configuration {
       this.dbUser = dbUser;
    }
 
+   @Inject
+   public void setAwsPropertiesPath(@Named("cbt.aws.properties") String awsPropertiesPath) {
+      this.awsPropertiesPath = awsPropertiesPath;
+   }
+
    @Override
    public String toString() {
       return Objects.toStringHelper(this).add("cbt.ws.db.jdbc_url", getDbJdbcUrl())
-            .add("cbt.ws.db.user", getDbUser())
-            .toString();
+            .add("cbt.ws.db.user", getDbUser()).toString();
    }
 
 }
