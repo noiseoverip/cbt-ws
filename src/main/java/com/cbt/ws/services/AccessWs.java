@@ -518,6 +518,7 @@ public class AccessWs {
    @Path("/testscript")
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Produces(MediaType.APPLICATION_JSON)
+   @Deprecated
    public TestScript putTestScriptFile(@FormDataParam("file") InputStream uploadedInputStream,
                                        @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
       // Encapsulate test package info
@@ -544,8 +545,9 @@ public class AccessWs {
    @Path("/testscript")
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Produces(MediaType.TEXT_HTML)
+   @Deprecated
    public String putTestScriptFileHtml(@FormDataParam("file") InputStream uploadedInputStream,
-                                       @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
+                                       @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {	   
       TestScript testScript = putTestScriptFile(uploadedInputStream, fileDetail, name);
       StringBuilder sb = new StringBuilder("<html><body>File uploaded successfully, new Id: " + testScript.getId());
       sb.append("<br />Found test classes: <ul>");
@@ -555,6 +557,30 @@ public class AccessWs {
       sb.append("<ul></body></html>");
       return sb.toString();
    }
+   
+   /**
+    * Upload test script file
+    * 
+    * @param uploadedInputStream
+    * @return
+    */
+   @POST
+   @Path("/v2/testscript")
+   @Consumes(MediaType.MULTIPART_FORM_DATA)
+   @Produces(MediaType.APPLICATION_JSON)
+   public TestScript putTestScriptFile2(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {	   
+	   // Encapsulate test package info
+      TestScript testScript = new TestScript();
+      testScript.setName(fileDetail.getFileName());
+      testScript.setUserId(getUserId());
+      try {
+         mTestScriptDao.storeTestScript(testScript, uploadedInputStream);
+      } catch (IOException e) {
+         mLogger.error("Error while save file", e);
+      }
+      return testScript;
+   }
+
 
    /**
     * Upload new test target file, return response in JSON
