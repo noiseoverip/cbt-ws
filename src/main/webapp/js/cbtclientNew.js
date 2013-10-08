@@ -93,3 +93,14 @@ var CbtClient = {
 		return this.cbtRipUrl + url.replace("{userId}", this.userId);
 	}
 }
+
+function ConvertFormToJSON(form){
+    var array = jQuery(form).serializeArray();
+    var json = {};
+    
+    jQuery.each(array, function() {
+        json[this.name] = this.value || '';
+    });
+    
+    return json;
+}

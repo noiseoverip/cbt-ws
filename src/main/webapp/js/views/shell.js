@@ -18,8 +18,6 @@ directory.ShellView = Backbone.View.extend({
     },
 
     render: function () {
-        console.log("shell render");
-        console.log(directory.user.name);
         this.$el.html(this.template({user: directory.user}));  
         return this;
     },     

@@ -28,6 +28,7 @@ directory.TestConfigurationView = Backbone.View.extend({
     			devices.push($(this).val());	
     		}    		
     	});
+    	console.log(devices);
     	var testProfileData = {
     		name: "notused",
     		mode: form.mode,
@@ -42,7 +43,7 @@ directory.TestConfigurationView = Backbone.View.extend({
 
     	CbtClient.createNewTestConfig(testProfileData, testConfigData, function(result) {
     		if (result == true) {    			
-    			directory.router.navigate("device", {trigger: true});
+    			directory.router.navigate("home", {trigger: true});
     		} else {
     			directory.shellView.showAlert("alert-danger", "Please check your selections");
     		}
@@ -115,13 +116,20 @@ directory.DeviceTypeListItemView = Backbone.View.extend({
 directory.TestConfigurationListView = Backbone.View.extend({
 
 	events:{
-			"click #addTestConfig":"addNewTestConfig"			
+			"click #addTestConfig":"addNewTestConfig",
+			"click .showTestConfig":"showTestConfig"		
 	},
 
 	initialize: function() {	
 		this.testConfigList = new directory.TestConfigurationList();
 		this.testConfigList.fetch();
 		this.testConfigList.on("add", this.renderTestConfig, this);
+	},
+	
+	showTestConfig : function(e) {
+		var testConfigId = $(e.target).val();
+		console.log("show test config:" + testConfigId);
+		alert("not implemented");
 	},
 
 	render:function () {
