@@ -1,11 +1,11 @@
-directory.TestScript = Backbone.Model.extend({
+directory.TestTarget = Backbone.Model.extend({
 	
 });
 
-directory.TestScriptsPageView = Backbone.View.extend({
+directory.TestTargetsPageView = Backbone.View.extend({
 
 	initialize: function() {
-		this.testScriptListView = new directory.TestScriptListView();
+		this.TestTargetListView = new directory.TestTargetListView();
 	},
 
 	render:function () {	 	
@@ -15,7 +15,7 @@ directory.TestScriptsPageView = Backbone.View.extend({
         
         // Create the upload manager object
         var uploadManager = new Backbone.UploadManager({
-            uploadUrl: '../rip/v2/testscript',
+            uploadUrl: '../rip/v2/testtarget',
             templates: {
                 main: 'tpl/upload-manager.main',
                 file: 'tpl/upload-manager.file'
@@ -25,24 +25,24 @@ directory.TestScriptsPageView = Backbone.View.extend({
         // Render it in our div
         uploadManager.renderTo(this.$("div#upload"));
 
-        this.$el.append(this.testScriptListView.render().el)
+        this.$el.append(this.TestTargetListView.render().el)
 
         return this;
 	 }
 });
 
-directory.TestScript = Backbone.Model.extend({
+directory.TestTarget = Backbone.Model.extend({
     
 });
 
-directory.TestScriptList = Backbone.Collection.extend({
-    model:directory.TestScript,
+directory.TestTargetList = Backbone.Collection.extend({
+    model:directory.TestTarget,
     url:function() {
-        return CbtClient.getUserTestScriptUrl();
+        return CbtClient.getUserTestTargetUrl();
     }
 });
 
-directory.TestScriptListItemView = Backbone.View.extend({   
+directory.TestTargetListItemView = Backbone.View.extend({   
     tagName: "tr",
 
     initialize: function() {
@@ -56,12 +56,12 @@ directory.TestScriptListItemView = Backbone.View.extend({
 
 });
 
-directory.TestScriptListView = Backbone.View.extend({
+directory.TestTargetListView = Backbone.View.extend({
 
     initialize: function() {        
-        this.testScriptList = new directory.TestScriptList();
-        this.testScriptList.fetch();
-        this.testScriptList.on("add", this.renderTestScript, this);
+        this.TestTargetList = new directory.TestTargetList();
+        this.TestTargetList.fetch();
+        this.TestTargetList.on("add", this.renderTestTarget, this);
     },
 
     render:function () {        
@@ -69,10 +69,10 @@ directory.TestScriptListView = Backbone.View.extend({
         return this;
     },
 
-    renderTestScript: function(item) {
-        var itemView = new directory.TestScriptListItemView({
+    renderTestTarget: function(item) {
+        var itemView = new directory.TestTargetListItemView({
                 model:item
             });
-        this.$el.find("table.mytestscripts").append(itemView.render().el);        
+        this.$el.find("table.mytesttargets").append(itemView.render().el);        
     }
 });

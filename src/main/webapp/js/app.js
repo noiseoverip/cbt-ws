@@ -28,7 +28,8 @@ directory.Router = Backbone.Router.extend({
         "" : "home",        
         "login": "login",        
         "testconfiguration": "testconfiguration",
-        "testscripts":"tests"
+        "testscripts":"tests",
+        "applications":"targets"
     },
 
     initialize: function () {
@@ -64,6 +65,14 @@ directory.Router = Backbone.Router.extend({
         directory.testScriptView = new directory.TestScriptsPageView();
         directory.testScriptView.render();
         this.$content.html(directory.testScriptView.el);
+        directory.shellView.selectMenuItem('testscripts-menu');
+    },
+
+    targets: function() {
+        directory.testTargetView = new directory.TestTargetsPageView();
+        directory.testTargetView.render();
+        this.$content.html(directory.testTargetView.el);
+        directory.shellView.selectMenuItem('applications-menu');
     },
 
     onLoggedOff: function() {
@@ -95,7 +104,12 @@ $(document).on("ready", function () {
         "DeviceTypeListItemView",
         "TestScriptSelectView",
         "TestTargetSelectView",
-        "TestScriptsPageView" 
+        "TestScriptsPageView",
+        "TestScriptListView",
+        "TestScriptListItemView",
+        "TestTargetsPageView",
+        "TestTargetListView",
+        "TestTargetListItemView"
         ],
 
         function () {

@@ -49,6 +49,14 @@ var CbtClient = {
 		return CbtClient.parseUrl('/public/device-types');
 	},
 
+	getUserTestScriptUrl: function() {
+		return CbtClient.parseUrl('/testscript');
+	},
+	
+	getUserTestTargetUrl: function() {
+		return CbtClient.parseUrl('/testtarget');
+	},
+	
 	createNewTestConfig: function(testProfileData, testConfigData, callback) {
 		// This is weird function since actual test configuration is 
 		// split into test profile and test configuration
