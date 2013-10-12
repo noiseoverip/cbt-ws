@@ -1,5 +1,9 @@
 directory.TestRun = Backbone.Model.extend({
-	
+	parse: function(response) {
+		response.createdMoment = moment(response.created);
+		response.updatedMoment = moment(response.updated);
+		return response;
+	}
 });
 
 directory.TestRunListItemView = Backbone.View.extend({	

@@ -39,8 +39,12 @@ directory.DeviceListView = Backbone.View.extend({
 
 // Device Model
 directory.Device = Backbone.Model.extend({
-	
+	parse: function(response) {
+		response.updatedMoment = moment(response.updated);
+		return response;
+	}	
 });
+
 // Device view
 directory.DeviceListItemView = Backbone.View.extend({	
 	tagName: "tr",

@@ -1,6 +1,6 @@
 <div class="well">
 	<div class="popover-content" id="file-list">
-	    <div class="no-data"><em>Drop your JAR's here...</em></div>
+	    <div class="no-data"><em>Drop your files here...</em></div>
 	</div>
 
 	<button class="btn btn-warning pull-right" id="cancel-uploads-button"><i class="icon-cancel"></i>Cancel uploads</button>
