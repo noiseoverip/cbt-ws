@@ -32,12 +32,10 @@ public class TestTargetDao extends JooqDao {
    private static final String FILE_EXTENSION = "apk";
    private final Logger mLogger = Logger.getLogger(TestTargetDao.class);
    private final AwsS3Dao s3Dao;
-   private Configuration mConfiguration;
 
    @Inject
    public TestTargetDao(Configuration configuration, DataSource datasource, AwsS3Dao s3Dao) {
       super(datasource);
-      mConfiguration = configuration;
       this.s3Dao = s3Dao;
    }
 
