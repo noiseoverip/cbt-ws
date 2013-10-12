@@ -193,7 +193,7 @@ public class ITscenarios extends JerseyTest {
          if (testConfigCom.getId().equals(testConfiguration.getId())) {
             // TODO: this is not right, should be no need to use TestConfigComplex object at all !
             assertEquals(testConfiguration.getName(), testConfigCom.getName());
-            assertEquals(testConfiguration.getTestProfileId(), testConfigCom.getTestProfileId());
+            assertEquals(testConfiguration.getTestProfileId(), testConfigCom.getTestProfile().getId());
             assertEquals(testConfiguration.getTestScriptId(), testConfigCom.getTestScript().getId());
             assertEquals(testConfiguration.getTestTargetId(), testConfigCom.getTestTarget().getId());
             foundOurTestConfig = true;

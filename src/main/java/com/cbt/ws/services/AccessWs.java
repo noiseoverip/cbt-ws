@@ -218,7 +218,7 @@ public class AccessWs {
 	@GET
 	@Path("/testconfig")
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestConfigComplex[] getTestConfigs() {
+	public List<TestConfigComplex> getTestConfigs() {
 		return mTestConfigDao.getByUserId(getUserId());
 	}
 

@@ -59,7 +59,7 @@ public class ITtestconfigWs extends JerseyTest {
 			if (testConfigs[i].getId() == 1) {
 				TestConfigComplex testConfig = testConfigs[i];		
 				assertEquals(Long.valueOf(1L), testConfig.getId());
-				assertEquals(Long.valueOf(1L), testConfig.getTestProfileId());
+				assertEquals(Long.valueOf(1L), testConfig.getTestProfile().getId());
 				assertEquals(Long.valueOf(1L), testConfig.getTestScript().getId());
 				assertEquals(Long.valueOf(1L), testConfig.getTestTarget().getId());
 				found = true;
