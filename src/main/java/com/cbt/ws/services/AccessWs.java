@@ -1,5 +1,32 @@
 package com.cbt.ws.services;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
+
+import org.apache.log4j.Logger;
+import org.jooq.exception.DataAccessException;
+
 import com.cbt.core.entity.Device;
 import com.cbt.core.entity.DeviceJob;
 import com.cbt.core.entity.DeviceJobResult;
@@ -33,31 +60,6 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
-import org.apache.log4j.Logger;
-import org.jooq.exception.DataAccessException;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Access web service. Provide authentication and user related API
@@ -495,10 +497,9 @@ public class AccessWs {
 			try {
 				devices = mTestRunProcessor.getDevices(testRunId, testRun.getUserId());
 			} catch (CbtNoDevicesException e) {
+				// TODO: need probably send better explanations
 				mLogger.error(e);
-				// TODO: this is bad, need to change it to simply return a response code in stead of throwing an
-				// exception
-				throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+				throw new WebApplicationException(Status.PRECONDITION_FAILED);
 			}
 		}
 		testRun.setId(testRunId);
@@ -590,6 +591,7 @@ public class AccessWs {
 	 * @param fileDetail
 	 * @return
 	 */
+	@Deprecated
 	@POST
 	@Path("/testtarget")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -616,6 +618,7 @@ public class AccessWs {
 	 * @param name
 	 * @return
 	 */
+	@Deprecated
 	@POST
 	@Path("/testtarget")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
