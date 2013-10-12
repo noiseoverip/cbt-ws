@@ -220,8 +220,8 @@ public class AccessWs {
    @Produces(MediaType.APPLICATION_JSON)
    public TestConfigComplex[] getTestConfigs() {
       return mTestConfigDao.getByUserId(getUserId());
-   }
-
+   }  
+   
    /**
     * Get test package object
     *
@@ -284,9 +284,8 @@ public class AccessWs {
    @GET
    @Path("/testscript")
    @Produces(MediaType.APPLICATION_JSON)
-   public TestScript[] getTestScriptMetadata() {
-      // TODO: should not return all !!!
-      return mTestScriptDao.getAll();
+   public List<TestScript> getTestScriptMetadata() {     
+      return mTestScriptDao.getByUserId(getUserId());
    }
 
    /**

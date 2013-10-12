@@ -1,24 +1,7 @@
 package com.cbt.ws.dao;
 
-import com.cbt.core.entity.TestScript;
-import com.cbt.core.utils.Utils;
-import com.cbt.jooq.tables.records.TestscriptRecord;
-import com.cbt.ws.Configuration;
-import com.cbt.ws.JooqDao;
-import com.cbt.ws.utils.JarScanner;
-import com.cbt.ws.utils.JarScannerException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Files;
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.tools.json.JSONArray;
+import static com.cbt.jooq.tables.Testscript.TESTSCRIPT;
 
-import javax.inject.Inject;
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +9,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.cbt.jooq.tables.Testscript.TESTSCRIPT;
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.tools.json.JSONArray;
+
+import com.cbt.core.entity.TestScript;
+import com.cbt.core.utils.Utils;
+import com.cbt.jooq.tables.records.TestscriptRecord;
+import com.cbt.ws.JooqDao;
+import com.cbt.ws.utils.JarScanner;
+import com.cbt.ws.utils.JarScannerException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Files;
 
 /**
  * Test package DAO
@@ -40,12 +41,10 @@ public class TestScriptDao extends JooqDao {
    private final Logger mLogger = Logger.getLogger(TestScriptDao.class);
    private final AwsS3Dao s3Dao;
    private ObjectMapper objectMapper = new ObjectMapper();
-   private Configuration mConfiguration;
 
    @Inject
-   public TestScriptDao(Configuration configuration, DataSource datasource, AwsS3Dao s3Dao) throws IOException {
+   public TestScriptDao(DataSource datasource, AwsS3Dao s3Dao) throws IOException {
       super(datasource);
-      mConfiguration = configuration;
       this.s3Dao = s3Dao;
    }
 
@@ -87,7 +86,17 @@ public class TestScriptDao extends JooqDao {
       testScript.setTestClasses(parseTestClasses(classesJson));
       return testScript;
    }
-
+   
+   /**
+    * Get list of test script by user id
+    * 
+    * @param userId
+    * @return
+    */
+   public List<TestScript> getByUserId(Long userId) {
+	   return getDbContext().select().from(TESTSCRIPT).where(TESTSCRIPT.TESTSCRIPT_USER_ID.eq(userId)).fetch().into(TestScript.class);	     
+   }
+   
    public String[] parseTestClasses(String classesJson) {
       String[] classes = null;
       if (null != classesJson) {
