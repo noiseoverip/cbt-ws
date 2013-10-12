@@ -80,13 +80,8 @@ public class TestScriptDao extends JooqDao {
 	 * Get by id
 	 */
 	public TestScript getById(Long testScriptId) {
-		Record result = getDbContext().select().from(TESTSCRIPT).where(TESTSCRIPT.TESTSCRIPT_ID.eq(testScriptId))
-				.fetchOne();
-		TestScript testScript = result.into(TestScript.class);
-		// Need to parse test classes separately since those are in JSON format
-		String classesJson = result.getValue(TESTSCRIPT.TESTSCRIPT_CLASSES);
-		testScript.setTestClasses(parseTestClasses(classesJson));
-		return testScript;
+		return getDbContext().select().from(TESTSCRIPT).where(TESTSCRIPT.TESTSCRIPT_ID.eq(testScriptId))
+				.fetch(testScriptRecordMapper).get(0);
 	}
 
 	/**

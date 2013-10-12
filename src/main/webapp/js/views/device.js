@@ -1,14 +1,14 @@
 directory.DevicePageView = Backbone.View.extend({
 
-	initialize: function () {		
-		this.deviceListView = new directory.DeviceListView();
+	initialize: function () {
+		directory.testRunListView = new directory.TestRunListView();			
 		this.testConfigurationListView = new directory.TestConfigurationListView();
-		this.testRunView = new directory.TestRunListView();
+		this.deviceListView = new directory.DeviceListView();		
 	},
 
     render:function () {    	
         this.$el.html(this.template());
-        this.$el.append(this.testRunView.render().el);
+        this.$el.append(directory.testRunListView.render().el);
         this.$el.append(this.testConfigurationListView.render().el);
         this.$el.append(this.deviceListView.render().el);                
     }

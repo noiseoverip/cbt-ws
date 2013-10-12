@@ -117,7 +117,8 @@ directory.TestConfigurationListView = Backbone.View.extend({
 
 	events:{
 			"click #addTestConfig":"addNewTestConfig",
-			"click .showTestConfig":"showTestConfig"		
+			"click .showTestConfig":"showTestConfig",
+			"click .runTest":"runTest"		
 	},
 
 	initialize: function() {	
@@ -146,6 +147,14 @@ directory.TestConfigurationListView = Backbone.View.extend({
 
     addNewTestConfig: function() {
     	directory.router.navigate("testconfiguration", {trigger: true});
+    }, 
+
+    runTest: function(e) {
+    	var testConfigId = $(e.target).val();
+		CbtClient.createTestRun(testConfigId, function(message) {
+			alert(message);
+			directory.testRunListView.testRunListList.reset();
+		});
     }
 });		
 

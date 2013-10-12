@@ -29,10 +29,20 @@ directory.TestRunList = Backbone.Collection.extend({
 
 directory.TestRunListView = Backbone.View.extend({
 
+	events: {
+		"click .removeTestRun":"deleteTestRun"
+	},
+
 	initialize: function() {
 		this.testRunListList = new directory.TestRunList();
 		this.testRunListList.fetch();
 		this.testRunListList.on("add", this.renderItem, this);
+		this.testRunListList.on("reset", this.refresh, this);
+	},
+
+	refresh: function() {
+		this.testRunListList.fetch();
+		this.render();
 	},
 
 	render:function () {
@@ -46,5 +56,10 @@ directory.TestRunListView = Backbone.View.extend({
 				model:item
 			});
 		this.$el.find("table.testruns").append(itemView.render().el);		
-    }
+    }, 
+
+    deleteTestRun: function(e) {
+    	var testRunId = $(e.target).val();
+    	alert("not implemented to delete test run id:" + testRunId);
+    }   
 });

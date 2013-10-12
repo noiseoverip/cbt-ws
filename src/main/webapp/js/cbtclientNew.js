@@ -55,8 +55,33 @@ var CbtClient = {
 	
 	getUserTestTargetUrl: function() {
 		return CbtClient.parseUrl('/testtarget');
+	},	
+
+	createTestRun: function(testConfigId, callback) {
+		var testRun = {testconfigId: testConfigId};
+		$.ajax({    			
+		        type: 'PUT',
+		        contentType: 'application/json',
+		        url: CbtClient.getUserTestRunsUrl(),
+		        dataType: "json",
+		        data: JSON.stringify(testRun),
+		        success: function(data, textStatus, jqXHR){		            
+		            console.log("test run created:" + data);
+		            if (callback) {
+		            	callback();
+		        	}
+		        },		        
+		        statusCode: {
+				    412 : function() {
+				    	// didn't find any specified devices online
+				      	if (callback) {
+				          	callback("Could not find any available devices at this time");
+				        }
+				    }
+				 }
+		    });
 	},
-	
+
 	createNewTestConfig: function(testProfileData, testConfigData, callback) {
 		// This is weird function since actual test configuration is 
 		// split into test profile and test configuration

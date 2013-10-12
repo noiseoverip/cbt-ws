@@ -2,4 +2,8 @@
 <td><%= testProfile.mode %></td>
 <td><%= testScript.name %></td>	
 <td><%= testTarget.name %></td>
-<td><button type="button" class="btn btn-primary btn-sm">Run</button></td>
+<td>
+	<button type="button" class="btn btn-success runTest" value="<%= id %>">
+		<span class="glyphicon glyphicon-play"></span> Run
+	</button>
+</td>
