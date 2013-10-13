@@ -1,49 +1,49 @@
 <html>
 
 <head>
-<title></title>
+   <title></title>
 
-<link rel="stylesheet" href="/jqueryui/themes/base/jquery-ui.css" />
-<link rel="stylesheet" href="/css/main.css"/>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+   <link rel="stylesheet" href="/jqueryui/themes/base/jquery-ui.css"/>
+   <link rel="stylesheet" href="/css/main.css"/>
+   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
 
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<script src="/js/cbtclient.js"></script>
-<script src="/js/jquery.cookie.js"></script>
-<script src="/jqueryui/ui/jquery-ui.js"></script>
-<script src="/js/common.js"></script>
-<script src="/js/md5.js"></script>
+   <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+   <script src="/js/cbtclient.js"></script>
+   <script src="/js/jquery.cookie.js"></script>
+   <script src="/jqueryui/ui/jquery-ui.js"></script>
+   <script src="/js/common.js"></script>
+   <script src="/js/md5.js"></script>
 
-<style>
-  .ui-menu {
-    width: 200px;
-    float: left;
-  }
-  #contents {
- 	float: left;
- 	margin-left: 50px;
-  }
-  
-  
-  </style>
+   <style>
+      .ui-menu {
+         width: 200px;
+         float: left;
+      }
+
+      #contents {
+         float: left;
+         margin-left: 50px;
+      }
+
+   </style>
 </head>
 
 <body onload="CMS.onLoad();">
-	<div id="debug"></div>
+<div id="debug"></div>
 
-	<ul id="menu">
-		<li><a href="#devices" onClick="CMS.openPage('devices');">Devices</a></li>
-		<li><a href="#testconfigs" onClick="CMS.openPage('testconfigs');">Test Configs</a></li>
-		<li><a href="#testprofiles" onClick="CMS.openPage('testprofiles');">Test Profiles</a></li>
-		<li><a href="#testruns" onClick="CMS.openPage('testruns');">Test Runs</a></li>
-		<li><a href="#statistics" onClick="CMS.openPage('statistics');">My Info</a></li>		
-		<li><a href="#uploadTargetScipt" onClick="CMS.openPage('testTargetUpload');">Upload Test App</a></li>
-		<li><a href="#uploadTestScipt" onClick="CMS.openPage('testScriptUpload');">Upload Test Script</a></li>
-		<li><a href="#logout" onClick="CMS.logOut();CMS.openPage('devices');">Logout</a></li>
-	</ul>
+<ul id="menu">
+   <li><a href="#devices" onClick="CMS.openPage('devices');">Devices</a></li>
+   <li><a href="#testconfigs" onClick="CMS.openPage('testconfigs');">Test Configs</a></li>
+   <li><a href="#testprofiles" onClick="CMS.openPage('testprofiles');">Test Profiles</a></li>
+   <li><a href="#testruns" onClick="CMS.openPage('testruns');">Test Runs</a></li>
+   <li><a href="#statistics" onClick="CMS.openPage('statistics');">My Info</a></li>
+   <li><a href="#uploadTargetScipt" onClick="CMS.openPage('testTargetUpload');">Upload Test App</a></li>
+   <li><a href="#uploadTestScipt" onClick="CMS.openPage('testScriptUpload');">Upload Test Script</a></li>
+   <li><a href="#logout" onClick="CMS.logOut();CMS.openPage('devices');">Logout</a></li>
+</ul>
 
-	<div id="contents" style="display: none;"></div>
+<div id="contents" style="display: none;"></div>
 
 </body>
 </html>

@@ -1,116 +1,130 @@
-<style>    
-    fieldset { padding:0; border:0; margin-top:25px; }   
-    .ui-dialog .ui-state-error { padding: .3em; }
-    .validateTips { border: 1px solid transparent; padding: 0.3em; }
-    .no-close .ui-dialog-titlebar-close {display: none;}
- </style>
-  
+<style>
+   fieldset {
+      padding: 0;
+      border: 0;
+      margin-top: 25px;
+   }
+
+   .ui-dialog .ui-state-error {
+      padding: .3em;
+   }
+
+   .validateTips {
+      border: 1px solid transparent;
+      padding: 0.3em;
+   }
+
+   .no-close .ui-dialog-titlebar-close {
+      display: none;
+   }
+</style>
+
 <script type="text/javascript">
-	function onLoadPageSpecific(targetPage) {
-		var name = $("#name"), 
-		email = $("#email"), 
-		password = $("#password"),
-		allFields = $([]).add(name).add(email).add(password),
-		dialog = $( "#dialog-form-login" ),
-		tips = $(".validateTips");
-		
-		dialog.dialog({
-			  dialogClass: "no-close",
-			  draggable: false,
-		      autoOpen: true,
-		      height: 400,
-		      width: 500,
-		      show: {
-		          effect: "clip",
-		          duration: 300
-		        },
-		      hide: {
-		          effect: "explode",
-		          duration: 500
-		        },		     
-		      modal: true,
-		      buttons: {
-		        "Login": function() {
-		          var bValid = true;
-		          allFields.removeClass( "ui-state-error" );
-		 
-		          bValid = bValid && checkLength( name, "username", 3, 16 );		        
-		          bValid = bValid && checkLength( password, "password", 5, 16 );		
-		          bValid = bValid && checkRegexp( password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9" );
-		 
-		          if ( bValid ) {
-		            console.log("logging in");
-		            document.cookie="auth=" + name.val() + ":" + md5(password.val());
-		            $.ajax({
-				        type: 'GET',
-				        contentType: 'application/json',
-				        url: cbtRipUrl + '/user',
-				        dataType: "json",
-				        data: { "name": name.val()},
-				        success: function(json){				            
-				            CMS.setUser(json);
-				            dialog.dialog( "close" );
-				            CMS.openPage((targetPage != null) ? targetPage : defaultPage);				            
-				        },
-				        error: function(jqXHR, textStatus, errorThrown){
-				            updateTips("Login failed");
-				            name.addClass("ui-state-error");
-				            password.addClass("ui-state-error");
-				            CMS.logOut();
-				        }
-				    });	          
-		          }
-		        },
-		        "New User": function() {
-		        	dialog.dialog( "close" );
-		        	CMS.openPage("register");
-		        }
-		      },
-		      close: function() {
-		        allFields.val( "" ).removeClass( "ui-state-error" );
-		      }
-		  });		
-		
-		function updateTips(t) {
-			tips.text(t).addClass("ui-state-highlight");
-			setTimeout(function() {
-				tips.removeClass("ui-state-highlight", 1500);
-			}, 500);
-		}
+   function onLoadPageSpecific(targetPage) {
+      var name = $("#name"),
+            email = $("#email"),
+            password = $("#password"),
+            allFields = $([]).add(name).add(email).add(password),
+            dialog = $("#dialog-form-login"),
+            tips = $(".validateTips");
 
-		function checkLength(o, n, min, max) {
-			if (o.val().length > max || o.val().length < min) {
-				o.addClass("ui-state-error");
-				updateTips("Length of " + n + " must be between " + min + " and "
-						+ max + ".");
-				return false;
-			} else {
-				return true;
-			}
-		}
+      dialog.dialog({
+         dialogClass: "no-close",
+         draggable: false,
+         autoOpen: true,
+         height: 400,
+         width: 500,
+         show: {
+            effect: "clip",
+            duration: 300
+         },
+         hide: {
+            effect: "explode",
+            duration: 500
+         },
+         modal: true,
+         buttons: {
+            "Login": function () {
+               var bValid = true;
+               allFields.removeClass("ui-state-error");
 
-		function checkRegexp(o, regexp, n) {
-			if (!(regexp.test(o.val()))) {
-				o.addClass("ui-state-error");
-				updateTips(n);
-				return false;
-			} else {
-				return true;
-			}
-		}
-	}
-	
+               bValid = bValid && checkLength(name, "username", 3, 16);
+               bValid = bValid && checkLength(password, "password", 5, 16);
+               bValid = bValid && checkRegexp(password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
+
+               if (bValid) {
+                  console.log("logging in");
+                  document.cookie = "auth=" + name.val() + ":" + md5(password.val());
+                  $.ajax({
+                     type: 'GET',
+                     contentType: 'application/json',
+                     url: cbtRipUrl + '/user',
+                     dataType: "json",
+                     data: { "name": name.val()},
+                     success: function (json) {
+                        CMS.setUser(json);
+                        dialog.dialog("close");
+                        CMS.openPage((targetPage != null) ? targetPage : defaultPage);
+                     },
+                     error: function (jqXHR, textStatus, errorThrown) {
+                        updateTips("Login failed");
+                        name.addClass("ui-state-error");
+                        password.addClass("ui-state-error");
+                        CMS.logOut();
+                     }
+                  });
+               }
+            },
+            "New User": function () {
+               dialog.dialog("close");
+               CMS.openPage("register");
+            }
+         },
+         close: function () {
+            allFields.val("").removeClass("ui-state-error");
+         }
+      });
+
+      function updateTips(t) {
+         tips.text(t).addClass("ui-state-highlight");
+         setTimeout(function () {
+            tips.removeClass("ui-state-highlight", 1500);
+         }, 500);
+      }
+
+      function checkLength(o, n, min, max) {
+         if (o.val().length > max || o.val().length < min) {
+            o.addClass("ui-state-error");
+            updateTips("Length of " + n + " must be between " + min + " and "
+                  + max + ".");
+            return false;
+         } else {
+            return true;
+         }
+      }
+
+      function checkRegexp(o, regexp, n) {
+         if (!(regexp.test(o.val()))) {
+            o.addClass("ui-state-error");
+            updateTips(n);
+            return false;
+         } else {
+            return true;
+         }
+      }
+   }
+
 </script>
 
 <div id="dialog-form-login" title="Log In">
-  <p class="validateTips">All form fields are required.</p>
- 
-  <form>
-  <fieldset>
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
-  </fieldset>
-  </form>
+   <p class="validateTips">All form fields are required.</p>
+
+   <form>
+      <fieldset>
+         <label for="name">Name</label>
+         <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all"/>
+         <label for="password">Password</label>
+         <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all"/>
+      </fieldset>
+   </form>
 </div>

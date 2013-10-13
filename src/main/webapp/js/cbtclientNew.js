@@ -1,139 +1,139 @@
 function printDate(time) {
-	var date = new Date(time);
-	return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+   var date = new Date(time);
+   return date.toLocaleDateString() + " " + date.toLocaleTimeString();
 }
 
-var CbtClient = {	
-	
-	cbtRipUrl : "http://127.0.0.1:9090/rip",
+var CbtClient = {
 
-	// User should be set after authentication
-	userId: 1,
+   cbtRipUrl: "http://127.0.0.1:9090/rip",
 
-	getUserDevices: function() {		
-		$.ajax({
-			type : 'GET',
-			url : CbtClient.parseUrl('/user/{userId}/device'),
-			dataType : "json",
-			success : function(json) {
-				return json;
-			}
-		});
-	},
+   // User should be set after authentication
+   userId: 1,
 
-	getUserDevicesUrl: function() {
-		return CbtClient.parseUrl('/user/{userId}/device');
-	},
-	
-	getUserTestConfigsUrl: function() {
-		return CbtClient.parseUrl('/testconfig');
-	},
+   getUserDevices: function () {
+      $.ajax({
+         type: 'GET',
+         url: CbtClient.parseUrl('/user/{userId}/device'),
+         dataType: "json",
+         success: function (json) {
+            return json;
+         }
+      });
+   },
 
-	getUserTestRunsUrl: function() {
-		return CbtClient.parseUrl('/testrun');
-	},
+   getUserDevicesUrl: function () {
+      return CbtClient.parseUrl('/user/{userId}/device');
+   },
 
-	getUserTestProfileUrl: function() {
-		return CbtClient.parseUrl('/testprofile');
-	},
+   getUserTestConfigsUrl: function () {
+      return CbtClient.parseUrl('/testconfig');
+   },
 
-	getUserTestScriptsUrl: function() {
-		return CbtClient.parseUrl('/testscript');
-	},
+   getUserTestRunsUrl: function () {
+      return CbtClient.parseUrl('/testrun');
+   },
 
-	getUserTestTargetsUrl: function() {
-		return CbtClient.parseUrl('/testtarget');
-	},
+   getUserTestProfileUrl: function () {
+      return CbtClient.parseUrl('/testprofile');
+   },
 
-	getDeviceTypesUrl: function() {
-		return CbtClient.parseUrl('/public/device-types');
-	},
+   getUserTestScriptsUrl: function () {
+      return CbtClient.parseUrl('/testscript');
+   },
 
-	getUserTestScriptUrl: function() {
-		return CbtClient.parseUrl('/testscript');
-	},
-	
-	getUserTestTargetUrl: function() {
-		return CbtClient.parseUrl('/testtarget');
-	},	
+   getUserTestTargetsUrl: function () {
+      return CbtClient.parseUrl('/testtarget');
+   },
 
-	createTestRun: function(testConfigId, callback) {
-		var testRun = {testconfigId: testConfigId};
-		$.ajax({    			
-		        type: 'PUT',
-		        contentType: 'application/json',
-		        url: CbtClient.getUserTestRunsUrl(),
-		        dataType: "json",
-		        data: JSON.stringify(testRun),
-		        success: function(data, textStatus, jqXHR){		            
-		            console.log("test run created:" + data);
-		            if (callback) {
-		            	callback();
-		        	}
-		        },		        
-		        statusCode: {
-				    412 : function() {
-				    	// didn't find any specified devices online
-				      	if (callback) {
-				          	callback("Could not find any available devices at this time");
-				        }
-				    }
-				 }
-		    });
-	},
+   getDeviceTypesUrl: function () {
+      return CbtClient.parseUrl('/public/device-types');
+   },
 
-	createNewTestConfig: function(testProfileData, testConfigData, callback) {
-		// This is weird function since actual test configuration is 
-		// split into test profile and test configuration
-		// tetProfileData fields: mode, deviceTypes (array of id's)
-		// testConfigData fields: name, testProfileData, testScriptData, testTargetData		
+   getUserTestScriptUrl: function () {
+      return CbtClient.parseUrl('/testscript');
+   },
 
-		var createTestConfigutation = function(testConfigData) {
-    		$.ajax({
-		        type: 'PUT',
-		        contentType: 'application/json',
-		        url: CbtClient.getUserTestConfigsUrl(),
-		        dataType: "json",
-		        data: JSON.stringify(testConfigData),
-		        success: function(data, textStatus, jqXHR){
-		            callback(true);
-		        },
-		        error: function(jqXHR, textStatus, errorThrown){
-		            callback(false);
-		        }
-		    });
-    	}
+   getUserTestTargetUrl: function () {
+      return CbtClient.parseUrl('/testtarget');
+   },
 
-    	$.ajax({
-    			createTestConfigutation : createTestConfigutation,
-    			testConfigData : testConfigData,
-		        type: 'PUT',
-		        contentType: 'application/json',
-		        url: CbtClient.getUserTestProfileUrl(),
-		        dataType: "json",
-		        data: JSON.stringify(testProfileData),
-		        success: function(data, textStatus, jqXHR){		            
-		            this.testConfigData.testProfileId = data.id;		            
-		            createTestConfigutation(this.testConfigData);
-		        },
-		        error: function(jqXHR, textStatus, errorThrown){
-		            alert('Error: ' + textStatus);
-		        }
-		    });
-	},
+   createTestRun: function (testConfigId, callback) {
+      var testRun = {testconfigId: testConfigId};
+      $.ajax({
+         type: 'PUT',
+         contentType: 'application/json',
+         url: CbtClient.getUserTestRunsUrl(),
+         dataType: "json",
+         data: JSON.stringify(testRun),
+         success: function (data, textStatus, jqXHR) {
+            console.log("test run created:" + data);
+            if (callback) {
+               callback();
+            }
+         },
+         statusCode: {
+            412: function () {
+               // didn't find any specified devices online
+               if (callback) {
+                  callback("Could not find any available devices at this time");
+               }
+            }
+         }
+      });
+   },
 
-	parseUrl: function(url) {
-		return this.cbtRipUrl + url.replace("{userId}", this.userId);
-	}
+   createNewTestConfig: function (testProfileData, testConfigData, callback) {
+      // This is weird function since actual test configuration is
+      // split into test profile and test configuration
+      // tetProfileData fields: mode, deviceTypes (array of id's)
+      // testConfigData fields: name, testProfileData, testScriptData, testTargetData
+
+      var createTestConfigutation = function (testConfigData) {
+         $.ajax({
+            type: 'PUT',
+            contentType: 'application/json',
+            url: CbtClient.getUserTestConfigsUrl(),
+            dataType: "json",
+            data: JSON.stringify(testConfigData),
+            success: function (data, textStatus, jqXHR) {
+               callback(true);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+               callback(false);
+            }
+         });
+      }
+
+      $.ajax({
+         createTestConfigutation: createTestConfigutation,
+         testConfigData: testConfigData,
+         type: 'PUT',
+         contentType: 'application/json',
+         url: CbtClient.getUserTestProfileUrl(),
+         dataType: "json",
+         data: JSON.stringify(testProfileData),
+         success: function (data, textStatus, jqXHR) {
+            this.testConfigData.testProfileId = data.id;
+            createTestConfigutation(this.testConfigData);
+         },
+         error: function (jqXHR, textStatus, errorThrown) {
+            alert('Error: ' + textStatus);
+         }
+      });
+   },
+
+   parseUrl: function (url) {
+      return this.cbtRipUrl + url.replace("{userId}", this.userId);
+   }
 }
 
-function ConvertFormToJSON(form){
-    var array = jQuery(form).serializeArray();
-    var json = {};
-    
-    jQuery.each(array, function() {
-        json[this.name] = this.value || '';
-    });
-    
-    return json;
+function ConvertFormToJSON(form) {
+   var array = jQuery(form).serializeArray();
+   var json = {};
+
+   jQuery.each(array, function () {
+      json[this.name] = this.value || '';
+   });
+
+   return json;
 }

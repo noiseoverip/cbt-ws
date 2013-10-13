@@ -1,76 +1,76 @@
 <script type="text/javascript">
-    function onLoadPageSpecific() {
-	// Load list of test runs
-	$.ajax({
-	    type : 'GET',
-	    url : url('/testprofile'),
-	    dataType : "json",
-	    success : function(json) {		
-		testRuns = json;
-		$.each(json, function(i, data) {
-		    console.log(data);
-		    $("#testprofiles").append(
-			    "<tr><td>" + data.id + "</td><td>" 
-			    + data.name + "</td><td>" 
-			    + printDate(data.updated) + "</td><td>"
-			    + data.mode  + "</td><td>"
-			    + devicesToArray(data.deviceTypesList).join(",") + "</td></tr>");
-		})
-		$("button").button().click(function(event) {
-		    // Create test run from selected configuration
-		    var testConfig = testRuns[$(this).attr('value')];
-		    var testRun = {
-			"userId" : testConfig.userId,
-			"testConfigId" : testConfig.id
-		    };
-		    $.ajax({
-				type : 'PUT',
-				contentType : 'application/json',
-				url : url('/testrun'),
-				dataType : "json",
-				data : JSON.stringify(testRun),
-				success : function(data, textStatus, jqXHR) {
-				    alert('Test has been scheduled');
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-				    alert('Error:' + textStatus);
-				}
-		    });
+   function onLoadPageSpecific() {
+      // Load list of test runs
+      $.ajax({
+         type: 'GET',
+         url: url('/testprofile'),
+         dataType: "json",
+         success: function (json) {
+            testRuns = json;
+            $.each(json, function (i, data) {
+               console.log(data);
+               $("#testprofiles").append(
+                     "<tr><td>" + data.id + "</td><td>"
+                           + data.name + "</td><td>"
+                           + printDate(data.updated) + "</td><td>"
+                           + data.mode + "</td><td>"
+                           + devicesToArray(data.deviceTypesList).join(",") + "</td></tr>");
+            })
+            $("button").button().click(function (event) {
+               // Create test run from selected configuration
+               var testConfig = testRuns[$(this).attr('value')];
+               var testRun = {
+                  "userId": testConfig.userId,
+                  "testConfigId": testConfig.id
+               };
+               $.ajax({
+                  type: 'PUT',
+                  contentType: 'application/json',
+                  url: url('/testrun'),
+                  dataType: "json",
+                  data: JSON.stringify(testRun),
+                  success: function (data, textStatus, jqXHR) {
+                     alert('Test has been scheduled');
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                     alert('Error:' + textStatus);
+                  }
+               });
 
-		});
-	    }
-	});
-    }
-    
-	function devicesToArray(deviceTypes) {
-	    var response = new Array(Object.keys(deviceTypes).length);
-	    $.each(deviceTypes, function(i, data) {
-		 	response[i] = data.manufacture + " " + data.model;
-	    });
-	    console.log("Created devices:" + response.length);
-	    return response;
-	}
-	
-    
-    function buildControls(index, data) {
-		return '<button class="run" value="' + index +'">Run</button>';
-    }
+            });
+         }
+      });
+   }
+
+   function devicesToArray(deviceTypes) {
+      var response = new Array(Object.keys(deviceTypes).length);
+      $.each(deviceTypes, function (i, data) {
+         response[i] = data.manufacture + " " + data.model;
+      });
+      console.log("Created devices:" + response.length);
+      return response;
+   }
+
+
+   function buildControls(index, data) {
+      return '<button class="run" value="' + index + '">Run</button>';
+   }
 </script>
 
 <a href="#testruns" onClick="CMS.openPage('testprofile_new')">New Test Profile</a>
 
 <table id="testprofiles" class="ui-widget ui-widget-content">
-	<thead>
-		<tr class="ui-widget-header">
-			<th>id</th>
-			<th>name</th>
-			<th>updated</th>
-			<th>mode</th>
-			<th>device types</th>	
-		</tr>
-	</thead>
+   <thead>
+   <tr class="ui-widget-header">
+      <th>id</th>
+      <th>name</th>
+      <th>updated</th>
+      <th>mode</th>
+      <th>device types</th>
+   </tr>
+   </thead>
 
-	<tbody></tbody>
+   <tbody></tbody>
 </table>
 
 

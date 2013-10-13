@@ -26,15 +26,15 @@ import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
  */
 public class TestProfileDao extends JooqDao {
 
-   	private final Logger mLogger = Logger.getLogger(TestProfileDao.class);
+   private final Logger mLogger = Logger.getLogger(TestProfileDao.class);
 
-  	private DeviceDao mDeviceDao;
-	
-	@Inject
-	public TestProfileDao(DataSource dataSource, DeviceDao deviceDao) {
-		super(dataSource);
-		mDeviceDao = deviceDao;
-	}
+   private DeviceDao mDeviceDao;
+
+   @Inject
+   public TestProfileDao(DataSource dataSource, DeviceDao deviceDao) {
+      super(dataSource);
+      mDeviceDao = deviceDao;
+   }
 
 
    /**
@@ -44,7 +44,7 @@ public class TestProfileDao extends JooqDao {
     * @return
     */
    public TestProfile add(TestProfile testProfile) {
-	  mLogger.trace("Adding new test configuration");
+      mLogger.trace("Adding new test configuration");
 
       DSLContext context = getDbContext();
 
@@ -123,19 +123,19 @@ public class TestProfileDao extends JooqDao {
             .orderBy(TESTPROFILE.TESTPROFILE_UPDATED.desc()).fetch(mDeviceRecordMapper);
       return result.toArray(new TestProfile[result.size()]);
    }
-   
+
    RecordMapper<Record, TestProfile> mDeviceRecordMapper = new RecordMapper<Record, TestProfile>() {
-       @Override
-       public TestProfile map(Record record) {
-          TestProfile tp = record.into(TestProfile.class);
-          List<DeviceType> devices = mDeviceDao.getDeviceTypesByTestProfile(tp.getId());
-          if (null != devices) {
-             tp.setDeviceTypesList(devices);
-          }
-          return tp;
-       }
+      @Override
+      public TestProfile map(Record record) {
+         TestProfile tp = record.into(TestProfile.class);
+         List<DeviceType> devices = mDeviceDao.getDeviceTypesByTestProfile(tp.getId());
+         if (null != devices) {
+            tp.setDeviceTypesList(devices);
+         }
+         return tp;
+      }
    };
-   
+
    /**
     * Get by id
     *
@@ -143,7 +143,7 @@ public class TestProfileDao extends JooqDao {
     * @return
     */
    public TestProfile getById(Long testProfileId) {
-	   TestProfile result = getDbContext().select().from(TESTPROFILE).where(TESTPROFILE.TESTPROFILE_ID.eq(testProfileId))
+      TestProfile result = getDbContext().select().from(TESTPROFILE).where(TESTPROFILE.TESTPROFILE_ID.eq(testProfileId))
             .fetch(mDeviceRecordMapper).get(0);
       return result;
    }

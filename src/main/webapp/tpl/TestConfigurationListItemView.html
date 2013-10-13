@@ -1,9 +1,11 @@
-<td><button type="button" class="btn btn-link showTestConfig" value="<%= id %>"><%= name %></td>
+<td>
+   <button type="button" class="btn btn-link showTestConfig" value="<%= id %>"><%= name %>
+</td>
 <td><%= testProfile.mode %></td>
-<td><%= testScript.name %></td>	
+<td><%= testScript.name %></td>
 <td><%= testTarget.name %></td>
 <td>
-	<button type="button" class="btn btn-success runTest" value="<%= id %>">
-		<span class="glyphicon glyphicon-play"></span> Run
-	</button>
+   <button type="button" class="btn btn-success runTest" value="<%= id %>">
+      <span class="glyphicon glyphicon-play"></span> Run
+   </button>
 </td>

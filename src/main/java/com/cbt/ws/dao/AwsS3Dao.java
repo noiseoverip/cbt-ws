@@ -49,7 +49,7 @@ public class AwsS3Dao {
          is = TestScriptDao.class.getResourceAsStream("/" + AWS_PROPETIES_NAME);
       }
 
-      PropertiesCredentials  credentials  = null;
+      PropertiesCredentials credentials = null;
       try {
          credentials = new PropertiesCredentials(is);
       } catch (IOException e) {

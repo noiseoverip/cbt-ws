@@ -1,10 +1,10 @@
 <div class="form-group">
-    <label>Test script name</label>
-    <button id="uploadTestScript" type="button" class="btn btn-link">Upload new</button>
-    <select name="testScriptId" class="form-control" id="testScriptSelect">
-    	<option>--</option>
+   <label>Test script name</label>
+   <button id="uploadTestScript" type="button" class="btn btn-link">Upload new</button>
+   <select name="testScriptId" class="form-control" id="testScriptSelect">
+      <option>--</option>
       <% collection.each(function(ts) { %>
-              <option value="<%= ts.get('id') %>"><%= ts.get('name') %></option>
-      <% }); %>    
-    </select>
+      <option value="<%= ts.get('id') %>"><%= ts.get('name') %></option>
+      <% }); %>
+   </select>
 </div>

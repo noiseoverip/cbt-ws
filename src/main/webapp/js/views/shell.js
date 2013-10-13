@@ -1,82 +1,82 @@
-directory.ShellView = Backbone.View.extend({   
+directory.ShellView = Backbone.View.extend({
 
-    events: {        
-        "click #logoff" : "logOff",       
-    },
-    
-    initialize: function() {
-        this.on("loginPageHide", this.showNavBar, this);
-        this.on("loginPageShow", this.hideNavBar, this);
-    },
+   events: {
+      "click #logoff": "logOff",
+   },
 
-    hideNavBar: function() {        
-        this.$(".navbar").hide();
-    },
+   initialize: function () {
+      this.on("loginPageHide", this.showNavBar, this);
+      this.on("loginPageShow", this.hideNavBar, this);
+   },
 
-    showNavBar: function() {        
-        this.$(".navbar").show();
-    },
+   hideNavBar: function () {
+      this.$(".navbar").hide();
+   },
 
-    render: function () {
-        this.$el.html(this.template({user: directory.user}));  
-        return this;
-    },     
+   showNavBar: function () {
+      this.$(".navbar").show();
+   },
 
-    onkeypress: function (event) {
-        if (event.keyCode === 13) { // enter key pressed
-            event.preventDefault();
-        }
-    },
+   render: function () {
+      this.$el.html(this.template({user: directory.user}));
+      return this;
+   },
 
-    selectMenuItem: function(menuItem) {
-        $('.navbar ul li').removeClass('active');
-        if (menuItem) {
-            $('.' + menuItem).addClass('active');
-        }
-    },
+   onkeypress: function (event) {
+      if (event.keyCode === 13) { // enter key pressed
+         event.preventDefault();
+      }
+   },
 
-    showAlert : function(alertClass, message) {
-        this.$el.find("#alerts").append(
-            directory.templateAlert({alertClass : alertClass, message : message})
-        );
-    },
+   selectMenuItem: function (menuItem) {
+      $('.navbar ul li').removeClass('active');
+      if (menuItem) {
+         $('.' + menuItem).addClass('active');
+      }
+   },
 
-    logOff: function() {
-        directory.router.trigger('loggedOff',"");
-    }
+   showAlert: function (alertClass, message) {
+      this.$el.find("#alerts").append(
+            directory.templateAlert({alertClass: alertClass, message: message})
+      );
+   },
+
+   logOff: function () {
+      directory.router.trigger('loggedOff', "");
+   }
 });
 
 directory.LoginPageView = Backbone.View.extend({
 
-    events: {
-        "click #submitLogin" : "tryLogin",       
-    },
+   events: {
+      "click #submitLogin": "tryLogin",
+   },
 
-    render: function () {       
-        this.$el.html(this.template());          
-        return this;
-    },
+   render: function () {
+      this.$el.html(this.template());
+      return this;
+   },
 
-    tryLogin: function(e) {       
-        document.cookie="auth=" + this.$('#username').val() + ":" + md5(this.$('#password').val());        
-        directory.router.navigate("", {trigger: true});
-        e.preventDefault(); // prevent default button handling
-        directory.router.trigger('loginSuccess','ddd');
-    },
+   tryLogin: function (e) {
+      document.cookie = "auth=" + this.$('#username').val() + ":" + md5(this.$('#password').val());
+      directory.router.navigate("", {trigger: true});
+      e.preventDefault(); // prevent default button handling
+      directory.router.trigger('loginSuccess', 'ddd');
+   },
 
-    getCookieValue: function (key) {
-        currentcookie = document.cookie;
-        if (currentcookie.length > 0) {
-            firstidx = currentcookie.indexOf(key + "=");
-            if (firstidx != -1) {
-                firstidx = firstidx + key.length + 1;
-                lastidx = currentcookie.indexOf(";", firstidx);
-                if (lastidx == -1) {
-                    lastidx = currentcookie.length;
-                }
-                return unescape(currentcookie.substring(firstidx, lastidx));
+   getCookieValue: function (key) {
+      currentcookie = document.cookie;
+      if (currentcookie.length > 0) {
+         firstidx = currentcookie.indexOf(key + "=");
+         if (firstidx != -1) {
+            firstidx = firstidx + key.length + 1;
+            lastidx = currentcookie.indexOf(";", firstidx);
+            if (lastidx == -1) {
+               lastidx = currentcookie.length;
             }
-        }
-        return "";
-    }   
+            return unescape(currentcookie.substring(firstidx, lastidx));
+         }
+      }
+      return "";
+   }
 });
