@@ -28,7 +28,6 @@ directory.TestConfigurationView = Backbone.View.extend({
     			devices.push($(this).val());	
     		}    		
     	});
-    	console.log(devices);
     	var testProfileData = {
     		name: "notused",
     		mode: form.mode,
@@ -43,7 +42,7 @@ directory.TestConfigurationView = Backbone.View.extend({
 
     	CbtClient.createNewTestConfig(testProfileData, testConfigData, function(result) {
     		if (result == true) {    			
-    			directory.router.navigate("home", {trigger: true});
+    			directory.router.navigate("", {trigger: true});
     		} else {
     			directory.shellView.showAlert("alert-danger", "Please check your selections");
     		}
