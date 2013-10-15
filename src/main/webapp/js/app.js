@@ -5,7 +5,7 @@ var directory = {
    models: {},
 
    loadTemplates: function (views, callback) {
-
+      "use strict";
       var deferreds = [];
 
       $.each(views, function (index, view) {
@@ -29,10 +29,12 @@ directory.Router = Backbone.Router.extend({
       "login": "login",
       "testconfiguration": "testconfiguration",
       "testscripts": "tests",
-      "applications": "targets"
+      "applications": "targets",
+      "jobresult/:id": "jobresult"
    },
 
    initialize: function () {
+      "use strict";
       this.on("loginSuccess", this.loginSuccess, this);
       this.on("loggedOff", this.onLoggedOff, this);
 
@@ -42,6 +44,7 @@ directory.Router = Backbone.Router.extend({
    },
 
    login: function () {
+      "use strict";
       directory.loginView = new directory.LoginPageView();
       directory.loginView.render();
       this.$content.html(directory.loginView.el);
@@ -49,6 +52,7 @@ directory.Router = Backbone.Router.extend({
    },
 
    home: function () {
+      "use strict";
       directory.devicePageView = new directory.DevicePageView();
       directory.devicePageView.render();
       this.$content.html(directory.devicePageView.el);
@@ -56,12 +60,14 @@ directory.Router = Backbone.Router.extend({
    },
 
    testconfiguration: function () {
+      "use strict";
       directory.testConfigurationView = new directory.TestConfigurationView();
       directory.testConfigurationView.render();
       this.$content.html(directory.testConfigurationView.el);
    },
 
    tests: function () {
+      "use strict";
       directory.testScriptView = new directory.TestScriptsPageView();
       directory.testScriptView.render();
       this.$content.html(directory.testScriptView.el);
@@ -69,6 +75,7 @@ directory.Router = Backbone.Router.extend({
    },
 
    targets: function () {
+      "use strict";
       directory.testTargetView = new directory.TestTargetsPageView();
       directory.testTargetView.render();
       this.$content.html(directory.testTargetView.el);
@@ -76,18 +83,28 @@ directory.Router = Backbone.Router.extend({
    },
 
    onLoggedOff: function () {
+      "use strict";
       document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
       directory.router.navigate("login", {trigger: true});
    },
 
    loginSuccess: function () {
+      "use strict";
       console.log("login ok");
       directory.shellView.trigger('loginPageHide', 'ddd');
+   },
+
+   jobresult: function (id) {
+      "use strict";
+      directory.jobResultView = new directory.JobResultView({id: id});
+      console.log(directory.jobResultView.render().el);
+      this.$content.html(directory.jobResultView.render().el);
    }
 
 });
 
 $(document).on("ready", function () {
+   "use strict";
    directory.loadTemplates([
       "ShellView",
       "LoginPageView",
@@ -109,7 +126,8 @@ $(document).on("ready", function () {
       "TestScriptListItemView",
       "TestTargetsPageView",
       "TestTargetListView",
-      "TestTargetListItemView"
+      "TestTargetListItemView",
+      "JobResultView"
    ],
 
          function () {
@@ -126,11 +144,13 @@ $(document).on("ready", function () {
 $.ajaxSetup({
    statusCode: {
       401: function () {
+         "use strict";
          // Redirec the to the login page.
          window.location.replace('/#login');
 
       },
       403: function () {
+         "use strict";
          // 403 -- Access denied
          window.location.replace('/#denied');
       }
