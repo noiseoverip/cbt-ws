@@ -96,9 +96,19 @@ directory.Router = Backbone.Router.extend({
 
    jobresult: function (id) {
       "use strict";
+//      directory.jobResultView = new directory.JobResultView({id: id});
+//      console.log(directory.jobResultView.render().el);
+//      this.$content.html(directory.jobResultView.render().el);
+//      directory.jobResultView.show();
+
       directory.jobResultView = new directory.JobResultView({id: id});
-      console.log(directory.jobResultView.render().el);
-      this.$content.html(directory.jobResultView.render().el);
+      directory.jobResultView.render();
+      directory.jobResultModal = new Backbone.BootstrapModal({
+         content: directory.jobResultView,
+         title: directory.jobResultView.getTitle(),
+         animate: true,
+         allowCancel: false
+      }).open();
    }
 
 });

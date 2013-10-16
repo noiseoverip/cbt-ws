@@ -5,3 +5,7 @@ body {
 .login {
    height: 80%;
 }
+
+div.modal-content {
+   margin: 100px;
+}
