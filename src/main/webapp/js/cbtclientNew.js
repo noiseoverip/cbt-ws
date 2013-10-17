@@ -1,16 +1,18 @@
 function printDate(time) {
+   "use strict";
    var date = new Date(time);
    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
 }
 
 var CbtClient = {
 
-   cbtRipUrl: "http://127.0.0.1:9090/rip",
+   cbtRipUrl: "http://127.0.0.1:8080/rip",
 
    // User should be set after authentication
    userId: 1,
 
    getUserDevices: function () {
+      "use strict";
       $.ajax({
          type: 'GET',
          url: CbtClient.parseUrl('/user/{userId}/device'),
@@ -22,42 +24,62 @@ var CbtClient = {
    },
 
    getUserDevicesUrl: function () {
+      "use strict";
       return CbtClient.parseUrl('/user/{userId}/device');
    },
 
    getUserTestConfigsUrl: function () {
+      "use strict";
       return CbtClient.parseUrl('/testconfig');
    },
 
    getUserTestRunsUrl: function () {
+      "use strict";
       return CbtClient.parseUrl('/testrun');
    },
 
    getUserTestProfileUrl: function () {
+      "use strict";
       return CbtClient.parseUrl('/testprofile');
    },
 
    getUserTestScriptsUrl: function () {
+      "use strict";
       return CbtClient.parseUrl('/testscript');
    },
 
    getUserTestTargetsUrl: function () {
+      "use strict";
       return CbtClient.parseUrl('/testtarget');
    },
 
    getDeviceTypesUrl: function () {
+      "use strict";
       return CbtClient.parseUrl('/public/device-types');
    },
 
    getUserTestScriptUrl: function () {
+      "use strict";
       return CbtClient.parseUrl('/testscript');
    },
 
    getUserTestTargetUrl: function () {
+      "use strict";
       return CbtClient.parseUrl('/testtarget');
    },
 
+   getDeviceJob: function (testRunId) {
+      "use strict";
+      return CbtClient.parseUrl('/devicejob?testRunId=' + testRunId);
+   },
+
+   getDeviceJobResult: function (deviceJobId) {
+      "use strict";
+      return CbtClient.parseUrl('/devicejob/' + deviceJobId + '/result');
+   },
+
    createTestRun: function (testConfigId, callback) {
+      "use strict";
       var testRun = {testconfigId: testConfigId};
       $.ajax({
          type: 'PUT',
@@ -88,6 +110,7 @@ var CbtClient = {
       // tetProfileData fields: mode, deviceTypes (array of id's)
       // testConfigData fields: name, testProfileData, testScriptData, testTargetData
 
+      "use strict";
       var createTestConfigutation = function (testConfigData) {
          $.ajax({
             type: 'PUT',
@@ -102,7 +125,7 @@ var CbtClient = {
                callback(false);
             }
          });
-      }
+      };
 
       $.ajax({
          createTestConfigutation: createTestConfigutation,
@@ -123,11 +146,13 @@ var CbtClient = {
    },
 
    parseUrl: function (url) {
+      "use strict";
       return this.cbtRipUrl + url.replace("{userId}", this.userId);
    }
-}
+};
 
 function ConvertFormToJSON(form) {
+   "use strict";
    var array = jQuery(form).serializeArray();
    var json = {};
 

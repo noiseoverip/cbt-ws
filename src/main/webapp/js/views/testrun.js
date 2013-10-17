@@ -71,7 +71,6 @@ directory.TestRunListView = Backbone.View.extend({
    showTestRun: function (e) {
       "use strict";
       var testRunId = $(e.target).val();
-      console.log("Showing job results for test run: " + testRunId);
       directory.router.navigate("jobresult/" + testRunId, {trigger: true});
    }
 });
