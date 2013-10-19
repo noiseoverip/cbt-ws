@@ -33,6 +33,7 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+
 import org.apache.log4j.Logger;
 import org.jooq.exception.DataAccessException;
 
@@ -51,11 +52,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -274,8 +277,8 @@ public class AccessWs {
    @GET
    @Path("/testrun")
    @Produces(MediaType.APPLICATION_JSON)
-   public TestRun[] getTestRuns() {
-      return mTestRunDao.getByUserIdFull(getUserId());
+   public Map<String, Object> getTestRuns(@QueryParam("offset") int offset, @QueryParam("max") int to) {    
+      return mTestRunDao.getByUserIdFull(getUserId(), offset, to);
    }
 
    /**

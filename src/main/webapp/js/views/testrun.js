@@ -10,6 +10,11 @@ directory.TestRun = Backbone.Model.extend({
 directory.TestRunListItemView = Backbone.View.extend({
    tagName: "tr",
 
+   initialize: function() {
+         this.model.bind('change', this.render, this);
+         this.model.bind('destroy', this.remove, this);
+   },
+
    render: function () {
       "use strict";
       this.$el.html(this.template(this.model.toJSON()));
@@ -37,11 +42,11 @@ directory.TestRunList = Backbone.Paginator.requestPager.extend({
    },
    paginator_ui: {
       // the lowest page index your API allows to be accessed
-      firstPage: 0,
+      firstPage: 1,
 
       // which page should the paginator start from
       // (also, the actual page the paginator is on)
-      currentPage: 0,
+      currentPage: 1,
 
       // how many items per page should be shown
       perPage: 10,
@@ -57,23 +62,26 @@ directory.TestRunList = Backbone.Paginator.requestPager.extend({
       '$filter': '',
 
       // number of items to return per request/page
-      '$top': function() { return this.perPage },
+      'max': function() { return this.perPage },
 
       // how many results the request should skip ahead to
       // customize as needed. For the Netflix API, skipping ahead based on
       // page * number of results per page was necessary.
-      '$skip': function() { return this.currentPage * this.perPage },
+      'offset': function() { return (this.currentPage-1) * this.perPage },
 
       // field to sort by
       '$orderby': 'ReleaseYear',
 
       // what format would you like to request results in?
-      '$format': 'json',
-
-      // custom parameters
-      '$inlinecount': 'allpages',
-      '$callback': 'callback'
-   }  
+      '$format': 'json',      
+   },
+   parse: function(response) {
+      if (response.totalRecords != undefined) {
+         this.totalRecords = response.totalRecords;
+         this.totalPages = this.totalRecords / this.perPage;      
+      }
+      return response.results;
+   }
 });
 
 
@@ -86,19 +94,24 @@ directory.TestRunListView = Backbone.View.extend({
 
    initialize: function () {
       "use strict";
-      this.collection.fetch();
-      this.collection.on("add", this.renderItem, this);
+      this.collection.pager();
+      //this.collection.on("add", this.renderItem, this);
       this.collection.on("reset", this.refresh, this);
+      this.collection.on("sync", this.sync, this);
       this.paginatedView = new directory.PaginatedView({
          collection: this.collection,
       });
 
    },
+   sync: function() {
+      console.log("sync " + this.collection.length);
+      this.$("table.testruns").empty();     
+      this.collection.each(this.renderItem, this);
+   },
 
    refresh: function () {
       "use strict";
-      this.collection.fetch();
-      this.render();
+      console.log("reset" + this.collection.length);      
    },
 
    render: function () {     
@@ -112,7 +125,7 @@ directory.TestRunListView = Backbone.View.extend({
       var itemView = new directory.TestRunListItemView({
          model: item
       });
-      var table = this.$el.find("table.testruns");
+      var table = this.$("table.testruns");
       var renderedItem = itemView.render().el;
       if (options.at == 0) {      
          table.prepend(renderedItem);

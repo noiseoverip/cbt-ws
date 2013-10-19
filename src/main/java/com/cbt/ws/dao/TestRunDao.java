@@ -8,17 +8,24 @@ import com.cbt.jooq.enums.TestrunTestrunStatus;
 import com.cbt.jooq.tables.records.TestrunRecord;
 import com.cbt.ws.JooqDao;
 import com.cbt.ws.entity.TestRun;
+
 import org.apache.log4j.Logger;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.RecordMapper;
 import org.jooq.Result;
+import org.jooq.SelectQuery;
+import org.jooq.SelectSelectStep;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.cbt.jooq.tables.Testconfig.TESTCONFIG;
 import static com.cbt.jooq.tables.Testprofile.TESTPROFILE;
@@ -27,7 +34,7 @@ import static com.cbt.jooq.tables.Testrun.TESTRUN;
 
 /**
  * Test run DAO
- *
+ * 
  * @author Saulius Alisauskas 2013-03-03 Initial version
  */
 public class TestRunDao extends JooqDao {
@@ -41,7 +48,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Add new test run
-    *
+    * 
     * @param testRun
     * @return
     */
@@ -58,7 +65,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Delete testRun
-    *
+    * 
     * @param testRun
     * @throws CbtDaoException
     */
@@ -71,7 +78,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Get test runs
-    *
+    * 
     * @return
     */
    public TestRun[] getAll() {
@@ -93,7 +100,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Get test runs of specific user
-    *
+    * 
     * @param userId
     * @return
     */
@@ -110,16 +117,16 @@ public class TestRunDao extends JooqDao {
    }
 
    /**
-    * Get test runs of specific user
-    *
+    * Get test runs of specific user.
+    * 
     * @param userId
-    * @return
+    * @return Map containing "result" and if offset=0 "totalRecords"
     */
-   public TestRun[] getByUserIdFull(Long userId) {
-      List<TestRun> list = getDbContext().select().from(TESTRUN).join(TESTCONFIG).onKey()
-            .where(TESTRUN.TESTRUN_USER_ID.eq(userId)).orderBy(TESTRUN.TESTRUN_UPDATED.desc())
+   public Map<String, Object> getByUserIdFull(Long userId, int offset, int maxrows) {
+      DSLContext context = getDbContext();
+      List<TestRun> list = context.select().from(TESTRUN).join(TESTCONFIG).onKey()
+            .where(TESTRUN.TESTRUN_USER_ID.eq(userId)).orderBy(TESTRUN.TESTRUN_UPDATED.desc()).limit(offset, maxrows)
             .fetch(new RecordMapper<Record, TestRun>() {
-
                @Override
                public TestRun map(Record record) {
                   TestRun testRun = record.into(TestRun.class);
@@ -127,31 +134,40 @@ public class TestRunDao extends JooqDao {
                   return testRun;
                }
             });
-      return list.toArray(new TestRun[list.size()]);
+      // Create result holder
+      Map<String, Object> results = new HashMap<String, Object>();
+      results.put("results", list);
+      // Query for total rows only when fetching initial list
+      if (offset == 0) {
+         int totalRows = context.select().from(TESTRUN).where(TESTRUN.TESTRUN_USER_ID.eq(userId)).fetchCount();
+         results.put("totalRecords", totalRows);
+      }    
+      return results;
    }
 
    /**
     * Get TestRun
-    *
+    * 
     * @param testRunId
     * @return
     */
    public TestRun getTestRun(Long testRunId) {
-      TestrunRecord record = (TestrunRecord) getDbContext().select().from(TESTRUN).where(TESTRUN.TESTRUN_ID.eq(testRunId))
-            .fetchOne();
+      TestrunRecord record = (TestrunRecord) getDbContext().select().from(TESTRUN)
+            .where(TESTRUN.TESTRUN_ID.eq(testRunId)).fetchOne();
       return record.into(TestRun.class);
    }
 
    /**
     * Get Test more complex test run information
-    *
+    * 
     * @param testRunId
     * @return
     */
    public TestRunComplex getTestRunComplex(Long testRunId) {
       Record result = getDbContext().select().from(TESTRUN).join(TESTCONFIG)
             .on(TESTCONFIG.TEST_CONFIG_ID.eq(TESTRUN.TESTRUN_TESTCONFIG_ID)).join(TESTPROFILE)
-            .on(TESTPROFILE.TESTPROFILE_ID.eq(TESTCONFIG.TEST_PROFILE_ID)).where(TESTRUN.TESTRUN_ID.eq(testRunId)).fetchOne();
+            .on(TESTPROFILE.TESTPROFILE_ID.eq(TESTCONFIG.TEST_PROFILE_ID)).where(TESTRUN.TESTRUN_ID.eq(testRunId))
+            .fetchOne();
 
       TestRunComplex testRun = new TestRunComplex();
       testRun.setId(testRunId);
@@ -171,7 +187,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Update TestRun record
-    *
+    * 
     * @param testRun
     * @throws CbtDaoException
     */
