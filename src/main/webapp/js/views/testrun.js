@@ -30,20 +30,19 @@ directory.TestRunListView = Backbone.View.extend({
 
    events: {
       "click .removeTestRun": "deleteTestRun",
-      "click .showTestRun": "showTestRun"
+      "click .showTestRun": "showTestRun",      
    },
 
    initialize: function () {
       "use strict";
-      this.testRunListList = new directory.TestRunList();
-      this.testRunListList.fetch();
-      this.testRunListList.on("add", this.renderItem, this);
-      this.testRunListList.on("reset", this.refresh, this);
+      this.collection.fetch();
+      this.collection.on("add", this.renderItem, this);
+      this.collection.on("reset", this.refresh, this);
    },
 
    refresh: function () {
       "use strict";
-      this.testRunListList.fetch();
+      this.collection.fetch();
       this.render();
    },
 
@@ -54,12 +53,18 @@ directory.TestRunListView = Backbone.View.extend({
       return this;
    },
 
-   renderItem: function (item) {
-      "use strict";
+   renderItem: function (item, collection, options) {
+      "use strict";      
       var itemView = new directory.TestRunListItemView({
          model: item
       });
-      this.$el.find("table.testruns").append(itemView.render().el);
+      var table = this.$el.find("table.testruns");
+      var renderedItem = itemView.render().el;
+      if (options.at == 0) {      
+         table.prepend(renderedItem);
+      } else {
+         table.append(renderedItem);
+      }     
    },
 
    deleteTestRun: function (e) {

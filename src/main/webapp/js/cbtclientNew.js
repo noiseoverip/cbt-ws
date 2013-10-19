@@ -88,9 +88,8 @@ var CbtClient = {
          dataType: "json",
          data: JSON.stringify(testRun),
          success: function (data, textStatus, jqXHR) {
-            console.log("test run created:" + data);
             if (callback) {
-               callback();
+               callback(null, data);
             }
          },
          statusCode: {

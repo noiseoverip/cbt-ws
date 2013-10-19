@@ -1,9 +1,18 @@
 directory.DevicePageView = Backbone.View.extend({
 
    initialize: function () {
-      this.testRunListView = new directory.TestRunListView();
+      this.testRunListCollection = new directory.TestRunList();
+      this.testRunListView = new directory.TestRunListView({
+         collection : this.testRunListCollection
+      });      
+
       this.testConfigurationListView = new directory.TestConfigurationListView();
       this.deviceListView = new directory.DeviceListView();
+
+      this.listenTo( Backbone, 'testrun-created', function (newTestRun) {      
+         // add new test run at index 0
+         this.testRunListCollection.add(newTestRun, {at: 0})
+      }, this); 
    },
 
    render: function () {
@@ -59,6 +68,7 @@ directory.DeviceListItemView = Backbone.View.extend({
    }
 
 });
+
 // Device collection
 directory.DeviceList = Backbone.Collection.extend({
    model: directory.Device,
