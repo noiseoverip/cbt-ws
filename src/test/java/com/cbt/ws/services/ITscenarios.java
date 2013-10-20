@@ -1,5 +1,21 @@
 package com.cbt.ws.services;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
+import javax.ws.rs.core.MediaType;
+
+import org.apache.log4j.Logger;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.cbt.core.entity.Device;
 import com.cbt.core.entity.DeviceJob;
 import com.cbt.core.entity.DeviceJobResult;
@@ -14,26 +30,13 @@ import com.cbt.jooq.enums.TestrunTestrunStatus;
 import com.cbt.ws.GuiceContextListener;
 import com.cbt.ws.entity.TestRun;
 import com.cbt.ws.testtools.ClientAuthFilter;
+import com.cbt.ws.testtools.GetTestRunResponse;
 import com.google.inject.servlet.GuiceFilter;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.test.framework.AppDescriptor;
 import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-
-import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for {@link DeviceJobsWs}
@@ -43,10 +46,10 @@ import static org.junit.Assert.assertTrue;
 public class ITscenarios extends JerseyTest {
    private static final String PATH_PREFIX = "rip";
    private final Logger logger = Logger.getLogger(ITscenarios.class);
-   private ClientAuthFilter authFilter = new ClientAuthFilter();
-   private long testUser1Id = 1L;
-   private long testScriptId = 1L;
-   private long testTargetId = 1L;
+   private final ClientAuthFilter authFilter = new ClientAuthFilter();
+   private final long testUser1Id = 1L;
+   private final long testScriptId = 1L;
+   private final long testTargetId = 1L;
 
    @Override
    protected AppDescriptor configure() {
@@ -285,13 +288,14 @@ public class ITscenarios extends JerseyTest {
       }
 
       // Verify that test run was set to finish and state passed after we have updated all jobs to finish
-      TestRun[] userTestRuns = getWebResource().path("testrun").type(MediaType.APPLICATION_JSON_TYPE)
-            .accept(MediaType.APPLICATION_JSON_TYPE).get(TestRun[].class);
+      GetTestRunResponse response = getWebResource().path("testrun").queryParam("offset", "0").queryParam("max", "10")
+            .type(MediaType.APPLICATION_JSON_TYPE).accept(MediaType.APPLICATION_JSON_TYPE)
+            .get(GetTestRunResponse.class);
       boolean foundOurTestRun = false;
-      for (TestRun testRunTemp : userTestRuns) {
+      for (TestRun testRunTemp : response.getResults()) {
          if (testRunTemp.getId().equals(testRun.getId())) {
             foundOurTestRun = true;
-            assertTrue(testRunTemp.getStatus().equals(TestrunTestrunStatus.FINISHED));
+            assertTrue(testRunTemp.getStatus().equals(TestrunTestrunStatus.PASSED));
          }
       }
       assertTrue(foundOurTestRun);

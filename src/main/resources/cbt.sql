@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `testrun` (
   `testrun_testconfig_id` bigint(20) NOT NULL,
   `testrun_created` datetime NOT NULL,
   `testrun_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `testrun_status` enum('WAITING','RUNNING','FINISHED') NOT NULL DEFAULT 'WAITING',
+  `testrun_status` enum('WAITING','RUNNING','FAILED','PASSED') NOT NULL DEFAULT 'WAITING',
   PRIMARY KEY (`testrun_id`),
   KEY `config_id` (`testrun_testconfig_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=158 ;

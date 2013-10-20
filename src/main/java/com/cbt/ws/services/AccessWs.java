@@ -54,6 +54,7 @@ import com.cbt.ws.dao.TestTargetDao;
 import com.cbt.ws.dao.UserDao;
 import com.cbt.ws.entity.TestRun;
 import com.cbt.ws.exceptions.CbtNoDevicesException;
+import com.cbt.ws.jooq.enums.DeviceJobResultState;
 import com.cbt.ws.security.CbtPrinciple;
 import com.cbt.ws.tools.TestRunProccessor;
 import com.google.common.io.Files;
@@ -273,6 +274,7 @@ public class AccessWs {
       return mTestProfileDao.getByUserId(getUserId());
    }
 
+   // TODO: max should probably be limited
    @GET
    @Path("/testrun")
    @Produces(MediaType.APPLICATION_JSON)
@@ -408,7 +410,8 @@ public class AccessWs {
          mLogger.error("Could not update DeviceJob status after receiving device job result");
       }
 
-      // Update test run status
+      // TODO: optimise by querying db for !FINISHED jobs
+      // Check if all jobs have finished
       mLogger.debug("Checking if all jobs have finished");
       DeviceJob[] jobsOfThisTestRun = mDeviceJobDao.getByTestRunId(deviceJob.getTestRunId());
       boolean allFinished = true;
@@ -420,9 +423,17 @@ public class AccessWs {
       }
 
       if (allFinished) {
-         mLogger.debug("All jobs finished, updating TestRun status");
+         mLogger.debug("All jobs finished, checking jobs result verdicts");
+         List<DeviceJobResult> jobsResults = mDeviceJobResultDao.getByTestRunId(deviceJob.getTestRunId());
+         boolean allsuccess = true;
+         for (DeviceJobResult result : jobsResults) {
+            if (result.getState().equals(DeviceJobResultState.FAILED)) {
+               allsuccess = false;
+            }
+         }
+
          TestRun testRun = mTestRunDao.getTestRun(deviceJob.getTestRunId());
-         testRun.setStatus(TestrunTestrunStatus.FINISHED);
+         testRun.setStatus(allsuccess ? TestrunTestrunStatus.PASSED : TestrunTestrunStatus.FAILED);
          try {
             mTestRunDao.update(testRun);
          } catch (CbtDaoException e) {
