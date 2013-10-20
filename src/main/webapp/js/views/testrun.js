@@ -31,10 +31,8 @@ directory.TestRunList = Backbone.Paginator.requestPager.extend({
    paginator_core: {
       // the type of the request (GET by default)
       type: 'GET',
-
       // the type of reply (jsonp by default)
       dataType: 'json',
-
       // the URL (or base URL) for the service
       // if you want to have a more dynamic URL, you can make this a function
       // that returns a string
@@ -43,14 +41,11 @@ directory.TestRunList = Backbone.Paginator.requestPager.extend({
    paginator_ui: {
       // the lowest page index your API allows to be accessed
       firstPage: 1,
-
       // which page should the paginator start from
       // (also, the actual page the paginator is on)
       currentPage: 1,
-
       // how many items per page should be shown
       perPage: 10,
-
       // a default number of total pages to query in case the API or
       // service you are using does not support providing the total
       // number of pages for us.
@@ -58,24 +53,15 @@ directory.TestRunList = Backbone.Paginator.requestPager.extend({
       totalPages: 10
    },
    server_api: {
-      // the query field in the request
-      '$filter': '',
-
       // number of items to return per request/page
       'max': function() { return this.perPage },
-
       // how many results the request should skip ahead to
       // customize as needed. For the Netflix API, skipping ahead based on
       // page * number of results per page was necessary.
-      'offset': function() { return (this.currentPage-1) * this.perPage },
-
-      // field to sort by
-      '$orderby': 'ReleaseYear',
-
-      // what format would you like to request results in?
-      '$format': 'json',      
+      'offset': function() { return (this.currentPage-1) * this.perPage },       
    },
    parse: function(response) {
+      // totalRecords is returned only for the first page
       if (response.totalRecords != undefined) {
          this.totalRecords = response.totalRecords;
          this.totalPages = this.totalRecords / this.perPage;      
@@ -92,27 +78,22 @@ directory.TestRunListView = Backbone.View.extend({
       "click .showTestRun": "showTestRun",      
    },
 
+   listTable: "table.testruns",
+
    initialize: function () {
       "use strict";
       this.collection.pager();
-      //this.collection.on("add", this.renderItem, this);
-      this.collection.on("reset", this.refresh, this);
+      this.collection.on("add", this.renderItem, this);     
       this.collection.on("sync", this.sync, this);
       this.paginatedView = new directory.PaginatedView({
          collection: this.collection,
       });
 
    },
-   sync: function() {
-      console.log("sync " + this.collection.length);
-      this.$("table.testruns").empty();     
-      this.collection.each(this.renderItem, this);
-   },
-
-   refresh: function () {
-      "use strict";
-      console.log("reset" + this.collection.length);      
-   },
+   sync: function() {   
+      this.$(this.listTable).empty();
+      this.collection.each(this.renderItem, this);      
+   },   
 
    render: function () {     
       this.$el.html(this.template());
@@ -124,13 +105,12 @@ directory.TestRunListView = Backbone.View.extend({
       "use strict";      
       var itemView = new directory.TestRunListItemView({
          model: item
-      });
-      var table = this.$("table.testruns");
+      });     
       var renderedItem = itemView.render().el;
       if (options.at == 0) {      
-         table.prepend(renderedItem);
+         this.$(this.listTable).prepend(renderedItem);
       } else {
-         table.append(renderedItem);
+         this.$(this.listTable).append(renderedItem);
       }     
    },
 

@@ -10,8 +10,10 @@ directory.DevicePageView = Backbone.View.extend({
       this.deviceListView = new directory.DeviceListView();
 
       this.listenTo( Backbone, 'testrun-created', function (newTestRun) {      
-         // add new test run at index 0
-         this.testRunListCollection.add(newTestRun, {at: 0})
+         // Tell pager to re-fetch first first page
+         this.testRunListCollection.reset();
+         this.testRunListCollection.updateOrder();
+         this.testRunListCollection.goTo(1);
       }, this); 
    },
 

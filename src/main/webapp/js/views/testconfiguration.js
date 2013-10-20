@@ -150,7 +150,11 @@ directory.TestConfigurationListView = Backbone.View.extend({
 
    runTest: function (e) {
       var testConfigId = $(e.target).val();
-      CbtClient.createTestRun(testConfigId, function (message, data) {         
+      CbtClient.createTestRun(testConfigId, function (message, data) {
+         // No data returned means error therefore, show message
+         if (data == undefined) {
+            alert(message);
+         }
          Backbone.trigger('testrun-created', data);
       });
    }
