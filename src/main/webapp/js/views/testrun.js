@@ -78,7 +78,7 @@ directory.TestRunListView = Backbone.View.extend({
       "click .showTestRun": "showTestRun",      
    },
 
-   listTable: "table.testruns",
+   listTable: "table.testruns tbody",
 
    initialize: function () {
       "use strict";
