@@ -1,14 +1,14 @@
 package com.cbt.ws.entity;
 
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+
 import com.cbt.core.entity.Device;
 import com.cbt.core.entity.TestConfig;
 import com.cbt.jooq.enums.TestrunTestrunStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
-
-import javax.persistence.Column;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Entity representing single test run information (configuration id, status...)
@@ -26,7 +26,6 @@ public class TestRun {
    private Long id;
    private String name;
    private TestrunTestrunStatus status;
-   @JsonIgnore
    private TestConfig testconfig;
    private Long testconfigId;
    private Date updated;
