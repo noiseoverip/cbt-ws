@@ -87,10 +87,13 @@ public class DevicejobResultDao extends JooqDao {
     * @return
     */
    public DeviceJobResult getByDeviceJobId(Long deviceJobId) {
-      Record record = getDbContext().select().from(DEVICE_JOB_RESULT)
-            .where(DEVICE_JOB_RESULT.DEVICEJOB_ID.eq(deviceJobId)).fetchOne();
-      DeviceJobResult deviceJobRersult = record.into(DeviceJobResult.class);
-      return deviceJobRersult;
+      List<DeviceJobResult> result = getDbContext().select().from(DEVICE_JOB_RESULT)
+            .where(DEVICE_JOB_RESULT.DEVICEJOB_ID.eq(deviceJobId)).fetch(resultMapper);
+      if (result.size() == 1) {
+         return result.get(0);
+      } else {
+         return null;
+      }
    }
 
    // TODO: all deletes could be abstracted, error messages generated!
