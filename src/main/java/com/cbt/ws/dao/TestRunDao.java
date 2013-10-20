@@ -1,24 +1,9 @@
 package com.cbt.ws.dao;
 
-import com.cbt.core.entity.TestConfig;
-import com.cbt.core.entity.TestProfile;
-import com.cbt.core.entity.complex.TestRunComplex;
-import com.cbt.core.exceptions.CbtDaoException;
-import com.cbt.jooq.enums.TestrunTestrunStatus;
-import com.cbt.jooq.tables.records.TestrunRecord;
-import com.cbt.ws.JooqDao;
-import com.cbt.ws.entity.TestRun;
-
-import org.apache.log4j.Logger;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.RecordMapper;
-import org.jooq.Result;
-import org.jooq.SelectQuery;
-import org.jooq.SelectSelectStep;
-
-import javax.inject.Inject;
-import javax.sql.DataSource;
+import static com.cbt.jooq.tables.Testconfig.TESTCONFIG;
+import static com.cbt.jooq.tables.Testprofile.TESTPROFILE;
+import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
+import static com.cbt.jooq.tables.Testrun.TESTRUN;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -27,10 +12,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.cbt.jooq.tables.Testconfig.TESTCONFIG;
-import static com.cbt.jooq.tables.Testprofile.TESTPROFILE;
-import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
-import static com.cbt.jooq.tables.Testrun.TESTRUN;
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
+import org.apache.log4j.Logger;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.RecordMapper;
+import org.jooq.Result;
+
+import com.cbt.core.entity.TestConfig;
+import com.cbt.core.entity.TestProfile;
+import com.cbt.core.entity.complex.TestRunComplex;
+import com.cbt.core.exceptions.CbtDaoException;
+import com.cbt.jooq.enums.TestrunTestrunStatus;
+import com.cbt.jooq.tables.records.TestrunRecord;
+import com.cbt.ws.JooqDao;
+import com.cbt.ws.entity.TestRun;
 
 /**
  * Test run DAO
@@ -70,7 +68,7 @@ public class TestRunDao extends JooqDao {
     * @throws CbtDaoException
     */
    public void delete(TestRun testRun) throws CbtDaoException {
-      int result = getDbContext().delete(TESTRUN).where(TESTRUN.TESTRUN_TESTCONFIG_ID.eq(testRun.getId())).execute();
+      int result = getDbContext().delete(TESTRUN).where(TESTRUN.TESTRUN_ID.eq(testRun.getId())).execute();
       if (result != 1) {
          throw new CbtDaoException("Error while deleting device, result:" + result);
       }

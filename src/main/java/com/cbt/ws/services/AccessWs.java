@@ -1,5 +1,32 @@
 package com.cbt.ws.services;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
+
+import org.apache.log4j.Logger;
+import org.jooq.exception.DataAccessException;
+
 import com.cbt.core.entity.Device;
 import com.cbt.core.entity.DeviceJob;
 import com.cbt.core.entity.DeviceJobResult;
@@ -34,34 +61,6 @@ import com.google.inject.Inject;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
-import org.apache.log4j.Logger;
-import org.jooq.exception.DataAccessException;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Access web service. Provide authentication and user related API
  *
@@ -72,24 +71,24 @@ public class AccessWs {
 
    private static final String QPARAM_USERID = "userId";
    private final Logger mLogger = Logger.getLogger(AccessWs.class);
-   private CheckoutDao mCheckoutDao;
+   private final CheckoutDao mCheckoutDao;
    @Context
    private SecurityContext mContext;
-   private DeviceDao mDeviceDao;
-   private DevicejobDao mDeviceJobDao;
-   private DevicejobResultDao mDeviceJobResultDao;
-   private TestConfigDao mTestConfigDao;
-   private TestProfileDao mTestProfileDao;
-   private TestRunDao mTestRunDao;
-   private TestRunProccessor mTestRunProcessor;
-   private TestScriptDao mTestScriptDao;
-   private TestTargetDao mTestTargetDao;
-   private UserDao mUserDao;
+   private final DeviceDao mDeviceDao;
+   private final DevicejobDao mDeviceJobDao;
+   private final DevicejobResultDao mDeviceJobResultDao;
+   private final TestConfigDao mTestConfigDao;
+   private final TestProfileDao mTestProfileDao;
+   private final TestRunDao mTestRunDao;
+   private final TestRunProccessor mTestRunProcessor;
+   private final TestScriptDao mTestScriptDao;
+   private final TestTargetDao mTestTargetDao;
+   private final UserDao mUserDao;
 
    @Inject
    public AccessWs(UserDao dao, TestProfileDao testProfileDao, TestRunDao testRunDao, TestConfigDao testConfigDao,
-                   TestRunProccessor testRunProccessor, DevicejobDao deviceJobDao, DevicejobResultDao deviceJobResultDao,
-                   CheckoutDao checkoutDao, TestScriptDao testScriptDao, TestTargetDao testTargetDao, DeviceDao deviceDao) {
+         TestRunProccessor testRunProccessor, DevicejobDao deviceJobDao, DevicejobResultDao deviceJobResultDao,
+         CheckoutDao checkoutDao, TestScriptDao testScriptDao, TestTargetDao testTargetDao, DeviceDao deviceDao) {
       mUserDao = dao;
       mTestProfileDao = testProfileDao;
       mTestRunDao = testRunDao;
@@ -175,7 +174,7 @@ public class AccessWs {
    @Path("/devicejob")
    @Produces(MediaType.APPLICATION_JSON)
    public DeviceJob[] getDeviceJob(@QueryParam("deviceId") Long deviceId,
-                                   @QueryParam(value = "testRunId") Long testRunId) {
+         @QueryParam(value = "testRunId") Long testRunId) {
       if (deviceId != null) {
          return mDeviceJobDao.getByDeviceId(deviceId);
       } else if (testRunId != null) {
@@ -194,7 +193,7 @@ public class AccessWs {
    @Path("/devicejob/{deviceJobId}/result")
    @Produces(MediaType.APPLICATION_JSON)
    public DeviceJobResult[] getDeviceJobResults(@PathParam(value = "deviceJobId") Long deviceJobId) {
-      return new DeviceJobResult[]{mDeviceJobResultDao.getByDeviceJobId(deviceJobId)};
+      return new DeviceJobResult[] { mDeviceJobResultDao.getByDeviceJobId(deviceJobId) };
    }
 
    /**
@@ -260,7 +259,7 @@ public class AccessWs {
             .getTestTargetFileName())));
       testPackage.setTestTargetPath(testTargetPath.getAbsolutePath());
 
-      String[] paths = new String[]{testPackage.getTestScriptPath(), testPackage.getTestTargetPath()};
+      String[] paths = new String[] { testPackage.getTestScriptPath(), testPackage.getTestTargetPath() };
       FileInputStream result = new FileInputStream(new File(mCheckoutDao.buildZipPackage(paths)));
       testScriptPath.delete();
       testTargetPath.delete();
@@ -277,7 +276,7 @@ public class AccessWs {
    @GET
    @Path("/testrun")
    @Produces(MediaType.APPLICATION_JSON)
-   public Map<String, Object> getTestRuns(@QueryParam("offset") int offset, @QueryParam("max") int to) {    
+   public Map<String, Object> getTestRuns(@QueryParam("offset") int offset, @QueryParam("max") int to) {
       return mTestRunDao.getByUserIdFull(getUserId(), offset, to);
    }
 
@@ -373,8 +372,7 @@ public class AccessWs {
          mLogger.warn("Cound not add device", e);
          if (e.getMessage().contains("Duplicate entry")) {
             Device duplicateDevice = mDeviceDao.getDeviceByUid(device.getDeviceUniqueId());
-            return Response.status(Status.CONFLICT).entity(duplicateDevice).type(MediaType.APPLICATION_JSON)
-                  .build();
+            return Response.status(Status.CONFLICT).entity(duplicateDevice).type(MediaType.APPLICATION_JSON).build();
          }
          return Response.serverError().build();
       }
@@ -394,8 +392,7 @@ public class AccessWs {
    @Path("/devicejob/{deviceJobId}/result")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public DeviceJobResult putDeviceJobResult(@PathParam("deviceJobId") Long deviceJobId,
-                                             DeviceJobResult deviceJobResult) {
+   public DeviceJobResult putDeviceJobResult(@PathParam("deviceJobId") Long deviceJobId, DeviceJobResult deviceJobResult) {
       mLogger.debug("Received:" + deviceJobResult);
       deviceJobResult.setDevicejobId(deviceJobId);
       Long id = mDeviceJobResultDao.add(deviceJobResult);
@@ -480,6 +477,8 @@ public class AccessWs {
       return testProfileNew;
    }
 
+   // TODO: if there is no queue then there should be a way to check for available devices without creating a new test
+   // run in db
    /**
     * Create new test run
     *
@@ -493,20 +492,28 @@ public class AccessWs {
    public TestRun putTestRun(TestRun testRun) {
       testRun.setUserId(getUserId());
       Long testRunId = mTestRunDao.add(testRun);
+      testRun.setId(testRunId);
       List<Device> devices = null;
       if (testRunId != null && testRunId > 0) {
          try {
             devices = mTestRunProcessor.getDevices(testRunId, testRun.getUserId());
          } catch (CbtNoDevicesException e) {
-            // TODO: need probably send better explanations
             mLogger.error(e);
             throw new WebApplicationException(Status.PRECONDITION_FAILED);
+         } finally {
+            if (null == devices) {
+               // currently no queuing mechanism, therefore, remove created test run if not device found to service it
+               try {
+                  mTestRunDao.delete(testRun);
+               } catch (CbtDaoException e) {
+                  mLogger.error("Could not delete test run placeholder", e);
+               }
+            }
          }
+         testRun.setDevices(devices);
+         // Set to default state
+         testRun.setStatus(TestrunTestrunStatus.WAITING);
       }
-      testRun.setId(testRunId);
-      testRun.setDevices(devices);
-      // Set to default state
-      testRun.setStatus(TestrunTestrunStatus.WAITING);
       return testRun;
    }
 
@@ -523,7 +530,7 @@ public class AccessWs {
    @Produces(MediaType.APPLICATION_JSON)
    @Deprecated
    public TestScript putTestScriptFile(@FormDataParam("file") InputStream uploadedInputStream,
-                                       @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
+         @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
       // Encapsulate test package info
       TestScript testScript = new TestScript();
       testScript.setName(name);
@@ -550,7 +557,7 @@ public class AccessWs {
    @Produces(MediaType.TEXT_HTML)
    @Deprecated
    public String putTestScriptFileHtml(@FormDataParam("file") InputStream uploadedInputStream,
-                                       @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
+         @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
       TestScript testScript = putTestScriptFile(uploadedInputStream, fileDetail, name);
       StringBuilder sb = new StringBuilder("<html><body>File uploaded successfully, new Id: " + testScript.getId());
       sb.append("<br />Found test classes: <ul>");
@@ -572,7 +579,7 @@ public class AccessWs {
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Produces(MediaType.APPLICATION_JSON)
    public TestScript putTestScriptFile2(@FormDataParam("file") InputStream uploadedInputStream,
-                                        @FormDataParam("file") FormDataContentDisposition fileDetail) {
+         @FormDataParam("file") FormDataContentDisposition fileDetail) {
       // Encapsulate test package info
       TestScript testScript = new TestScript();
       testScript.setName(fileDetail.getFileName());
@@ -598,7 +605,7 @@ public class AccessWs {
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Produces(MediaType.APPLICATION_JSON)
    public TestTarget putTestTarget(@FormDataParam("file") InputStream uploadedInputStream,
-                                   @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
+         @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
       // Encapsulate test package info
       TestTarget testTarget = new TestTarget();
       testTarget.setName(name);
@@ -625,7 +632,7 @@ public class AccessWs {
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Produces(MediaType.TEXT_HTML)
    public String putTestTargetHtml(@FormDataParam("file") InputStream uploadedInputStream,
-                                   @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
+         @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("name") String name) {
       TestTarget testTarget = putTestTarget(uploadedInputStream, fileDetail, name);
       return "<html><body>File uploaded successfully, new Id: " + testTarget.getId() + "</body></html>";
    }
@@ -635,7 +642,7 @@ public class AccessWs {
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Produces(MediaType.APPLICATION_JSON)
    public TestTarget putTestTarget2(@FormDataParam("file") InputStream uploadedInputStream,
-                                    @FormDataParam("file") FormDataContentDisposition fileDetail) {
+         @FormDataParam("file") FormDataContentDisposition fileDetail) {
       // Encapsulate test package info
       TestTarget testTarget = new TestTarget();
       testTarget.setName(fileDetail.getFileName());
