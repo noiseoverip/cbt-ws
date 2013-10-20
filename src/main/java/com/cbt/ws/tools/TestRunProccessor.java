@@ -38,7 +38,8 @@ public class TestRunProccessor {
       mDeviceDao = deviceDao;
       mTestScriptDao = testScripDao;
    }
-
+   
+   // TODO: need to redo this logic 
    /**
     * Get devices available for specified user and specified testRunId
     *
