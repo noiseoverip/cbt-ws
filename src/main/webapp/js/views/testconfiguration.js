@@ -81,36 +81,7 @@ directory.TestTargetSelectView = Backbone.View.extend({
    }
 });
 
-directory.DeviceTypeListView = Backbone.View.extend({
 
-   initialize: function () {
-      this.deviceTypeList = new directory.DeviceTypeList();
-      this.deviceTypeList.on("add", this.renderItems, this);
-      this.deviceTypeList.fetch();
-   },
-
-   render: function () {
-      this.$el.html(this.template());
-      return this;
-   },
-
-   renderItems: function (item) {
-      var deviceTypeListItemView = new directory.DeviceTypeListItemView({
-         model: item
-      });
-      this.$el.find(".devicetypes div.panel-body").append(deviceTypeListItemView.render().el);
-   },
-
-});
-
-directory.DeviceTypeListItemView = Backbone.View.extend({
-   tag: "div",
-   className: "checkbox",
-   render: function () {
-      this.$el.html(this.template(this.model.toJSON()));
-      return this;
-   },
-});
 
 directory.TestConfigurationListView = Backbone.View.extend({
 
@@ -170,57 +141,5 @@ directory.TestConfigurationListItemView = Backbone.View.extend({
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
-   }
-});
-
-
-directory.TestConfiguration = Backbone.Model.extend({
-
-});
-
-directory.TestScript = Backbone.Model.extend({
-   label: function () {
-      return this.get("name");
-   }
-});
-
-directory.TestTarget = Backbone.Model.extend({
-   label: function () {
-      return this.get("name");
-   }
-});
-
-directory.UserTestScripts = Backbone.Collection.extend({
-   model: directory.TestScript,
-
-   url: function () {
-      return CbtClient.getUserTestScriptsUrl();
-   }
-});
-
-directory.TestConfigurationList = Backbone.Collection.extend({
-   model: directory.TestConfiguration,
-   url: function () {
-      return CbtClient.getUserTestConfigsUrl();
-   }
-});
-
-directory.UserTestTargets = Backbone.Collection.extend({
-   model: directory.TestTarget,
-
-   url: function () {
-      return CbtClient.getUserTestTargetsUrl();
-   }
-});
-
-directory.DeviceType = Backbone.Model.extend({
-
-});
-
-directory.DeviceTypeList = Backbone.Collection.extend({
-   model: directory.DeviceType,
-
-   url: function () {
-      return CbtClient.getDeviceTypesUrl();
    }
 });

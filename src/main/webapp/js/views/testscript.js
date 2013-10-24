@@ -1,7 +1,3 @@
-directory.TestScript = Backbone.Model.extend({
-
-});
-
 directory.TestScriptsPageView = Backbone.View.extend({
 
    initialize: function () {
@@ -31,31 +27,6 @@ directory.TestScriptsPageView = Backbone.View.extend({
    }
 });
 
-directory.TestScript = Backbone.Model.extend({
-
-});
-
-directory.TestScriptList = Backbone.Collection.extend({
-   model: directory.TestScript,
-   url: function () {
-      return CbtClient.getUserTestScriptUrl();
-   }
-});
-
-directory.TestScriptListItemView = Backbone.View.extend({
-   tagName: "tr",
-
-   initialize: function () {
-
-   },
-
-   render: function () {
-      this.$el.html(this.template(this.model.toJSON()));
-      return this;
-   }
-
-});
-
 directory.TestScriptListView = Backbone.View.extend({
 
    initialize: function () {
@@ -75,4 +46,18 @@ directory.TestScriptListView = Backbone.View.extend({
       });
       this.$el.find("table.mytestscripts").append(itemView.render().el);
    }
+});
+
+directory.TestScriptListItemView = Backbone.View.extend({
+   tagName: "tr",
+
+   initialize: function () {
+
+   },
+
+   render: function () {
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+   }
+
 });

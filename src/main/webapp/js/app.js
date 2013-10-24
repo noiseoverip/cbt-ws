@@ -25,7 +25,7 @@ var directory = {
 directory.Router = Backbone.Router.extend({
 
    routes: {
-      "": "home",
+      "": "dashboard",
       "login": "login",
       "testconfiguration": "testconfiguration",
       "testscripts": "tests",
@@ -51,12 +51,12 @@ directory.Router = Backbone.Router.extend({
       directory.shellView.trigger('loginPageShow', 'ddd');
    },
 
-   home: function () {
+   dashboard: function () {
       "use strict";
-      directory.devicePageView = new directory.DevicePageView();
-      directory.devicePageView.render();
-      this.$content.html(directory.devicePageView.el);
-      directory.shellView.selectMenuItem('home-menu');
+      directory.dashBoardView = new directory.DashBoardView();
+      directory.dashBoardView.render();
+      this.$content.html(directory.dashBoardView.el);
+      directory.shellView.selectMenuItem('dashboard-menu');
    },
 
    testconfiguration: function () {
@@ -111,10 +111,9 @@ directory.Router = Backbone.Router.extend({
 $(document).on("ready", function () {
    "use strict";
    directory.loadTemplates([
+      "DashBoardView",
       "ShellView",
       "LoginPageView",
-      "HomeView",
-      "DevicePageView",
       "DeviceListView",
       "DeviceListItemView",
       "TestConfigurationListView",

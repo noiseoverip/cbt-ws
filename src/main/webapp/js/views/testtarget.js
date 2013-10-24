@@ -1,7 +1,3 @@
-directory.TestTarget = Backbone.Model.extend({
-
-});
-
 directory.TestTargetsPageView = Backbone.View.extend({
 
    initialize: function () {
@@ -28,17 +24,6 @@ directory.TestTargetsPageView = Backbone.View.extend({
       this.$el.append(this.TestTargetListView.render().el)
 
       return this;
-   }
-});
-
-directory.TestTarget = Backbone.Model.extend({
-
-});
-
-directory.TestTargetList = Backbone.Collection.extend({
-   model: directory.TestTarget,
-   url: function () {
-      return CbtClient.getUserTestTargetUrl();
    }
 });
 
