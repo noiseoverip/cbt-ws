@@ -3,6 +3,22 @@ directory.TestRun = Backbone.Model.extend({
       "use strict";
       response.createdMoment = moment(response.created);
       response.updatedMoment = moment(response.updated);
+
+      switch (response.status) {
+         case "PASSED":
+            response.btnClass = "btn-success";
+            break;
+         case "FAILED":
+            response.btnClass = "btn-danger";
+            break;
+         case "RUNNING":
+            response.btnClass = "btn-primary";
+            break;
+         default:
+            response.btnClass = "btn-default";
+            break;
+      }
+
       return response;
    }
 });
@@ -39,17 +55,21 @@ directory.TestRunList = Backbone.Paginator.requestPager.extend({
    },
    server_api: {
       // number of items to return per request/page
-      'max': function() { return this.perPage },
+      'max': function () {
+         return this.perPage
+      },
       // how many results the request should skip ahead to
       // customize as needed. For the Netflix API, skipping ahead based on
       // page * number of results per page was necessary.
-      'offset': function() { return (this.currentPage-1) * this.perPage },       
+      'offset': function () {
+         return (this.currentPage - 1) * this.perPage
+      },
    },
-   parse: function(response) {
+   parse: function (response) {
       // totalRecords is returned only for the first page
       if (response.totalRecords != undefined) {
          this.totalRecords = response.totalRecords;
-         this.totalPages = this.totalRecords / this.perPage;      
+         this.totalPages = this.totalRecords / this.perPage;
       }
       return response.results;
    }

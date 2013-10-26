@@ -1,12 +1,14 @@
 <td><%= createdMoment.fromNow() %></td>
 <td>--</td>
-<td><%= status %></td>
 <td><%= testconfig.name %></td>
 <td>
-   <button type="button" class="btn btn-default btn-sm showTestRun" value="<%= id %>">
-      <span class="glyphicon glyphicon-zoom-in"></span> Show
-   </button>
-   <button type="button" class="btn btn-default btn-sm removeTestRun" value="<%= id %>">
-      <span class="glyphicon glyphicon-remove"></span> Delete
-   </button>
+   <div class="btn-group">
+      <button type="button" class="btn <%= btnClass %> dropdown-toggle" data-toggle="dropdown">
+         <%= status %> <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+         <li><a href="#" class="disabled showTestRun" onclick="return false;" data-value="<%= id %>">Show</a></li>
+         <li><a href="#" class="disabled removeTestRun" onclick="return false;">Delete</a></li>
+      </ul>
+   </div>
 </td>

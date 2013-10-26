@@ -2,7 +2,7 @@ directory.TestRunListView = Backbone.View.extend({
 
    events: {
       "click .removeTestRun": "deleteTestRun",
-      "click .showTestRun": "showTestRun",      
+      "click .showTestRun": "showTestRun"
    },
 
    listTable: "table.testruns tbody",
@@ -10,35 +10,35 @@ directory.TestRunListView = Backbone.View.extend({
    initialize: function () {
       "use strict";
       this.collection.pager();
-      this.collection.on("add", this.renderItem, this);     
+      this.collection.on("add", this.renderItem, this);
       this.collection.on("sync", this.sync, this);
       this.paginatedView = new directory.PaginatedView({
          collection: this.collection,
       });
 
    },
-   sync: function() {   
+   sync: function () {
       this.$(this.listTable).empty();
-      this.collection.each(this.renderItem, this);      
-   },   
+      this.collection.each(this.renderItem, this);
+   },
 
-   render: function () {     
+   render: function () {
       this.$el.html(this.template());
-      this.$("#pagination").append(this.paginatedView.el);     
+      this.$("#pagination").append(this.paginatedView.el);
       return this;
    },
 
    renderItem: function (item, collection, options) {
-      "use strict";      
+      "use strict";
       var itemView = new directory.TestRunListItemView({
          model: item
-      });     
+      });
       var renderedItem = itemView.render().el;
-      if (options.at == 0) {      
+      if (options.at == 0) {
          this.$(this.listTable).prepend(renderedItem);
       } else {
          this.$(this.listTable).append(renderedItem);
-      }     
+      }
    },
 
    deleteTestRun: function (e) {
@@ -49,7 +49,7 @@ directory.TestRunListView = Backbone.View.extend({
 
    showTestRun: function (e) {
       "use strict";
-      var testRunId = $(e.target).val();
+      var testRunId = $(e.target).data('value')
       directory.router.navigate("jobresult/" + testRunId, {trigger: true});
    }
 });
@@ -57,9 +57,9 @@ directory.TestRunListView = Backbone.View.extend({
 directory.TestRunListItemView = Backbone.View.extend({
    tagName: "tr",
 
-   initialize: function() {
-         this.model.bind('change', this.render, this);
-         this.model.bind('destroy', this.remove, this);
+   initialize: function () {
+      this.model.bind('change', this.render, this);
+      this.model.bind('destroy', this.remove, this);
    },
 
    render: function () {
@@ -108,6 +108,6 @@ directory.TestRunResultView = Backbone.View.extend({
 
    getTitle: function () {
       "use strict";
-      return 'Job result #' + this.deviceJobList.testRunId;
+      return 'Result #' + this.deviceJobList.testRunId;
    }
 });
