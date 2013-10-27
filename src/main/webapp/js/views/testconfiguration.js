@@ -56,7 +56,7 @@ directory.TestConfigurationView = Backbone.View.extend({
 directory.TestScriptSelectView = Backbone.View.extend({
 
    initialize: function () {
-      this.testScriptCollection = new directory.UserTestScripts();
+      this.testScriptCollection = new directory.TestScriptList();
       this.testScriptCollection.fetch();
       this.testScriptCollection.on("sync", this.render, this);
    },
@@ -70,7 +70,7 @@ directory.TestScriptSelectView = Backbone.View.extend({
 directory.TestTargetSelectView = Backbone.View.extend({
 
    initialize: function () {
-      this.testTargetCollection = new directory.UserTestTargets();
+      this.testTargetCollection = new directory.TestTargetList();
       this.testTargetCollection.fetch();
       this.testTargetCollection.on("sync", this.render, this);
    },

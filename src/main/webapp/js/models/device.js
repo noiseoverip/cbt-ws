@@ -2,7 +2,11 @@ directory.Device = Backbone.Model.extend({
    	parse: function (response) {
       	response.updatedMoment = moment(response.updated);
       	return response;
-   	}
+   	},
+
+      urlRoot: function() {
+         return CbtClient.getUserDevicesUrl();
+      }
 });
 
 directory.DeviceList = Backbone.Collection.extend({

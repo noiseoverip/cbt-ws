@@ -30,7 +30,8 @@ directory.Router = Backbone.Router.extend({
       "testconfiguration": "testconfiguration",
       "testscripts": "tests",
       "applications": "targets",
-      "jobresult/:id": "jobresult"
+      "jobresult/:id": "jobresult",
+      "device/:id":"device"
    },
 
    initialize: function () {
@@ -104,6 +105,13 @@ directory.Router = Backbone.Router.extend({
          animate: true,
          allowCancel: false
       }).open();
+   },
+
+   device: function(id) {
+       "use strict";
+       directory.device = new directory.Device({ id: id});      
+       directory.deviceView = new directory.DeviceView({model: directory.device});      
+       this.$content.html(directory.deviceView.el);
    }
 
 });
@@ -133,7 +141,8 @@ $(document).on("ready", function () {
       "TestTargetListItemView",
       "JobResultView",
       "PaginatedView",
-      "TestRunResultView"
+      "TestRunResultView",
+       "DeviceView"
    ],
 
          function () {

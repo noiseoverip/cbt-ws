@@ -1,4 +1,7 @@
 directory.DeviceListView = Backbone.View.extend({
+   events: {
+      "click .showDevice":"showDevice"
+   },
 
    initialize: function () {
       this.deviceList = new directory.DeviceList();
@@ -10,6 +13,11 @@ directory.DeviceListView = Backbone.View.extend({
    render: function () {
       this.$el.html(this.template());
       return this;
+   },
+
+   showDevice: function(e) {
+      var deviceId = $(e.target).val();     
+      directory.router.navigate("device/" + deviceId, {trigger: true});
    },
 
    renderDevice: function (item) {
@@ -29,6 +37,21 @@ directory.DeviceListItemView = Backbone.View.extend({
    },
 
    render: function () {
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+   }
+
+});
+
+directory.DeviceView = Backbone.View.extend({
+
+   initialize: function () {
+      this.model.fetch();
+      this.model.on("sync", this.render, this);
+   },
+
+   render: function () {
+      console.log("render");
       this.$el.html(this.template(this.model.toJSON()));
       return this;
    }
