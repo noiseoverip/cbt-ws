@@ -16,7 +16,6 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.jooq.Record;
-import org.jooq.Record2;
 import org.jooq.RecordMapper;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -24,9 +23,11 @@ import org.jooq.SelectJoinStep;
 
 import com.cbt.core.entity.Device;
 import com.cbt.core.entity.DeviceOs;
+import com.cbt.core.entity.DeviceSharing;
 import com.cbt.core.entity.DeviceType;
+import com.cbt.core.entity.User;
 import com.cbt.core.exceptions.CbtDaoException;
-import com.cbt.jooq.enums.DeviceState;
+import com.cbt.jooq.enums.DeviceDeviceState;
 import com.cbt.jooq.tables.records.DeviceRecord;
 import com.cbt.jooq.tables.records.DeviceTypeRecord;
 import com.cbt.ws.JooqDao;
@@ -72,10 +73,11 @@ public class DeviceDao extends JooqDao {
     */
    public Long add(Device device) {
       Long newDeviceId = getDbContext()
-            .insertInto(DEVICE, DEVICE.OWNER_ID, DEVICE.SERIAL_NUMBER, DEVICE.DEVICE_UNIQUE_ID, DEVICE.DEVICE_TYPE_ID,
+            .insertInto(DEVICE, DEVICE.DEVICE_OWNER_ID, DEVICE.DEVICE_SERIAL_NUMBER, DEVICE.DEVICE_UNIQUE_ID,
+                  DEVICE.DEVICE_TYPE_ID,
                   DEVICE.DEVICE_OS_ID)
             .values(device.getOwnerId(), device.getSerialNumber(), device.getDeviceUniqueId(),
-                  device.getDeviceTypeId(), device.getDeviceOsId()).returning(DEVICE.ID).fetchOne().getId();
+                  device.getDeviceTypeId(), device.getDeviceOsId()).returning(DEVICE.DEVICE_ID).fetchOne().getDeviceId();
       return newDeviceId;
    }
 
@@ -86,7 +88,7 @@ public class DeviceDao extends JooqDao {
     * @throws CbtDaoException
     */
    public void deleteDevice(Long deviceId) throws CbtDaoException {
-      int result = getDbContext().delete(DEVICE).where(DEVICE.ID.eq(deviceId)).execute();
+      int result = getDbContext().delete(DEVICE).where(DEVICE.DEVICE_ID.eq(deviceId)).execute();
       if (result != 1) {
          throw new CbtDaoException("Error while deleting device, result:" + result);
       }
@@ -98,13 +100,21 @@ public class DeviceDao extends JooqDao {
     * @param deviceId
     * @return
     */
-   public Device getDevice(Long deviceId) {
+   public Device getDevice(Long userId, Long deviceId) {
       Record record = getDbContext().select().from(DEVICE).join(DEVICE_OS)
             .on(DEVICE.DEVICE_OS_ID.eq(DEVICE_OS.DEVICE_OS_ID)).join(DEVICE_TYPE)
-            .on(DEVICE.DEVICE_TYPE_ID.eq(DEVICE_TYPE.DEVICE_TYPE_ID)).where(DEVICE.ID.eq(deviceId)).fetchOne();
-      Device device = record.into(Device.class);
-      device.setDeviceOs(record.into(DeviceOs.class));
-      device.setDeviceType(record.into(DeviceType.class));
+            .on(DEVICE.DEVICE_TYPE_ID.eq(DEVICE_TYPE.DEVICE_TYPE_ID)).join(USER).on(USER.ID.eq(DEVICE.DEVICE_OWNER_ID))
+            .where(DEVICE.DEVICE_ID.eq(deviceId)).and(DEVICE.DEVICE_OWNER_ID.eq(userId)).fetchOne();
+      Device device = null;
+      if (null != record) {
+         device = record.into(Device.class);
+         device.setDeviceOs(record.into(DeviceOs.class));
+         device.setDeviceType(record.into(DeviceType.class));
+         device.setOwner(record.into(User.class));
+         if (userId == device.getOwnerId()) {
+            device.setListerIsOwner(true);
+         }
+      }
       return device;
    }
 
@@ -126,11 +136,11 @@ public class DeviceDao extends JooqDao {
     * @param deviceType
     * @return
     */
-   public List<Device> getDevicesOfType(Long deviceType, DeviceState state) {
+   public List<Device> getDevicesOfType(Long deviceType, DeviceDeviceState state) {
       SelectJoinStep<Record> select = getDbContext().select().from(DEVICE);
       SelectConditionStep<Record> condition = select.where(DEVICE.DEVICE_TYPE_ID.eq(deviceType));
       if (null != state) {
-         condition = condition.and(DEVICE.STATE.eq(state));
+         condition = condition.and(DEVICE.DEVICE_STATE.eq(state));
       }
       List<Device> devices = condition.fetch().map(new RecordMapper<Record, Device>() {
          @Override
@@ -143,7 +153,9 @@ public class DeviceDao extends JooqDao {
    }
 
    public List<Device> getAllActive() {
-      List<Device> devices = getDbContext().select().from(DEVICE).where(DEVICE.STATE.eq(DeviceState.ONLINE)).fetch()
+      List<Device> devices = getDbContext().select().from(DEVICE)
+            .where(DEVICE.DEVICE_STATE.eq(DeviceDeviceState.ONLINE))
+            .fetch()
             .map(new RecordMapper<Record, Device>() {
                @Override
                public Device map(Record record) {
@@ -159,7 +171,7 @@ public class DeviceDao extends JooqDao {
     * @param userId
     * @return Devices owned by user and devices shared with user
     */
-   public List<Device> getAllAvailableForUser(Long userId, Long deviceType, DeviceState state) {
+   public List<Device> getAllAvailableForUser(Long userId, Long deviceType, DeviceDeviceState state) {
       List<Device> ownedDevices = getOwnedByUser(userId, deviceType, state);
       List<Device> sharedDevices = getSharedWithUser(userId, deviceType, state);
       if (null != ownedDevices) {
@@ -172,35 +184,35 @@ public class DeviceDao extends JooqDao {
       return ownedDevices;
    }
 
-   public List<Device> getOwnedByUser(Long userId, Long deviceType, DeviceState state) {
+   public List<Device> getOwnedByUser(Long userId, Long deviceType, DeviceDeviceState state) {
       SelectJoinStep<Record> select = getDbContext().select().from(DEVICE);
-      SelectConditionStep<Record> condition = select.where(DEVICE.OWNER_ID.eq(userId));
+      SelectConditionStep<Record> condition = select.where(DEVICE.DEVICE_OWNER_ID.eq(userId));
       if (null != deviceType) {
          condition = condition.and(DEVICE.DEVICE_TYPE_ID.eq(deviceType));
       }
       if (null != state) {
-         condition = condition.and(DEVICE.STATE.eq(state));
+         condition = condition.and(DEVICE.DEVICE_STATE.eq(state));
       }
       List<Device> devices = condition.fetch().map(new RecordMapper<Record, Device>() {
          @Override
          public Device map(Record record) {
             Device device = record.into(Device.class);
-            device.setOwner(true);
+            device.setListerIsOwner(true);
             return device;
          }
       });
       return devices;
    }
 
-   public List<Device> getSharedWithUser(Long userId, Long deviceType, DeviceState state) {
+   public List<Device> getSharedWithUser(Long userId, Long deviceType, DeviceDeviceState state) {
       SelectJoinStep<Record> select = getDbContext().select().from(DEVICE).join(DEVICE_SHARING)
-            .on(DEVICE_SHARING.DEVICE_ID.eq(DEVICE.ID));
-      SelectConditionStep<Record> condition = select.where(DEVICE_SHARING.USER_ID.eq(userId));
+            .on(DEVICE_SHARING.DEVICE_SHARING_DEVICE_ID.eq(DEVICE.DEVICE_ID));
+      SelectConditionStep<Record> condition = select.where(DEVICE_SHARING.DEVICE_SHARING_USER_ID.eq(userId));
       if (null != deviceType) {
          condition = condition.and(DEVICE.DEVICE_TYPE_ID.eq(deviceType));
       }
       if (null != state) {
-         condition = condition.and(DEVICE.STATE.eq(state));
+         condition = condition.and(DEVICE.DEVICE_STATE.eq(state));
       }
       List<Device> devices = condition.fetch().map(new RecordMapper<Record, Device>() {
          @Override
@@ -217,10 +229,19 @@ public class DeviceDao extends JooqDao {
     * @param deviceId
     * @return
     */
-   public List<Map<String, Object>> getSharedWith(Long deviceId) {
-      Result<Record2<Long, String>> result = getDbContext().select(USER.ID, USER.NAME).from(USER).join(DEVICE_SHARING)
-            .on(DEVICE_SHARING.USER_ID.eq(USER.ID)).where(DEVICE_SHARING.DEVICE_ID.eq(deviceId)).fetch();
-      return result.intoMaps();
+   public List<DeviceSharing> getSharedWith(Long deviceId) {
+      List<DeviceSharing> result = getDbContext().select().from(DEVICE_SHARING).join(USER)
+            .on(USER.ID.eq(DEVICE_SHARING.DEVICE_SHARING_USER_ID))
+            .where(DEVICE_SHARING.DEVICE_SHARING_DEVICE_ID.eq(deviceId))
+            .fetch(new RecordMapper<Record, DeviceSharing>() {
+               @Override
+               public DeviceSharing map(Record record) {
+                  DeviceSharing sharing = record.into(DeviceSharing.class);
+                  sharing.setUser(record.into(User.class));
+                  return sharing;
+               }
+            });
+      return result;
    }
 
    /**
@@ -264,9 +285,9 @@ public class DeviceDao extends JooqDao {
    public void updateDevice(Device device) throws CbtDaoException {
       int count = getDbContext().update(DEVICE).set(DEVICE.DEVICE_TYPE_ID, device.getDeviceTypeId())
             .set(DEVICE.DEVICE_OS_ID, device.getDeviceOsId())
-            .set(DEVICE.STATE, DeviceState.valueOf(device.getState().toString()))
-            .set(DEVICE.UPDATED, new Timestamp(Calendar.getInstance().getTimeInMillis()))
-            .where(DEVICE.ID.eq(device.getId())).execute();
+            .set(DEVICE.DEVICE_STATE, DeviceDeviceState.valueOf(device.getState().toString()))
+            .set(DEVICE.DEVICE_UPDATED, new Timestamp(Calendar.getInstance().getTimeInMillis()))
+            .where(DEVICE.DEVICE_ID.eq(device.getId())).execute();
       if (count != 1) {
          throw new CbtDaoException("Could not update device");
       }
@@ -279,7 +300,12 @@ public class DeviceDao extends JooqDao {
     * @param userId
     */
    public void addSharing(Long deviceId, Long userId) {
-      getDbContext().insertInto(DEVICE_SHARING, DEVICE_SHARING.DEVICE_ID, DEVICE_SHARING.USER_ID)
+      getDbContext()
+            .insertInto(DEVICE_SHARING, DEVICE_SHARING.DEVICE_SHARING_DEVICE_ID, DEVICE_SHARING.DEVICE_SHARING_USER_ID)
             .values(deviceId, userId).execute();
+   }
+
+   public void deleteSharing(Long shareId) {
+      getDbContext().delete(DEVICE_SHARING).where(DEVICE_SHARING.DEVICE_SHARING_ID.eq(shareId)).execute();
    }
 }

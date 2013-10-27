@@ -1,13 +1,14 @@
 package com.cbt.ws.workers;
 
-import com.cbt.core.entity.Device;
-import com.cbt.core.exceptions.CbtDaoException;
-import com.cbt.jooq.enums.DeviceState;
-import com.cbt.ws.dao.DeviceDao;
-import com.google.inject.Inject;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
-import java.util.List;
+import com.cbt.core.entity.Device;
+import com.cbt.core.exceptions.CbtDaoException;
+import com.cbt.jooq.enums.DeviceDeviceState;
+import com.cbt.ws.dao.DeviceDao;
+import com.google.inject.Inject;
 
 /**
  * Runnable for checking device status updates and changing their state to OFFLINE if update was not received on time
@@ -16,8 +17,8 @@ import java.util.List;
  */
 public class DeviceStateMonitor implements Runnable {
    private final Logger logger = Logger.getLogger(DeviceStateMonitor.class);
-   private DeviceDao mDeviceDao;
-   private long timeDeviceTimeout = 1 * 60 * 1000;
+   private final DeviceDao mDeviceDao;
+   private final long timeDeviceTimeout = 1 * 60 * 1000;
 
    @Inject
    public DeviceStateMonitor(DeviceDao deviceDao) {
@@ -36,7 +37,7 @@ public class DeviceStateMonitor implements Runnable {
             if (timePassed >= timeDeviceTimeout) {
                logger.debug("Device id:" + device.getId() + " timeouted, last seen " + timePassed / 1000
                      + " seconds ago");
-               device.setState(DeviceState.OFFLINE);
+               device.setState(DeviceDeviceState.OFFLINE);
                try {
                   mDeviceDao.updateDevice(device);
                } catch (CbtDaoException e) {

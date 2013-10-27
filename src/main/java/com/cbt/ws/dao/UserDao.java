@@ -1,22 +1,24 @@
 package com.cbt.ws.dao;
 
-import com.cbt.core.entity.User;
-import com.cbt.jooq.tables.records.UserRecord;
-import com.cbt.ws.JooqDao;
+import static com.cbt.jooq.tables.Device.DEVICE;
+import static com.cbt.jooq.tables.DeviceJob.DEVICE_JOB;
+import static com.cbt.jooq.tables.Testrun.TESTRUN;
+import static com.cbt.jooq.tables.User.USER;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.Map;
-
-import static com.cbt.jooq.tables.Device.DEVICE;
-import static com.cbt.jooq.tables.DeviceJob.DEVICE_JOB;
-import static com.cbt.jooq.tables.Testrun.TESTRUN;
-import static com.cbt.jooq.tables.User.USER;
+import com.cbt.core.entity.User;
+import com.cbt.jooq.tables.records.UserRecord;
+import com.cbt.ws.JooqDao;
 
 /**
  * User Dao
@@ -50,9 +52,7 @@ public class UserDao extends JooqDao {
     * @return
     */
    public User getUserByName(String name) {
-      UserRecord record = (UserRecord) getDbContext().select().from(USER).where(USER.NAME.eq(name)).fetchOne();
-      User user = record.into(User.class);
-      return user;
+      return getDbContext().select().from(USER).where(USER.NAME.eq(name)).fetchOneInto(User.class);
    }
 
    /**
@@ -88,7 +88,8 @@ public class UserDao extends JooqDao {
     */
    public List<Map<String, Object>> getUserHostedTestStats(Long userId) {
       Result<Record2<Long, Integer>> result = getDbContext().select(DEVICE_JOB.DEVICE_JOB_DEVICE_ID, DSL.count().as("runs"))
-            .from(DEVICE_JOB).join(DEVICE).on(DEVICE_JOB.DEVICE_JOB_DEVICE_ID.eq(DEVICE.ID)).where(DEVICE.OWNER_ID.eq(userId))
+.from(DEVICE_JOB).join(DEVICE)
+            .on(DEVICE_JOB.DEVICE_JOB_DEVICE_ID.eq(DEVICE.DEVICE_ID)).where(DEVICE.DEVICE_OWNER_ID.eq(userId))
             .groupBy(DEVICE_JOB.DEVICE_JOB_DEVICE_ID).fetch();
       return result.intoMaps();
    }

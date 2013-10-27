@@ -38,6 +38,11 @@ var CbtClient = {
       return CbtClient.parseUrl('/testrun');
    },
 
+   getDeviceSharing: function (id) {
+      "use strict";
+      return CbtClient.parseUrl('/device/' + id + "/share");
+   },
+
    getUserTestProfileUrl: function () {
       "use strict";
       return CbtClient.parseUrl('/testprofile');
@@ -76,6 +81,25 @@ var CbtClient = {
    getDeviceJobResult: function (deviceJobId) {
       "use strict";
       return CbtClient.parseUrl('/devicejob/' + deviceJobId + '/result');
+   },
+
+   // callback: success, returnData
+   createDeviceShare : function(deviceId, userToShareWith, callback) {
+       $.ajax({
+         type: 'PUT',        
+         url: CbtClient.getDeviceSharing(deviceId),         
+         data: {username : userToShareWith},
+         success: function (data, textStatus, jqXHR) {
+            if (callback) {
+               callback(true, data);
+            }
+         },
+         error: function (data, textStatus, jqXHR) {            
+             if (callback) {
+               callback(false, data);
+            }
+         }
+      });
    },
 
    createTestRun: function (testConfigId, callback) {

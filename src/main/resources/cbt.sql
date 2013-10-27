@@ -1,9 +1,9 @@
-   -- phpMyAdmin SQL Dump
+-- phpMyAdmin SQL Dump
 -- version 4.0.4
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 21, 2013 at 08:26 PM
+-- Generation Time: Oct 27, 2013 at 06:34 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.12
 
@@ -20,17 +20,17 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `device` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `serial_number` char(255) NOT NULL,
-  `owner_id` bigint(20) NOT NULL,
+  `device_id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `device_serial_number` char(255) NOT NULL,
+  `device_owner_id` bigint(20) NOT NULL,
   `device_unique_id` char(255) NOT NULL,
   `device_type_id` bigint(20) NOT NULL,
-  `state` enum('ONLINE','OFFLINE') NOT NULL DEFAULT 'OFFLINE',
+  `device_state` enum('ONLINE','OFFLINE') NOT NULL DEFAULT 'OFFLINE',
   `device_os_id` bigint(50) NOT NULL,
-  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
+  `device_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`device_id`),
   UNIQUE KEY `deviceunique_id` (`device_unique_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=248 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
 
 -- --------------------------------------------------------
 
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `device_job` (
   `device_job_meta` text,
   PRIMARY KEY (`device_job_id`),
   KEY `device_id` (`device_job_device_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=894 ;
 
 -- --------------------------------------------------------
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `device_job_result` (
   `tests_errors` int(11) NOT NULL,
   `output` text NOT NULL,
   PRIMARY KEY (`devicejobresult_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=776 ;
 
 -- --------------------------------------------------------
 
@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS `device_job_result` (
 CREATE TABLE IF NOT EXISTS `device_os` (
   `device_os_id` bigint(11) NOT NULL AUTO_INCREMENT,
   `device_os_name` char(255) NOT NULL,
-  PRIMARY KEY (`deviceos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`device_os_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -88,11 +88,11 @@ CREATE TABLE IF NOT EXISTS `device_os` (
 
 CREATE TABLE IF NOT EXISTS `device_sharing` (
   `device_sharing_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `device_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
+  `device_sharing_device_id` bigint(20) NOT NULL,
+  `device_sharing_user_id` bigint(20) NOT NULL,
   PRIMARY KEY (`device_sharing_id`),
-  UNIQUE KEY `device_id` (`device_id`,`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  UNIQUE KEY `device_id` (`device_sharing_device_id`,`device_sharing_user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=27 ;
 
 -- --------------------------------------------------------
 
@@ -105,8 +105,8 @@ CREATE TABLE IF NOT EXISTS `device_type` (
   `device_type_model` char(100) NOT NULL,
   `device_type_manufacture` char(100) NOT NULL,
   `device_type_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`device_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `testconfig` (
   `metadata` longtext CHARACTER SET utf16 COLLATE utf16_unicode_ci,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_config_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=46 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `testprofile` (
   `testprofile_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `testprofile_metadata` longtext,
   PRIMARY KEY (`testprofile_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=72 ;
 
 -- --------------------------------------------------------
 
@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `testprofile_devices` (
   `devicetype_id` bigint(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `testprofile_id` (`testprofile_id`,`devicetype_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=105 ;
 
 -- --------------------------------------------------------
 
@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `testrun` (
   `testrun_status` enum('WAITING','RUNNING','FAILED','PASSED') NOT NULL DEFAULT 'WAITING',
   PRIMARY KEY (`testrun_id`),
   KEY `config_id` (`testrun_testconfig_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=158 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
 
 -- --------------------------------------------------------
 
@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `testscript` (
   `testscript_classes` text,
   `testscript_updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`testscript_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 -- --------------------------------------------------------
 
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `testtarget` (
   `testtarget_updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `testtarget_metadata` text,
   PRIMARY KEY (`testtarget_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=46 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` char(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Constraints for dumped tables

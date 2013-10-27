@@ -1,4 +1,5 @@
-<div class="panel panel-default">
+<div class="panel panel-primary">
+	<div class="panel-heading">Device info</div>
 	 <table class="table">
 	 	<tbody>
 	 		<tr>
@@ -10,16 +11,23 @@
 	 			<td><%= serialNumber %></td>
 	 		</tr>
 	 		<tr>
-	 			<td>State (last updates)</td>
-	 			<td><%= state %> ( <%= updated %> )</td>
+	 			<td>State</td>
+	 			<td><%= state %> ( last update: <%= updatedMoment.fromNow() %> )</td>
 	 		</tr>	 		
 	 		<tr>
 	 			<td>OS</td>
-	 			<td><%= deviceOsId %></td>
+	 			<td><%= deviceOs.name %></td>
 	 		</tr>
 	 		<tr>
 	 			<td>Type</td>
-	 			<td><%= deviceTypeId %></td>
+	 			<td><%= deviceType.manufacture %> - <%= deviceType.model %></td>
 	 		</tr>
+	 		<tr>
+	 			<td>Owner</td>
+	 			<td><%= owner.name %></td>
+	 		</tr>	 		
 	 	</tbody>
-	 </table>
+	 </table>	 
+</div>
+
+<div class="sharing"></div>

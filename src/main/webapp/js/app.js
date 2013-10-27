@@ -109,7 +109,7 @@ directory.Router = Backbone.Router.extend({
 
    device: function(id) {
        "use strict";
-       directory.device = new directory.Device({ id: id});      
+       directory.device = new directory.Device({ id: id });      
        directory.deviceView = new directory.DeviceView({model: directory.device});      
        this.$content.html(directory.deviceView.el);
    }
@@ -142,7 +142,9 @@ $(document).on("ready", function () {
       "JobResultView",
       "PaginatedView",
       "TestRunResultView",
-       "DeviceView"
+      "DeviceView",
+      "DeviceShareListView",
+      "DeviceShareListItemView"
    ],
 
          function () {

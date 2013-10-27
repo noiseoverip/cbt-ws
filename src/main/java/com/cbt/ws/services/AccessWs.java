@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,6 +31,7 @@ import org.jooq.exception.DataAccessException;
 import com.cbt.core.entity.Device;
 import com.cbt.core.entity.DeviceJob;
 import com.cbt.core.entity.DeviceJobResult;
+import com.cbt.core.entity.DeviceSharing;
 import com.cbt.core.entity.DeviceType;
 import com.cbt.core.entity.TestConfig;
 import com.cbt.core.entity.TestPackage;
@@ -40,9 +42,9 @@ import com.cbt.core.entity.User;
 import com.cbt.core.entity.complex.TestConfigComplex;
 import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.core.utils.Utils;
+import com.cbt.jooq.enums.DeviceDeviceState;
 import com.cbt.jooq.enums.DeviceJobDeviceJobStatus;
 import com.cbt.jooq.enums.DeviceJobResultState;
-import com.cbt.jooq.enums.DeviceState;
 import com.cbt.jooq.enums.TestrunTestrunStatus;
 import com.cbt.ws.dao.CheckoutDao;
 import com.cbt.ws.dao.DeviceDao;
@@ -129,6 +131,17 @@ public class AccessWs {
       mDeviceJobResultDao.delete(deviceJobId);
    }
 
+   @DELETE
+   @Path("/device/{deviceId}/share/{shareId}")
+   public void deleteSharing(@PathParam("deviceId") Long deviceId, @PathParam("shareId") Long shareId)
+         throws CbtDaoException {
+      Device device = mDeviceDao.getDevice(getUserId(), deviceId);
+      if (null == device) {
+         throw new WebApplicationException(Status.UNAUTHORIZED);
+      }
+      mDeviceDao.deleteSharing(shareId);
+   }
+
    @GET
    @Path("/user/all")
    @Produces(MediaType.APPLICATION_JSON)
@@ -146,7 +159,7 @@ public class AccessWs {
    @Path("/device/{deviceId}")
    @Produces(MediaType.APPLICATION_JSON)
    public Device getDevice(@PathParam("deviceId") Long deviceId) {
-      return mDeviceDao.getDevice(deviceId);
+      return mDeviceDao.getDevice(getUserId(), deviceId);
    }
 
    // TODO: change to GET and use UID as parameter
@@ -207,7 +220,7 @@ public class AccessWs {
    @GET
    @Path("/device/{deviceId}/share")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<Map<String, Object>> getDeviceSharingInfo(@PathParam("deviceId") Long deviceId) {
+   public List<DeviceSharing> getDeviceSharingInfo(@PathParam("deviceId") Long deviceId) {
       return mDeviceDao.getSharedWith(deviceId);
    }
 
@@ -325,7 +338,7 @@ public class AccessWs {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    @Path("/device")
-   public List<Device> getUserDevices(@QueryParam("state") DeviceState state) {
+   public List<Device> getUserDevices(@QueryParam("state") DeviceDeviceState state) {
       return mDeviceDao.getAllAvailableForUser(getUserId(), null, state);
    }
 
@@ -454,6 +467,23 @@ public class AccessWs {
    @Path("/device/{deviceId}/share/{userShareWithId}")
    public void putDeviceShare(@PathParam("deviceId") Long deviceId, @PathParam("userShareWithId") Long userShareWithId) {
       mDeviceDao.addSharing(deviceId, userShareWithId);
+   }
+
+   @PUT
+   @Path("/device/{deviceId}/share")
+   public void putNewShare(@PathParam("deviceId") Long deviceId, @FormParam("username") String shareForUserName) {
+      User userToShareTo = mUserDao.getUserByName(shareForUserName);
+      if (null == userToShareTo) {
+         throw new WebApplicationException(Response.status(Status.NOT_FOUND).type("text/plain")
+               .entity("User " + shareForUserName + " was not found !").build());
+      }
+      Device device = mDeviceDao.getDevice(getUserId(), deviceId);
+      if (null == device) {
+         throw new WebApplicationException(Response.status(Status.NOT_FOUND).type("text/plain")
+               .entity("Specified device not found or un-authorized").build());
+      }
+
+      mDeviceDao.addSharing(deviceId, userToShareTo.getId());
    }
 
    /**

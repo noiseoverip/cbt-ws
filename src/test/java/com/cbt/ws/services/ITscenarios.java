@@ -22,9 +22,9 @@ import com.cbt.core.entity.DeviceJobResult;
 import com.cbt.core.entity.TestConfig;
 import com.cbt.core.entity.TestProfile;
 import com.cbt.core.entity.complex.TestConfigComplex;
+import com.cbt.jooq.enums.DeviceDeviceState;
 import com.cbt.jooq.enums.DeviceJobDeviceJobStatus;
 import com.cbt.jooq.enums.DeviceJobResultState;
-import com.cbt.jooq.enums.DeviceState;
 import com.cbt.jooq.enums.TestprofileTestprofileMode;
 import com.cbt.jooq.enums.TestrunTestrunStatus;
 import com.cbt.ws.GuiceContextListener;
@@ -101,13 +101,13 @@ public class ITscenarios extends JerseyTest {
       assertEquals(device, deviceByUid);
 
       // Update device
-      device.setState(DeviceState.ONLINE);
+      device.setState(DeviceDeviceState.ONLINE);
       ClientResponse responseUpdate = getWebResource().path("device/" + deviceId).type(MediaType.APPLICATION_JSON_TYPE)
             .post(ClientResponse.class, device);
       assertEquals(ClientResponse.Status.NO_CONTENT.getStatusCode(), responseUpdate.getStatus());
       Device deviceAfterUpdate = getWebResource().path("device/" + deviceId).accept(MediaType.APPLICATION_JSON)
             .get(Device.class);
-      assertEquals(deviceAfterUpdate.getState(), DeviceState.ONLINE);
+      assertEquals(deviceAfterUpdate.getState(), DeviceDeviceState.ONLINE);
 
       // Delete device
       ClientResponse deleteResponse = getWebResource().path("device/" + deviceId).delete(ClientResponse.class);
@@ -145,7 +145,7 @@ public class ITscenarios extends JerseyTest {
          assertTrue(deviceId > 0);
          device.setId(deviceId);
          // Update device state to ONLINE
-         device.setState(DeviceState.ONLINE);
+         device.setState(DeviceDeviceState.ONLINE);
          ClientResponse deviceUpdateResponse = getWebResource().path("device").path(String.valueOf(device.getId()))
                .type(MediaType.APPLICATION_JSON_TYPE).accept(MediaType.TEXT_HTML)
                .post(ClientResponse.class, device);

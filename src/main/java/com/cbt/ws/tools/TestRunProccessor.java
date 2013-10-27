@@ -1,22 +1,24 @@
 package com.cbt.ws.tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.apache.log4j.Logger;
+
 import com.cbt.core.entity.Device;
 import com.cbt.core.entity.DeviceJob;
 import com.cbt.core.entity.TestScript;
 import com.cbt.core.entity.complex.TestRunComplex;
-import com.cbt.jooq.enums.DeviceState;
+import com.cbt.jooq.enums.DeviceDeviceState;
 import com.cbt.jooq.enums.TestprofileTestprofileMode;
 import com.cbt.ws.dao.DeviceDao;
 import com.cbt.ws.dao.DevicejobDao;
 import com.cbt.ws.dao.TestRunDao;
 import com.cbt.ws.dao.TestScriptDao;
 import com.cbt.ws.exceptions.CbtNoDevicesException;
-import org.apache.log4j.Logger;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Test run logic handler
@@ -25,10 +27,10 @@ import java.util.List;
  */
 public class TestRunProccessor {
    private final Logger mLogger = Logger.getLogger(TestRunProccessor.class);
-   private TestRunDao mTestrunDao;
-   private DevicejobDao mDevicejobDao;
-   private DeviceDao mDeviceDao;
-   private TestScriptDao mTestScriptDao;
+   private final TestRunDao mTestrunDao;
+   private final DevicejobDao mDevicejobDao;
+   private final DeviceDao mDeviceDao;
+   private final TestScriptDao mTestScriptDao;
 
    @Inject
    public TestRunProccessor(TestRunDao testRunDao, DevicejobDao devicejobDao, DeviceDao deviceDao,
@@ -38,8 +40,8 @@ public class TestRunProccessor {
       mDeviceDao = deviceDao;
       mTestScriptDao = testScripDao;
    }
-   
-   // TODO: need to redo this logic 
+
+   // TODO: need to redo this logic
    /**
     * Get devices available for specified user and specified testRunId
     *
@@ -77,7 +79,7 @@ public class TestRunProccessor {
       List<Device> devicesAll = new ArrayList<Device>();
       List<Long> deviceTypes = testRunComplex.getDeviceTypes();
       for (Long deviceType : deviceTypes) {
-         List<Device> devices = mDeviceDao.getAllAvailableForUser(userId, deviceType, DeviceState.ONLINE);
+         List<Device> devices = mDeviceDao.getAllAvailableForUser(userId, deviceType, DeviceDeviceState.ONLINE);
          if (null != devices && devices.size() > 0) {
             // Do this for each of device types
             int numberOfAvailableDevices = devices.size();
@@ -141,7 +143,7 @@ public class TestRunProccessor {
       List<Device> devicesAll = new ArrayList<Device>();
       List<Long> deviceTypes = testRunComplex.getDeviceTypes();
       for (Long deviceType : deviceTypes) {
-         List<Device> devices = mDeviceDao.getAllAvailableForUser(userId, deviceType, DeviceState.ONLINE);
+         List<Device> devices = mDeviceDao.getAllAvailableForUser(userId, deviceType, DeviceDeviceState.ONLINE);
          if (null != devices && devices.size() > 0) {
             for (Device device : devices) {
                DeviceJob job = new DeviceJob();

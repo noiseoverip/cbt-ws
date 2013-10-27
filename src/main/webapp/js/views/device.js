@@ -44,15 +44,32 @@ directory.DeviceListItemView = Backbone.View.extend({
 });
 
 directory.DeviceView = Backbone.View.extend({
+   events: {
+         "click .deleteShare": "deleteShare"
+   },  
 
    initialize: function () {
       this.model.fetch();
-      this.model.on("sync", this.render, this);
+      this.model.on("sync", this.checkIfOwner, this);      
    },
 
-   render: function () {
-      console.log("render");
-      this.$el.html(this.template(this.model.toJSON()));
+   checkIfOwner: function() {
+      if (this.model.get("listerIsOwner") == true) {
+         this.render();
+         this.deviceShareList = new directory.DeviceShareList([], { deviceId: this.model.get("id")});  
+         this.deviceShareView = new directory.DeviceShareListView({
+            el: this.$el.find("div.sharing"),       
+            model: this.model,
+            collection: this.deviceShareList
+         });
+         this.deviceShareList.fetch();
+      } else {
+         this.render();
+      }
+   },
+
+   render: function () {      
+      this.$el.html(this.template(this.model.toJSON()));  
       return this;
    }
 
