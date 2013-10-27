@@ -2,6 +2,7 @@ directory.DeviceListView = Backbone.View.extend({
 
    initialize: function () {
       this.deviceList = new directory.DeviceList();
+      this.deviceList.showOnlyOnline=true; //todo: change to be triggered by events
       this.deviceList.fetch();
       this.deviceList.on("add", this.renderDevice, this);
    },

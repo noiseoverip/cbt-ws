@@ -1,13 +1,18 @@
 package com.cbt.ws.dao;
 
-import com.cbt.core.entity.Device;
-import com.cbt.core.entity.DeviceType;
-import com.cbt.core.exceptions.CbtDaoException;
-import com.cbt.jooq.enums.DeviceState;
-import com.cbt.jooq.tables.records.DeviceRecord;
-import com.cbt.jooq.tables.records.DeviceTypeRecord;
-import com.cbt.ws.JooqDao;
-import com.google.inject.Inject;
+import static com.cbt.jooq.tables.Device.DEVICE;
+import static com.cbt.jooq.tables.DeviceSharing.DEVICE_SHARING;
+import static com.cbt.jooq.tables.DeviceType.DEVICE_TYPE;
+import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
+import static com.cbt.jooq.tables.User.USER;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -16,17 +21,14 @@ import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 
-import javax.sql.DataSource;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-
-import static com.cbt.jooq.tables.Device.DEVICE;
-import static com.cbt.jooq.tables.DeviceSharing.DEVICE_SHARING;
-import static com.cbt.jooq.tables.DeviceType.DEVICE_TYPE;
-import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
-import static com.cbt.jooq.tables.User.USER;
+import com.cbt.core.entity.Device;
+import com.cbt.core.entity.DeviceType;
+import com.cbt.core.exceptions.CbtDaoException;
+import com.cbt.jooq.enums.DeviceState;
+import com.cbt.jooq.tables.records.DeviceRecord;
+import com.cbt.jooq.tables.records.DeviceTypeRecord;
+import com.cbt.ws.JooqDao;
+import com.google.inject.Inject;
 
 /**
  * DAO for device related data operations
@@ -176,7 +178,9 @@ public class DeviceDao extends JooqDao {
       List<Device> devices = condition.fetch().map(new RecordMapper<Record, Device>() {
          @Override
          public Device map(Record record) {
-            return record.into(Device.class);
+            Device device = record.into(Device.class);
+            device.setOwner(true);
+            return device;
          }
       });
       return devices;

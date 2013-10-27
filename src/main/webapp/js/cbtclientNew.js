@@ -9,7 +9,7 @@ var CbtClient = {
    cbtRipUrl: "http://127.0.0.1:8080/rip",
 
    // User should be set after authentication
-   userId: 1,
+   userId: 2,
 
    getUserDevices: function () {
       "use strict";
@@ -25,7 +25,7 @@ var CbtClient = {
 
    getUserDevicesUrl: function () {
       "use strict";
-      return CbtClient.parseUrl('/user/{userId}/device');
+      return CbtClient.parseUrl('/device');
    },
 
    getUserTestConfigsUrl: function () {

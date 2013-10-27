@@ -69,7 +69,6 @@ public class ITscenarios extends JerseyTest {
    public void testAddGetUpdateGetByUidDevice() throws InterruptedException {
       // Create device object for testing
       Device device = new Device();
-      device.setUserId(1L);
       device.setDeviceTypeId(1L);
       device.setDeviceOsId(1L);
       device.setSerialNumber(String.valueOf(new Random().nextLong()));
@@ -306,7 +305,6 @@ public class ITscenarios extends JerseyTest {
       Device[] devices = new Device[number];
       for (int i = 0; i < number; i++) {
          Device device = new Device();
-         device.setUserId(testUser1Id);
          device.setDeviceTypeId(1L);
          device.setDeviceOsId(1L);
          device.setSerialNumber(UUID.randomUUID().toString());

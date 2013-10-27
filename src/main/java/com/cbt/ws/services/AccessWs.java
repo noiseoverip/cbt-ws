@@ -42,6 +42,7 @@ import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.core.utils.Utils;
 import com.cbt.jooq.enums.DeviceJobDeviceJobStatus;
 import com.cbt.jooq.enums.DeviceJobResultState;
+import com.cbt.jooq.enums.DeviceState;
 import com.cbt.jooq.enums.TestrunTestrunStatus;
 import com.cbt.ws.dao.CheckoutDao;
 import com.cbt.ws.dao.DeviceDao;
@@ -323,9 +324,9 @@ public class AccessWs {
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   @Path("/user/{userId}/device")
-   public List<Device> getUserDevices(@PathParam("userId") Long userId) {
-      return mDeviceDao.getAllAvailableForUser(userId, null, null);
+   @Path("/device")
+   public List<Device> getUserDevices(@QueryParam("state") DeviceState state) {
+      return mDeviceDao.getAllAvailableForUser(getUserId(), null, state);
    }
 
    /**
