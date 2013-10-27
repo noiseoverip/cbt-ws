@@ -1,8 +1,7 @@
-<div>State: <%= state %></div>
-<div>Tests executed: <%= testsRun %></div>
-<div>Tests failed: <%= testsFailed %></div>
-<div>Errors: <%= testsErrors %></div>
-<div>Output:</div>
-<div>
-   <pre><%= output %></pre>
-</div>
+<td><%= devicejobId %></td>
+<td><span class="label <%= labelClass %>"><%= state %></span></td>
+<td>--</td>
+<td><%= testsRun %></td>
+<td><%= testsFailed %></td>
+<td><%= testsErrors %></td>
+<td><a href="#" class="disabled showOutput" onclick="return false;">Show</a></td>

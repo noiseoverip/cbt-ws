@@ -161,3 +161,23 @@ function ConvertFormToJSON(form) {
 
    return json;
 }
+
+function getStatusCssClass(state) {
+   "use strict";
+   var clazz;
+   switch (state) {
+      case "PASSED":
+         clazz = "success";
+         break;
+      case "FAILED":
+         clazz = "danger";
+         break;
+      case "RUNNING":
+         clazz = "primary";
+         break;
+      default:
+         clazz = "default";
+         break;
+   }
+   return clazz;
+}

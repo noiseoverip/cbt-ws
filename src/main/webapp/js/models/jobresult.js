@@ -1,4 +1,10 @@
-directory.JobResult = Backbone.Model.extend({});
+directory.JobResult = Backbone.Model.extend({
+   parse: function(response) {
+      "use strict";
+      response.labelClass = "label-" + getStatusCssClass(response.state);
+      return response;
+   }
+});
 directory.JobResultList = Backbone.Collection.extend({
    model: directory.JobResult,
 

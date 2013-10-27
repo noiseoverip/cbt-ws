@@ -1,1 +1,1 @@
-CbtClient.cbtRipUrl = "http://127.0.0.1:9090/rip";
+CbtClient.cbtRipUrl = "http://127.0.0.1:8080/rip";

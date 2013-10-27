@@ -13,16 +13,18 @@ directory.TestRunListView = Backbone.View.extend({
       this.collection.on("add", this.renderItem, this);
       this.collection.on("sync", this.sync, this);
       this.paginatedView = new directory.PaginatedView({
-         collection: this.collection,
+         collection: this.collection
       });
 
    },
    sync: function () {
+      "use strict";
       this.$(this.listTable).empty();
       this.collection.each(this.renderItem, this);
    },
 
    render: function () {
+      "use strict";
       this.$el.html(this.template());
       this.$("#pagination").append(this.paginatedView.el);
       return this;
@@ -49,7 +51,7 @@ directory.TestRunListView = Backbone.View.extend({
 
    showTestRun: function (e) {
       "use strict";
-      var testRunId = $(e.target).data('value')
+      var testRunId = $(e.target).data('value');
       directory.router.navigate("jobresult/" + testRunId, {trigger: true});
    }
 });
@@ -58,6 +60,7 @@ directory.TestRunListItemView = Backbone.View.extend({
    tagName: "tr",
 
    initialize: function () {
+      "use strict";
       this.model.bind('change', this.render, this);
       this.model.bind('destroy', this.remove, this);
    },
@@ -70,8 +73,6 @@ directory.TestRunListItemView = Backbone.View.extend({
 });
 
 directory.TestRunResultView = Backbone.View.extend({
-
-   template: '',
 
    initialize: function (options) {
       "use strict";
@@ -92,7 +93,7 @@ directory.TestRunResultView = Backbone.View.extend({
    renderItem: function (item) {
       "use strict";
       var jobResultListView = new directory.JobResultListView({deviceJobId: item.id});
-      this.$el.append(jobResultListView.render().el);
+      this.$el.find("table.devicejobresults").append(jobResultListView.render().el);
    },
 
    refresh: function () {

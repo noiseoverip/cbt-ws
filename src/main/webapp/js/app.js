@@ -132,7 +132,8 @@ $(document).on("ready", function () {
       "TestTargetListView",
       "TestTargetListItemView",
       "JobResultView",
-      "PaginatedView"
+      "PaginatedView",
+      "TestRunResultView"
    ],
 
          function () {

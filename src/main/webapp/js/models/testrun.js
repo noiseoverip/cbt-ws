@@ -3,22 +3,7 @@ directory.TestRun = Backbone.Model.extend({
       "use strict";
       response.createdMoment = moment(response.created);
       response.updatedMoment = moment(response.updated);
-
-      switch (response.status) {
-         case "PASSED":
-            response.btnClass = "btn-success";
-            break;
-         case "FAILED":
-            response.btnClass = "btn-danger";
-            break;
-         case "RUNNING":
-            response.btnClass = "btn-primary";
-            break;
-         default:
-            response.btnClass = "btn-default";
-            break;
-      }
-
+      response.btnClass = "btn-" + getStatusCssClass(response.status);
       return response;
    }
 });
