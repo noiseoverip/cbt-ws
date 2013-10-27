@@ -75,8 +75,8 @@ CREATE TABLE IF NOT EXISTS `device_job_result` (
 --
 
 CREATE TABLE IF NOT EXISTS `device_os` (
-  `deviceos_id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `name` char(255) NOT NULL,
+  `device_os_id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `device_os_name` char(255) NOT NULL,
   PRIMARY KEY (`deviceos_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -101,10 +101,10 @@ CREATE TABLE IF NOT EXISTS `device_sharing` (
 --
 
 CREATE TABLE IF NOT EXISTS `device_type` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `model` char(100) NOT NULL,
-  `manufacture` char(100) NOT NULL,
-  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `device_type_id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `device_type_model` char(100) NOT NULL,
+  `device_type_manufacture` char(100) NOT NULL,
+  `device_type_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

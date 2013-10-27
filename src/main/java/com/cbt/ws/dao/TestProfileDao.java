@@ -1,23 +1,25 @@
 package com.cbt.ws.dao;
 
-import com.cbt.core.entity.DeviceType;
-import com.cbt.core.entity.TestProfile;
-import com.cbt.jooq.enums.TestprofileTestprofileMode;
-import com.cbt.ws.JooqDao;
+import static com.cbt.jooq.tables.DeviceType.DEVICE_TYPE;
+import static com.cbt.jooq.tables.Testprofile.TESTPROFILE;
+import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.RecordMapper;
 import org.jooq.Result;
 
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.cbt.jooq.tables.DeviceType.DEVICE_TYPE;
-import static com.cbt.jooq.tables.Testprofile.TESTPROFILE;
-import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
+import com.cbt.core.entity.DeviceType;
+import com.cbt.core.entity.TestProfile;
+import com.cbt.jooq.enums.TestprofileTestprofileMode;
+import com.cbt.ws.JooqDao;
 
 /**
  * Test profile DAO
@@ -28,7 +30,7 @@ public class TestProfileDao extends JooqDao {
 
    private final Logger mLogger = Logger.getLogger(TestProfileDao.class);
 
-   private DeviceDao mDeviceDao;
+   private final DeviceDao mDeviceDao;
 
    @Inject
    public TestProfileDao(DataSource dataSource, DeviceDao deviceDao) {
@@ -75,7 +77,7 @@ public class TestProfileDao extends JooqDao {
     */
    public List<DeviceType> getDeviceTypesByTestProfile(Long testProfileId) {
       List<DeviceType> result = getDbContext().select().from(DEVICE_TYPE).join(TESTPROFILE_DEVICES)
-            .on(TESTPROFILE_DEVICES.DEVICETYPE_ID.eq(DEVICE_TYPE.ID))
+            .on(TESTPROFILE_DEVICES.DEVICETYPE_ID.eq(DEVICE_TYPE.DEVICE_TYPE_ID))
             .where(TESTPROFILE_DEVICES.TESTPROFILE_ID.eq(testProfileId))
             .fetch(new RecordMapper<Record, DeviceType>() {
                @Override

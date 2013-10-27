@@ -1,6 +1,7 @@
 package com.cbt.ws.dao;
 
 import static com.cbt.jooq.tables.Device.DEVICE;
+import static com.cbt.jooq.tables.DeviceOs.DEVICE_OS;
 import static com.cbt.jooq.tables.DeviceSharing.DEVICE_SHARING;
 import static com.cbt.jooq.tables.DeviceType.DEVICE_TYPE;
 import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
@@ -22,6 +23,7 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 
 import com.cbt.core.entity.Device;
+import com.cbt.core.entity.DeviceOs;
 import com.cbt.core.entity.DeviceType;
 import com.cbt.core.exceptions.CbtDaoException;
 import com.cbt.jooq.enums.DeviceState;
@@ -52,9 +54,8 @@ public class DeviceDao extends JooqDao {
     */
    public List<DeviceType> getDeviceTypesByTestProfile(Long testProfileId) {
       List<DeviceType> result = getDbContext().select().from(DEVICE_TYPE).join(TESTPROFILE_DEVICES)
-            .on(TESTPROFILE_DEVICES.DEVICETYPE_ID.eq(DEVICE_TYPE.ID))
-            .where(TESTPROFILE_DEVICES.TESTPROFILE_ID.eq(testProfileId))
-            .fetch(new RecordMapper<Record, DeviceType>() {
+            .on(TESTPROFILE_DEVICES.DEVICETYPE_ID.eq(DEVICE_TYPE.DEVICE_TYPE_ID))
+            .where(TESTPROFILE_DEVICES.TESTPROFILE_ID.eq(testProfileId)).fetch(new RecordMapper<Record, DeviceType>() {
                @Override
                public DeviceType map(Record record) {
                   return record.into(DeviceType.class);
@@ -98,8 +99,13 @@ public class DeviceDao extends JooqDao {
     * @return
     */
    public Device getDevice(Long deviceId) {
-      DeviceRecord record = (DeviceRecord) getDbContext().select().from(DEVICE).where(DEVICE.ID.eq(deviceId)).fetchOne();
-      return record.into(Device.class);
+      Record record = getDbContext().select().from(DEVICE).join(DEVICE_OS)
+            .on(DEVICE.DEVICE_OS_ID.eq(DEVICE_OS.DEVICE_OS_ID)).join(DEVICE_TYPE)
+            .on(DEVICE.DEVICE_TYPE_ID.eq(DEVICE_TYPE.DEVICE_TYPE_ID)).where(DEVICE.ID.eq(deviceId)).fetchOne();
+      Device device = record.into(Device.class);
+      device.setDeviceOs(record.into(DeviceOs.class));
+      device.setDeviceType(record.into(DeviceType.class));
+      return device;
    }
 
    /**
@@ -109,8 +115,8 @@ public class DeviceDao extends JooqDao {
     * @return
     */
    public Device getDeviceByUid(String uniqueId) {
-      DeviceRecord record = (DeviceRecord) getDbContext().select().from(DEVICE).where(DEVICE.DEVICE_UNIQUE_ID.eq(uniqueId))
-            .fetchOne();
+      DeviceRecord record = (DeviceRecord) getDbContext().select().from(DEVICE)
+            .where(DEVICE.DEVICE_UNIQUE_ID.eq(uniqueId)).fetchOne();
       return record.into(Device.class);
    }
 
@@ -234,10 +240,12 @@ public class DeviceDao extends JooqDao {
     * @return
     */
    public DeviceType getOrCreateDeviceType(String manufacture, String model) {
-      Record result = getDbContext().select().from(DEVICE_TYPE).where(DEVICE_TYPE.MANUFACTURE.eq(manufacture))
-            .and(DEVICE_TYPE.MODEL.eq(model)).fetchOne();
+      Record result = getDbContext().select().from(DEVICE_TYPE)
+            .where(DEVICE_TYPE.DEVICE_TYPE_MANUFACTURE.eq(manufacture)).and(DEVICE_TYPE.DEVICE_TYPE_MODEL.eq(model))
+            .fetchOne();
       if (null == result) {
-         DeviceTypeRecord record = getDbContext().insertInto(DEVICE_TYPE, DEVICE_TYPE.MANUFACTURE, DEVICE_TYPE.MODEL)
+         DeviceTypeRecord record = getDbContext()
+               .insertInto(DEVICE_TYPE, DEVICE_TYPE.DEVICE_TYPE_MANUFACTURE, DEVICE_TYPE.DEVICE_TYPE_MODEL)
                .values(manufacture, model).returning(DEVICE_TYPE.fields()).fetchOne();
          if (null == record) {
             mLogger.error("Could not create new device type");
@@ -255,7 +263,8 @@ public class DeviceDao extends JooqDao {
     */
    public void updateDevice(Device device) throws CbtDaoException {
       int count = getDbContext().update(DEVICE).set(DEVICE.DEVICE_TYPE_ID, device.getDeviceTypeId())
-            .set(DEVICE.DEVICE_OS_ID, device.getDeviceOsId()).set(DEVICE.STATE, DeviceState.valueOf(device.getState().toString()))
+            .set(DEVICE.DEVICE_OS_ID, device.getDeviceOsId())
+            .set(DEVICE.STATE, DeviceState.valueOf(device.getState().toString()))
             .set(DEVICE.UPDATED, new Timestamp(Calendar.getInstance().getTimeInMillis()))
             .where(DEVICE.ID.eq(device.getId())).execute();
       if (count != 1) {
@@ -270,7 +279,7 @@ public class DeviceDao extends JooqDao {
     * @param userId
     */
    public void addSharing(Long deviceId, Long userId) {
-      getDbContext().insertInto(DEVICE_SHARING, DEVICE_SHARING.DEVICE_ID, DEVICE_SHARING.USER_ID).values(deviceId, userId)
-            .execute();
+      getDbContext().insertInto(DEVICE_SHARING, DEVICE_SHARING.DEVICE_ID, DEVICE_SHARING.USER_ID)
+            .values(deviceId, userId).execute();
    }
 }
