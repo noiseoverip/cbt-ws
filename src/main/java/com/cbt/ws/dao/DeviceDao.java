@@ -101,7 +101,7 @@ public class DeviceDao extends JooqDao {
    public Device getDevice(Long userId, Long deviceId) {
       Record record = getDbContext().select().from(DEVICE).join(DEVICE_TYPE)
             .on(DEVICE.DEVICE_TYPE_ID.eq(DEVICE_TYPE.DEVICE_TYPE_ID)).join(USER).on(USER.ID.eq(DEVICE.DEVICE_OWNER_ID))
-            .where(DEVICE.DEVICE_ID.eq(deviceId)).and(DEVICE.DEVICE_OWNER_ID.eq(userId)).fetchOne();
+            .where(DEVICE.DEVICE_ID.eq(deviceId)).fetchOne();
       Device device = null;
       if (null != record) {
          device = record.into(Device.class);
