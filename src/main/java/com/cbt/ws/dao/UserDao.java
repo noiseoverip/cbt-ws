@@ -40,9 +40,8 @@ public class UserDao extends JooqDao {
     * @return
     */
    public User authenticate(String username, String password) {
-      UserRecord record = (UserRecord) getDbContext().select().from(USER)
-            .where(USER.NAME.eq(username).and(USER.PASSWORD.eq(password))).fetchOne();
-      return record.into(User.class);
+      return getDbContext().select().from(USER).where(USER.NAME.eq(username).and(USER.PASSWORD.eq(password)))
+            .fetchOneInto(User.class);
    }
 
    /**
