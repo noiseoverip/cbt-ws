@@ -1,7 +1,7 @@
 directory.TestTargetsPageView = Backbone.View.extend({
 
    initialize: function () {
-      this.TestTargetListView = new directory.TestTargetListView();
+      this.testTargetListView = new directory.TestTargetListView();
    },
 
    render: function () {
@@ -21,9 +21,30 @@ directory.TestTargetsPageView = Backbone.View.extend({
       // Render it in our div
       uploadManager.renderTo(this.$("div#upload"));
 
-      this.$el.append(this.TestTargetListView.render().el)
+      this.$el.append(this.testTargetListView.render().el)
 
       return this;
+   }
+});
+
+directory.TestTargetListView = Backbone.View.extend({
+
+   initialize: function () {
+      this.testTargetList = new directory.TestTargetList();
+      this.testTargetList.fetch();
+      this.testTargetList.on("add", this.renderTestTarget, this);
+   },
+
+   render: function () {
+      this.$el.html(this.template());
+      return this;
+   },
+
+   renderTestTarget: function (item) {
+      var itemView = new directory.TestTargetListItemView({
+         model: item
+      });
+      this.$el.find("table.mytesttargets").append(itemView.render().el);
    }
 });
 
@@ -39,25 +60,4 @@ directory.TestTargetListItemView = Backbone.View.extend({
       return this;
    }
 
-});
-
-directory.TestTargetListView = Backbone.View.extend({
-
-   initialize: function () {
-      this.TestTargetList = new directory.TestTargetList();
-      this.TestTargetList.fetch();
-      this.TestTargetList.on("add", this.renderTestTarget, this);
-   },
-
-   render: function () {
-      this.$el.html(this.template());
-      return this;
-   },
-
-   renderTestTarget: function (item) {
-      var itemView = new directory.TestTargetListItemView({
-         model: item
-      });
-      this.$el.find("table.mytesttargets").append(itemView.render().el);
-   }
 });

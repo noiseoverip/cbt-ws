@@ -628,7 +628,7 @@ public class AccessWs {
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Produces(MediaType.APPLICATION_JSON)
    public TestScript putTestScriptFile2(@FormDataParam("file") InputStream uploadedInputStream,
-         @FormDataParam("file") FormDataContentDisposition fileDetail) {
+         @FormDataParam("files[]") FormDataContentDisposition fileDetail) {
       // Encapsulate test package info
       TestScript testScript = new TestScript();
       testScript.setName(fileDetail.getFileName());
