@@ -627,7 +627,7 @@ public class AccessWs {
    @Path("/v2/testscript")
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Produces(MediaType.APPLICATION_JSON)
-   public TestScript putTestScriptFile2(@FormDataParam("file") InputStream uploadedInputStream,
+   public TestScript putTestScriptFile2(@FormDataParam("files[]") InputStream uploadedInputStream,
          @FormDataParam("files[]") FormDataContentDisposition fileDetail) {
       // Encapsulate test package info
       TestScript testScript = new TestScript();
@@ -690,8 +690,8 @@ public class AccessWs {
    @Path("/v2/testtarget")
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Produces(MediaType.APPLICATION_JSON)
-   public TestTarget putTestTarget2(@FormDataParam("file") InputStream uploadedInputStream,
-         @FormDataParam("file") FormDataContentDisposition fileDetail) {
+   public TestTarget putTestTarget2(@FormDataParam("files[]") InputStream uploadedInputStream,
+         @FormDataParam("files[]") FormDataContentDisposition fileDetail) {
       // Encapsulate test package info
       TestTarget testTarget = new TestTarget();
       testTarget.setName(fileDetail.getFileName());
