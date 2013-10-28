@@ -74,6 +74,7 @@ import com.sun.jersey.multipart.FormDataParam;
 public class AccessWs {
 
    private static final String QPARAM_USERID = "userId";
+   private static final String QPARAM_ID = "id";
    private final Logger mLogger = Logger.getLogger(AccessWs.class);
    private final CheckoutDao mCheckoutDao;
    @Context
@@ -233,10 +234,17 @@ public class AccessWs {
    }
 
    @GET
-   @Path("/testconfig")
+   @Path("/testconfigs")
    @Produces(MediaType.APPLICATION_JSON)
    public List<TestConfigComplex> getTestConfigs() {
       return mTestConfigDao.getByUserId(getUserId());
+   }
+
+   @GET
+   @Path("/testconfig/{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public TestConfig getTestConfig(@PathParam(QPARAM_ID) Long id) {
+      return mTestConfigDao.getById(id);
    }
 
    /**
@@ -297,10 +305,10 @@ public class AccessWs {
    }
 
    @GET
-   @Path("/testrun")
+   @Path("/testrun/{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   public TestRun getTestRun(@QueryParam("id") long testRunId) {
-      return mTestRunDao.getTestRun(testRunId);
+   public TestRun getTestRun(@PathParam(QPARAM_ID) long id) {
+      return mTestRunDao.getTestRun(id);
    }
 
    /**

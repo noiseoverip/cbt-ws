@@ -32,7 +32,7 @@ import com.cbt.ws.entity.TestRun;
 
 /**
  * Test run DAO
- * 
+ *
  * @author Saulius Alisauskas 2013-03-03 Initial version
  */
 public class TestRunDao extends JooqDao {
@@ -46,7 +46,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Add new test run
-    * 
+    *
     * @param testRun
     * @return
     */
@@ -63,7 +63,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Delete testRun
-    * 
+    *
     * @param testRun
     * @throws CbtDaoException
     */
@@ -76,7 +76,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Get test runs
-    * 
+    *
     * @return
     */
    public TestRun[] getAll() {
@@ -98,7 +98,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Get test runs of specific user
-    * 
+    *
     * @param userId
     * @return
     */
@@ -116,7 +116,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Get test runs of specific user.
-    * 
+    *
     * @param userId
     * @return Map containing "result" and if offset=0 "totalRecords"
     */
@@ -139,13 +139,13 @@ public class TestRunDao extends JooqDao {
       if (offset == 0) {
          int totalRows = context.select().from(TESTRUN).where(TESTRUN.TESTRUN_USER_ID.eq(userId)).fetchCount();
          results.put("totalRecords", totalRows);
-      }    
+      }
       return results;
    }
 
    /**
     * Get TestRun
-    * 
+    *
     * @param testRunId
     * @return
     */
@@ -157,7 +157,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Get Test more complex test run information
-    * 
+    *
     * @param testRunId
     * @return
     */
@@ -185,7 +185,7 @@ public class TestRunDao extends JooqDao {
 
    /**
     * Update TestRun record
-    * 
+    *
     * @param testRun
     * @throws CbtDaoException
     */

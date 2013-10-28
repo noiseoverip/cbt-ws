@@ -61,7 +61,7 @@ directory.TestRunListItemView = Backbone.View.extend({
 
    initialize: function () {
       "use strict";
-      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'sync', this.render);
       this.listenTo(this.model, 'destroy', this.remove);
    },
 
@@ -80,21 +80,15 @@ directory.TestRunResultView = Backbone.View.extend({
       this._views = [];
 
       this.testRun = new directory.TestRun({id: options.testRunId, statusCssClass: '', created: '', config: ''});
-      this.testRun.fetch({
-         success: function () {
-            self.render();
-         }
-      });
+      this.testRun.fetch();
+
+      this.testConfig = new directory.TestConfiguration({name: ''});
 
       this.deviceJobList = new directory.DeviceJobList(options);
-      this.deviceJobList.fetch({
-         success: function () {
-            self.render();
-         }
-      });
+      this.deviceJobList.fetch();
 
-      this.listenTo(this.testRun, 'change', this.render);
-      this.listenTo(this.deviceJobList, 'change', this.render);
+      this.listenTo(this.testRun, 'sync', this.syncTestRun);
+      this.listenTo(this.deviceJobList, 'sync', this.render);
       this.listenTo(this.deviceJobList, 'add', this.pushItem);
 
       this.bind("ok", this.navigateHome);
@@ -104,6 +98,7 @@ directory.TestRunResultView = Backbone.View.extend({
    render: function () {
       "use strict";
       this.testRun.set('deviceCount', this.deviceJobList.length);
+      this.testRun.set('config', this.testConfig.attributes.name);
       this.$el.html(this.template(this.testRun.toJSON()));
       var container = document.createDocumentFragment();
       // render each subview, appending to our root element
@@ -117,8 +112,10 @@ directory.TestRunResultView = Backbone.View.extend({
    pushItem: function (model) {
       "use strict";
       // create a sub view for every model in the collection
+      console.log(model);
       this._views.push(new directory.JobResultListView({
-         deviceJobId: model.id
+         deviceJobId: model.id,
+         deviceId: model.attributes.deviceId
       }));
    },
 
@@ -130,5 +127,12 @@ directory.TestRunResultView = Backbone.View.extend({
    getTitle: function () {
       "use strict";
       return 'Result #' + this.deviceJobList.testRunId;
+   },
+
+   syncTestRun: function () {
+      "use strict";
+      this.testConfig.set('id', this.testRun.attributes.testconfigId);
+      this.testConfig.fetch();
+      this.listenTo(this.testConfig, 'sync', this.render);
    }
 });

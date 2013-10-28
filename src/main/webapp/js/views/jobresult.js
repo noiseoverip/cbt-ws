@@ -5,13 +5,24 @@ directory.JobResultView = Backbone.View.extend({
 
    tagName: "tr",
 
-   initialize: function () {
+   initialize: function (options) {
       "use strict";
-      this.listenTo(this.model, 'change', this.render);
+      this.serialNumber = '';
+      this.device = new directory.Device({id: options.deviceId});
+      this.device.fetch();
+      this.listenTo(this.device, 'sync', this.renderDevice);
+      this.listenTo(this.model, 'sync', this.render);
+   },
+
+   renderDevice: function () {
+      "use strict";
+      this.serialNumber = this.device.attributes.serialNumber;
+      this.render();
    },
 
    render: function () {
       "use strict";
+      this.model.set('serialNumber', this.serialNumber);
       this.$el.html(this.template(this.model.toJSON()));
       return this;
    },
@@ -36,14 +47,11 @@ directory.JobResultListView = Backbone.View.extend({
       var self = this;
       this._views = [];
 
-      this.jobResultList = new directory.JobResultList(options);
-      this.jobResultList.fetch({
-         success: function () {
-            self.render();
-         }
-      });
+      this.deviceId = options.deviceId;
+      this.jobResultList = new directory.JobResultList({deviceJobId: options.deviceJobId});
+      this.jobResultList.fetch();
 
-      this.listenTo(this.jobResultList, 'change', this.render);
+      this.listenTo(this.jobResultList, 'sync', this.render);
       this.listenTo(this.jobResultList, 'add', this.pushItem);
    },
 
@@ -62,7 +70,8 @@ directory.JobResultListView = Backbone.View.extend({
    pushItem: function (model) {
       "use strict";
       this._views.push(new directory.JobResultView({
-         model: model
+         model: model,
+         deviceId: this.deviceId
       }));
    }
 });

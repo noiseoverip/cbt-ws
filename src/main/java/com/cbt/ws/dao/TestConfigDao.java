@@ -5,6 +5,7 @@ import com.cbt.core.entity.TestProfile;
 import com.cbt.core.entity.TestScript;
 import com.cbt.core.entity.TestTarget;
 import com.cbt.core.entity.complex.TestConfigComplex;
+import com.cbt.jooq.tables.records.TestconfigRecord;
 import com.cbt.ws.JooqDao;
 import org.apache.log4j.Logger;
 import org.jooq.Record;
@@ -27,7 +28,6 @@ import static com.cbt.jooq.tables.Testtarget.TESTTARGET;
 public class TestConfigDao extends JooqDao {
 
    private final Logger mLogger = Logger.getLogger(TestConfigDao.class);
-
    /**
     * Mapper for building full TestConfig object
     */
@@ -80,5 +80,17 @@ public class TestConfigDao extends JooqDao {
             .join(TESTTARGET).on(TESTTARGET.TESTTARGET_ID.eq(TESTCONFIG.TEST_TARGET_ID))
             .where(TESTCONFIG.USER_ID.eq(userId))
             .orderBy(TESTCONFIG.UPDATED.desc()).fetch(testConfigMapper);
+   }
+
+   /**
+    * Get test config by its id
+    *
+    * @param id - test config id
+    * @return test config object
+    */
+   public TestConfig getById(Long id) {
+      TestconfigRecord record = (TestconfigRecord) getDbContext().select().from(TESTCONFIG)
+            .where(TESTCONFIG.TEST_CONFIG_ID.eq(id)).fetchOne();
+      return record.into(TestConfig.class);
    }
 }

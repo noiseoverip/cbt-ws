@@ -28,9 +28,14 @@ var CbtClient = {
       return CbtClient.parseUrl('/device');
    },
 
+   getUserTestConfigUrl: function (id) {
+      "use strict";
+      return CbtClient.parseUrl('/testconfig/' + id);
+   },
+
    getUserTestConfigsUrl: function () {
       "use strict";
-      return CbtClient.parseUrl('/testconfig');
+      return CbtClient.parseUrl('/testconfigs');
    },
 
    getUserTestRunsUrl: function () {
@@ -38,9 +43,9 @@ var CbtClient = {
       return CbtClient.parseUrl('/testruns');
    },
 
-   getUserTestRunUrl: function (testRunId) {
+   getUserTestRunUrl: function (id) {
       "use strict";
-      return CbtClient.parseUrl('/testrun?id=' + testRunId);
+      return CbtClient.parseUrl('/testrun/' + id);
    },
 
    getDeviceSharing: function (id) {
@@ -91,15 +96,15 @@ var CbtClient = {
    // callback: success, returnData
    createDeviceShare : function(deviceId, userToShareWith, callback) {
        $.ajax({
-         type: 'PUT',        
-         url: CbtClient.getDeviceSharing(deviceId),         
+         type: 'PUT',
+         url: CbtClient.getDeviceSharing(deviceId),
          data: {username : userToShareWith},
          success: function (data, textStatus, jqXHR) {
             if (callback) {
                callback(true, data);
             }
          },
-         error: function (data, textStatus, jqXHR) {            
+         error: function (data, textStatus, jqXHR) {
              if (callback) {
                callback(false, data);
             }
