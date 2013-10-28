@@ -7,7 +7,7 @@
 	<span class="btn btn-success fileinput-button" id="fileinput-button">
 	    <i class="icon-plus"></i>
 	    <span>Add files...</span>
-	    <input id="fileupload" type="file" name="file" multiple="multiple">
+	    <input id="fileupload" type="file" name="files[]">
 	</span>
 	<button class="btn btn-primary" id="start-uploads-button"><i class="icon-start"></i>Start uploads</button>
 </div>
