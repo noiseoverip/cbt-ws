@@ -1,7 +1,6 @@
 package com.cbt.ws.dao;
 
 import static com.cbt.jooq.tables.Device.DEVICE;
-import static com.cbt.jooq.tables.DeviceOs.DEVICE_OS;
 import static com.cbt.jooq.tables.DeviceSharing.DEVICE_SHARING;
 import static com.cbt.jooq.tables.DeviceType.DEVICE_TYPE;
 import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
@@ -22,7 +21,6 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 
 import com.cbt.core.entity.Device;
-import com.cbt.core.entity.DeviceOs;
 import com.cbt.core.entity.DeviceSharing;
 import com.cbt.core.entity.DeviceType;
 import com.cbt.core.entity.User;
@@ -101,14 +99,12 @@ public class DeviceDao extends JooqDao {
     * @return
     */
    public Device getDevice(Long userId, Long deviceId) {
-      Record record = getDbContext().select().from(DEVICE).join(DEVICE_OS)
-            .on(DEVICE.DEVICE_OS_ID.eq(DEVICE_OS.DEVICE_OS_ID)).join(DEVICE_TYPE)
+      Record record = getDbContext().select().from(DEVICE).join(DEVICE_TYPE)
             .on(DEVICE.DEVICE_TYPE_ID.eq(DEVICE_TYPE.DEVICE_TYPE_ID)).join(USER).on(USER.ID.eq(DEVICE.DEVICE_OWNER_ID))
             .where(DEVICE.DEVICE_ID.eq(deviceId)).and(DEVICE.DEVICE_OWNER_ID.eq(userId)).fetchOne();
       Device device = null;
       if (null != record) {
          device = record.into(Device.class);
-         device.setDeviceOs(record.into(DeviceOs.class));
          device.setDeviceType(record.into(DeviceType.class));
          device.setOwner(record.into(User.class));
          if (userId == device.getOwnerId()) {
