@@ -1,14 +1,12 @@
 <dl class="dl-horizontal">
    <dt>Configuration</dt>
-   <dd>...</dd>
+   <dd><%= config %></dd>
    <dt>Number of devices</dt>
-   <dd>...</dd>
+   <dd><%= deviceCount %></dd>
    <dt>Date</dt>
-   <dd>...</dd>
-   <dt>Duration</dt>
-   <dd>...</dd>
+   <dd><%= printDate(created) %></dd>
    <dt>Overall status</dt>
-   <dd>...</dd>
+   <dd><span class="label label-<%= statusCssClass %>"><%= status %></dd>
 </dl>
 <table class="devicejobresults table table-bordered">
    <thead>

@@ -35,7 +35,12 @@ var CbtClient = {
 
    getUserTestRunsUrl: function () {
       "use strict";
-      return CbtClient.parseUrl('/testrun');
+      return CbtClient.parseUrl('/testruns');
+   },
+
+   getUserTestRunUrl: function (testRunId) {
+      "use strict";
+      return CbtClient.parseUrl('/testrun?id=' + testRunId);
    },
 
    getDeviceSharing: function (id) {
@@ -108,7 +113,7 @@ var CbtClient = {
       $.ajax({
          type: 'PUT',
          contentType: 'application/json',
-         url: CbtClient.getUserTestRunsUrl(),
+         url: CbtClient.getUserTestRunUrl(),
          dataType: "json",
          data: JSON.stringify(testRun),
          success: function (data, textStatus, jqXHR) {

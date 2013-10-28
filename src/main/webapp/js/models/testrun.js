@@ -3,8 +3,13 @@ directory.TestRun = Backbone.Model.extend({
       "use strict";
       response.createdMoment = moment(response.created);
       response.updatedMoment = moment(response.updated);
-      response.btnClass = "btn-" + getStatusCssClass(response.status);
+      response.statusCssClass = getStatusCssClass(response.status);
       return response;
+   },
+
+   url: function () {
+      "use strict";
+      return CbtClient.getUserTestRunUrl(this.id);
    }
 });
 

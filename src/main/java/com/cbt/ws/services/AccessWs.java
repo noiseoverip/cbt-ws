@@ -290,10 +290,17 @@ public class AccessWs {
 
    // TODO: max should probably be limited
    @GET
-   @Path("/testrun")
+   @Path("/testruns")
    @Produces(MediaType.APPLICATION_JSON)
    public Map<String, Object> getTestRuns(@QueryParam("offset") int offset, @QueryParam("max") int to) {
       return mTestRunDao.getByUserIdFull(getUserId(), offset, to);
+   }
+
+   @GET
+   @Path("/testrun")
+   @Produces(MediaType.APPLICATION_JSON)
+   public TestRun getTestRun(@QueryParam("id") long testRunId) {
+      return mTestRunDao.getTestRun(testRunId);
    }
 
    /**

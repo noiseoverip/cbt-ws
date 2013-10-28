@@ -1,10 +1,14 @@
 directory.JobResultView = Backbone.View.extend({
-
    events: {
       "click .showOutput": "showOutput"
    },
 
    tagName: "tr",
+
+   initialize: function () {
+      "use strict";
+      this.listenTo(this.model, 'change', this.render);
+   },
 
    render: function () {
       "use strict";
@@ -15,6 +19,9 @@ directory.JobResultView = Backbone.View.extend({
    showOutput: function () {
       "use strict";
       var w = window.open();
+      if (null === this.model.attributes.output || '' === this.model.attributes.output) {
+         this.model.attributes.output = 'NO OUTPUT RECORDED';
+      }
       $(w.document.body).html('<pre>' + this.model.attributes.output + '</pre>');
    }
 
@@ -22,35 +29,40 @@ directory.JobResultView = Backbone.View.extend({
 
 directory.JobResultListView = Backbone.View.extend({
 
-   template: '',
    tagName: 'tbody',
 
    initialize: function (options) {
       "use strict";
+      var self = this;
+      this._views = [];
+
       this.jobResultList = new directory.JobResultList(options);
-      this.jobResultList.fetch();
-      this.jobResultList.on("add", this.renderItem, this);
-      this.jobResultList.on("reset", this.refresh, this);
+      this.jobResultList.fetch({
+         success: function () {
+            self.render();
+         }
+      });
+
+      this.listenTo(this.jobResultList, 'change', this.render);
+      this.listenTo(this.jobResultList, 'add', this.pushItem);
    },
 
    render: function () {
       "use strict";
-      this.$el.html(this.template);
+      this.$el.empty();
+      var container = document.createDocumentFragment();
+      // render each subview, appending to our root element
+      _.each(this._views, function (subview) {
+         container.appendChild(subview.render().el);
+      });
+      this.$el.append(container);
       return this;
    },
 
-   renderItem: function (item) {
+   pushItem: function (model) {
       "use strict";
-      var jobResultView = new directory.JobResultView({
-         model: item
-      });
-      this.$el.append(jobResultView.render().el);
-   },
-
-   refresh: function () {
-      "use strict";
-      this.jobResultList.fetch();
-      this.render();
+      this._views.push(new directory.JobResultView({
+         model: model
+      }));
    }
-
 });

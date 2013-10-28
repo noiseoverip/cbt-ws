@@ -61,8 +61,8 @@ directory.TestRunListItemView = Backbone.View.extend({
 
    initialize: function () {
       "use strict";
-      this.model.bind('change', this.render, this);
-      this.model.bind('destroy', this.remove, this);
+      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'destroy', this.remove);
    },
 
    render: function () {
@@ -76,33 +76,53 @@ directory.TestRunResultView = Backbone.View.extend({
 
    initialize: function (options) {
       "use strict";
+      var self = this;
+      this._views = [];
+
+      this.testRun = new directory.TestRun({id: options.testRunId, statusCssClass: '', created: '', config: ''});
+      this.testRun.fetch({
+         success: function () {
+            self.render();
+         }
+      });
+
       this.deviceJobList = new directory.DeviceJobList(options);
-      this.deviceJobList.fetch();
-      this.deviceJobList.on("add", this.renderItem, this);
-      this.deviceJobList.on("reset", this.refresh, this);
+      this.deviceJobList.fetch({
+         success: function () {
+            self.render();
+         }
+      });
+
+      this.listenTo(this.testRun, 'change', this.render);
+      this.listenTo(this.deviceJobList, 'change', this.render);
+      this.listenTo(this.deviceJobList, 'add', this.pushItem);
+
       this.bind("ok", this.navigateHome);
       this.bind("cancel", this.navigateHome);
    },
 
    render: function () {
       "use strict";
-      this.$el.html(this.template);
+      this.testRun.set('deviceCount', this.deviceJobList.length);
+      this.$el.html(this.template(this.testRun.toJSON()));
+      var container = document.createDocumentFragment();
+      // render each subview, appending to our root element
+      _.each(this._views, function (subview) {
+         container.appendChild(subview.render().el);
+      });
+      this.$el.find("table.devicejobresults").append(container);
       return this;
    },
 
-   renderItem: function (item) {
+   pushItem: function (model) {
       "use strict";
-      var jobResultListView = new directory.JobResultListView({deviceJobId: item.id});
-      this.$el.find("table.devicejobresults").append(jobResultListView.render().el);
+      // create a sub view for every model in the collection
+      this._views.push(new directory.JobResultListView({
+         deviceJobId: model.id
+      }));
    },
 
-   refresh: function () {
-      "use strict";
-      this.deviceJobList.fetch();
-      this.render();
-   },
-
-   navigateHome: function (modal) {
+   navigateHome: function () {
       "use strict";
       directory.router.navigate("", {trigger: false});
    },
