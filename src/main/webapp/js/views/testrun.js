@@ -112,7 +112,6 @@ directory.TestRunResultView = Backbone.View.extend({
    pushItem: function (model) {
       "use strict";
       // create a sub view for every model in the collection
-      console.log(model);
       this._views.push(new directory.JobResultListView({
          deviceJobId: model.id,
          deviceId: model.attributes.deviceId

@@ -9,6 +9,6 @@ directory.DeviceJobList = Backbone.Collection.extend({
 
    url: function () {
       "use strict";
-      return CbtClient.getDeviceJob(this.testRunId);
+      return CbtClient.getDeviceJobByTestRun(this.testRunId);
    }
 });

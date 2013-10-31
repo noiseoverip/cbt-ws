@@ -7,9 +7,9 @@ directory.TestRun = Backbone.Model.extend({
       return response;
    },
 
-   url: function () {
+   urlRoot: function () {
       "use strict";
-      return CbtClient.getUserTestRunUrl(this.id);
+      return CbtClient.getUserTestRunsUrl();
    }
 });
 
@@ -46,18 +46,21 @@ directory.TestRunList = Backbone.Paginator.requestPager.extend({
    server_api: {
       // number of items to return per request/page
       'max': function () {
-         return this.perPage
+         "use strict";
+         return this.perPage;
       },
       // how many results the request should skip ahead to
       // customize as needed. For the Netflix API, skipping ahead based on
       // page * number of results per page was necessary.
       'offset': function () {
-         return (this.currentPage - 1) * this.perPage
-      },
+         "use strict";
+         return (this.currentPage - 1) * this.perPage;
+      }
    },
    parse: function (response) {
+      "use strict";
       // totalRecords is returned only for the first page
-      if (response.totalRecords != undefined) {
+      if (response.totalRecords !== undefined) {
          this.totalRecords = response.totalRecords;
          this.totalPages = this.totalRecords / this.perPage;
       }

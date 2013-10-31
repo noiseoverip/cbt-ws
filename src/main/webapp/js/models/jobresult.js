@@ -1,5 +1,5 @@
 directory.JobResult = Backbone.Model.extend({
-   parse: function(response) {
+   parse: function (response) {
       "use strict";
       response.labelClass = "label-" + getStatusCssClass(response.state);
       return response;

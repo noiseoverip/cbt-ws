@@ -1,12 +1,14 @@
 directory.Device = Backbone.Model.extend({
-   	parse: function (response) {
-      	response.updatedMoment = moment(response.updated);
-      	return response;
-   	},
+   parse: function (response) {
+      "use strict";
+      response.updatedMoment = moment(response.updated);
+      return response;
+   },
 
-      urlRoot: function() {
-         return CbtClient.getUserDevicesUrl();
-      }
+   urlRoot: function () {
+      "use strict";
+      return CbtClient.getUserDevicesUrl();
+   }
 });
 
 directory.DeviceList = Backbone.Collection.extend({
@@ -14,10 +16,11 @@ directory.DeviceList = Backbone.Collection.extend({
    showOnlyOnline: true,
 
    url: function () {
-   		url = CbtClient.getUserDevicesUrl();
-	   	if (this.showOnlyOnline) {
-	   		url = url + "?state=ONLINE";
-	   	}	
-    	return url;
+      "use strict";
+      var url = CbtClient.getUserDevicesUrl();
+      if (this.showOnlyOnline) {
+         url = url + "?state=ONLINE";
+      }
+      return url;
    }
 });

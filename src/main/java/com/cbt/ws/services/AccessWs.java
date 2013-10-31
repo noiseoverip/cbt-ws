@@ -153,14 +153,14 @@ public class AccessWs {
    /**
     * Get device by device Id
     *
-    * @param deviceId
+    * @param id - device id
     * @return
     */
    @GET
-   @Path("/device/{deviceId}")
+   @Path("/device/{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   public Device getDevice(@PathParam("deviceId") Long deviceId) {
-      return mDeviceDao.getDevice(getUserId(), deviceId);
+   public Device getDevice(@PathParam(QPARAM_ID) Long id) {
+      return mDeviceDao.getDevice(getUserId(), id);
    }
 
    // TODO: change to GET and use UID as parameter
@@ -234,7 +234,7 @@ public class AccessWs {
    }
 
    @GET
-   @Path("/testconfigs")
+   @Path("/testconfig")
    @Produces(MediaType.APPLICATION_JSON)
    public List<TestConfigComplex> getTestConfigs() {
       return mTestConfigDao.getByUserId(getUserId());
@@ -243,7 +243,7 @@ public class AccessWs {
    @GET
    @Path("/testconfig/{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   public TestConfig getTestConfig(@PathParam(QPARAM_ID) Long id) {
+   public TestConfig getTestConfig(@PathParam(QPARAM_ID) long id) {
       return mTestConfigDao.getById(id);
    }
 
@@ -298,7 +298,7 @@ public class AccessWs {
 
    // TODO: max should probably be limited
    @GET
-   @Path("/testruns")
+   @Path("/testrun")
    @Produces(MediaType.APPLICATION_JSON)
    public Map<String, Object> getTestRuns(@QueryParam("offset") int offset, @QueryParam("max") int to) {
       return mTestRunDao.getByUserIdFull(getUserId(), offset, to);

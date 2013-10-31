@@ -28,24 +28,14 @@ var CbtClient = {
       return CbtClient.parseUrl('/device');
    },
 
-   getUserTestConfigUrl: function (id) {
+   getUserTestConfigUrl: function () {
       "use strict";
-      return CbtClient.parseUrl('/testconfig/' + id);
-   },
-
-   getUserTestConfigsUrl: function () {
-      "use strict";
-      return CbtClient.parseUrl('/testconfigs');
+      return CbtClient.parseUrl('/testconfig');
    },
 
    getUserTestRunsUrl: function () {
       "use strict";
-      return CbtClient.parseUrl('/testruns');
-   },
-
-   getUserTestRunUrl: function (id) {
-      "use strict";
-      return CbtClient.parseUrl('/testrun/' + id);
+      return CbtClient.parseUrl('/testrun');
    },
 
    getDeviceSharing: function (id) {
@@ -56,16 +46,6 @@ var CbtClient = {
    getUserTestProfileUrl: function () {
       "use strict";
       return CbtClient.parseUrl('/testprofile');
-   },
-
-   getUserTestScriptsUrl: function () {
-      "use strict";
-      return CbtClient.parseUrl('/testscript');
-   },
-
-   getUserTestTargetsUrl: function () {
-      "use strict";
-      return CbtClient.parseUrl('/testtarget');
    },
 
    getDeviceTypesUrl: function () {
@@ -83,7 +63,7 @@ var CbtClient = {
       return CbtClient.parseUrl('/testtarget');
    },
 
-   getDeviceJob: function (testRunId) {
+   getDeviceJobByTestRun: function (testRunId) {
       "use strict";
       return CbtClient.parseUrl('/devicejob?testRunId=' + testRunId);
    },
@@ -118,7 +98,7 @@ var CbtClient = {
       $.ajax({
          type: 'PUT',
          contentType: 'application/json',
-         url: CbtClient.getUserTestRunUrl(),
+         url: CbtClient.getUserTestRunsUrl(),
          dataType: "json",
          data: JSON.stringify(testRun),
          success: function (data, textStatus, jqXHR) {
@@ -148,7 +128,7 @@ var CbtClient = {
          $.ajax({
             type: 'PUT',
             contentType: 'application/json',
-            url: CbtClient.getUserTestConfigsUrl(),
+            url: CbtClient.getUserTestConfigUrl(),
             dataType: "json",
             data: JSON.stringify(testConfigData),
             success: function (data, textStatus, jqXHR) {
