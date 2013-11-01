@@ -44,7 +44,6 @@ directory.JobResultListView = Backbone.View.extend({
 
    initialize: function (options) {
       "use strict";
-      var self = this;
       this._views = [];
 
       this.deviceId = options.deviceId;

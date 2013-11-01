@@ -10,8 +10,8 @@ directory.TestRunListView = Backbone.View.extend({
    initialize: function () {
       "use strict";
       this.collection.pager();
-      this.collection.on("add", this.renderItem, this);
-      this.collection.on("sync", this.sync, this);
+      this.listenTo(this.collection, 'add', this.renderItem);
+      this.listenTo(this.collection, 'sync', this.sync);
       this.paginatedView = new directory.PaginatedView({
          collection: this.collection
       });
@@ -36,7 +36,7 @@ directory.TestRunListView = Backbone.View.extend({
          model: item
       });
       var renderedItem = itemView.render().el;
-      if (options.at == 0) {
+      if (options.at === 0) {
          this.$(this.listTable).prepend(renderedItem);
       } else {
          this.$(this.listTable).append(renderedItem);
@@ -76,7 +76,6 @@ directory.TestRunResultView = Backbone.View.extend({
 
    initialize: function (options) {
       "use strict";
-      var self = this;
       this._views = [];
 
       this.testRun = new directory.TestRun({id: options.testRunId, statusCssClass: '', created: '', config: ''});
