@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `device_job_result` (
   `tests_run` int(11) NOT NULL,
   `tests_failed` int(11) NOT NULL,
   `tests_errors` int(11) NOT NULL,
-  `output` text NOT NULL,
+  `output` longtext NOT NULL,
   PRIMARY KEY (`devicejobresult_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=776 ;
 
