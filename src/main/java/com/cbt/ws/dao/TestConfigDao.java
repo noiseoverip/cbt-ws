@@ -1,24 +1,25 @@
 package com.cbt.ws.dao;
 
+import static com.cbt.jooq.tables.Testconfig.TESTCONFIG;
+import static com.cbt.jooq.tables.Testprofile.TESTPROFILE;
+import static com.cbt.jooq.tables.Testscript.TESTSCRIPT;
+import static com.cbt.jooq.tables.Testtarget.TESTTARGET;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
+import org.apache.log4j.Logger;
+import org.jooq.Record;
+import org.jooq.RecordMapper;
+
 import com.cbt.core.entity.TestConfig;
 import com.cbt.core.entity.TestProfile;
 import com.cbt.core.entity.TestScript;
 import com.cbt.core.entity.TestTarget;
 import com.cbt.core.entity.complex.TestConfigComplex;
-import com.cbt.jooq.tables.records.TestconfigRecord;
 import com.cbt.ws.JooqDao;
-import org.apache.log4j.Logger;
-import org.jooq.Record;
-import org.jooq.RecordMapper;
-
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import java.util.List;
-
-import static com.cbt.jooq.tables.Testconfig.TESTCONFIG;
-import static com.cbt.jooq.tables.Testprofile.TESTPROFILE;
-import static com.cbt.jooq.tables.Testscript.TESTSCRIPT;
-import static com.cbt.jooq.tables.Testtarget.TESTTARGET;
 
 /**
  * Test configuration DAO
@@ -31,7 +32,7 @@ public class TestConfigDao extends JooqDao {
    /**
     * Mapper for building full TestConfig object
     */
-   private RecordMapper<Record, TestConfigComplex> testConfigMapper = new RecordMapper<Record, TestConfigComplex>() {
+   private final RecordMapper<Record, TestConfigComplex> testConfigMapper = new RecordMapper<Record, TestConfigComplex>() {
 
       @Override
       public TestConfigComplex map(Record record) {
@@ -89,8 +90,7 @@ public class TestConfigDao extends JooqDao {
     * @return test config object
     */
    public TestConfig getById(Long id) {
-      TestconfigRecord record = (TestconfigRecord) getDbContext().select().from(TESTCONFIG)
-            .where(TESTCONFIG.TEST_CONFIG_ID.eq(id)).fetchOne();
-      return record.into(TestConfig.class);
+      return getDbContext().select().from(TESTCONFIG).where(TESTCONFIG.TEST_CONFIG_ID.eq(id))
+            .fetchOneInto(TestConfig.class);
    }
 }
