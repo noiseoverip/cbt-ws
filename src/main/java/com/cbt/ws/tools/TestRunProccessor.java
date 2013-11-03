@@ -1,13 +1,5 @@
 package com.cbt.ws.tools;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-
 import com.cbt.core.entity.Device;
 import com.cbt.core.entity.DeviceJob;
 import com.cbt.core.entity.TestScript;
@@ -19,6 +11,13 @@ import com.cbt.ws.dao.DevicejobDao;
 import com.cbt.ws.dao.TestRunDao;
 import com.cbt.ws.dao.TestScriptDao;
 import com.cbt.ws.exceptions.CbtNoDevicesException;
+import org.apache.log4j.Logger;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Test run logic handler
@@ -26,6 +25,7 @@ import com.cbt.ws.exceptions.CbtNoDevicesException;
  * @author Saulius Alisauskas
  */
 public class TestRunProccessor {
+   static final int MAX_DEVICE_PER_TEST = 3;
    private final Logger mLogger = Logger.getLogger(TestRunProccessor.class);
    private final TestRunDao mTestrunDao;
    private final DevicejobDao mDevicejobDao;
@@ -42,6 +42,7 @@ public class TestRunProccessor {
    }
 
    // TODO: need to redo this logic
+
    /**
     * Get devices available for specified user and specified testRunId
     *
@@ -142,10 +143,13 @@ public class TestRunProccessor {
       List<DeviceJob> jobs = new ArrayList<DeviceJob>();
       List<Device> devicesAll = new ArrayList<Device>();
       List<Long> deviceTypes = testRunComplex.getDeviceTypes();
+
       for (Long deviceType : deviceTypes) {
          List<Device> devices = mDeviceDao.getAllAvailableForUser(userId, deviceType, DeviceDeviceState.ONLINE);
          if (null != devices && devices.size() > 0) {
-            for (Device device : devices) {
+            Iterator<Device> it = devices.iterator();
+            while (it.hasNext() && devicesAll.size() < MAX_DEVICE_PER_TEST) {
+               Device device = it.next();
                DeviceJob job = new DeviceJob();
                job.setDeviceId(device.getId());
                job.setTestRunId(testRunComplex.getId());
