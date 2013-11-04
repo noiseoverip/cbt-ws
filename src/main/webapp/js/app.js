@@ -27,6 +27,7 @@ directory.Router = Backbone.Router.extend({
    routes: {
       "": "dashboard",
       "login": "login",
+      "register": "register",
       "testconfiguration": "testconfiguration",
       "testscripts": "tests",
       "applications": "targets",
@@ -36,7 +37,7 @@ directory.Router = Backbone.Router.extend({
 
    initialize: function () {
       "use strict";
-      this.on("loginSuccess", this.loginSuccess, this);
+      this.on("authCredentials", this.authCredentials, this);
       this.on("loggedOff", this.onLoggedOff, this);
 
       directory.shellView = new directory.ShellView();
@@ -50,6 +51,12 @@ directory.Router = Backbone.Router.extend({
       directory.loginView.render();
       this.$content.html(directory.loginView.el);
       directory.shellView.trigger('loginPageShow', 'ddd');
+   },
+
+   register: function() {
+      "use strict";
+      directory.registrationPageView = new directory.RegistrationPageView();      
+      this.$content.html(directory.registrationPageView.render().el);
    },
 
    dashboard: function () {
@@ -85,14 +92,25 @@ directory.Router = Backbone.Router.extend({
 
    onLoggedOff: function () {
       "use strict";
-      document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-      directory.router.navigate("login", {trigger: true});
+      $.ajaxSetup({  
+         headers : { 
+            "Authorization" : null,            
+         }
+      });
+      this.navigate("login", {trigger: true});
    },
 
-   loginSuccess: function () {
+   authCredentials: function (user) {
       "use strict";
+      console.log("Provided creds:" + user.username);
+      $.ajaxSetup({  
+         headers : { 
+            "Authorization" : "Basic " + CryptoJS.enc.Base64.stringify(CryptoJS.enc.Latin1.parse(user.username + ":" + user.password)),            
+         }
+      });
       console.log("login ok");
       directory.shellView.trigger('loginPageHide', 'ddd');
+      this.navigate("", {trigger: true});
    },
 
    jobresult: function (id) {
@@ -113,7 +131,6 @@ directory.Router = Backbone.Router.extend({
        directory.deviceView = new directory.DeviceView({model: directory.device});      
        this.$content.html(directory.deviceView.el);
    }
-
 });
 
 $(document).on("ready", function () {
@@ -144,7 +161,8 @@ $(document).on("ready", function () {
       "TestRunResultView",
       "DeviceView",
       "DeviceShareListView",
-      "DeviceShareListItemView"
+      "DeviceShareListItemView",
+      "RegistrationPageView"
    ],
 
          function () {

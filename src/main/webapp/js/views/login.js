@@ -10,10 +10,8 @@ directory.LoginPageView = Backbone.View.extend({
    },
 
    tryLogin: function (e) {
-      document.cookie = "auth=" + this.$('#username').val() + ":" + md5(this.$('#password').val());
-      directory.router.navigate("", {trigger: true});
+      directory.router.trigger('authCredentials', {username : this.$('#username').val(), password: this.$('#password').val()});
       e.preventDefault(); // prevent default button handling
-      directory.router.trigger('loginSuccess', 'ddd');
    },
 
    getCookieValue: function (key) {

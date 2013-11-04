@@ -11,12 +11,14 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 
 import com.cbt.core.entity.User;
+import com.cbt.core.utils.Utils;
 import com.cbt.jooq.tables.records.UserRecord;
 import com.cbt.ws.JooqDao;
 
@@ -26,6 +28,8 @@ import com.cbt.ws.JooqDao;
  * @author SauliusAlisauskas 2013-04-08 Initial version
  */
 public class UserDao extends JooqDao {
+
+   private final Logger mLogger = Logger.getLogger(UserDao.class);
 
    @Inject
    public UserDao(DataSource dataSource) {
@@ -37,10 +41,18 @@ public class UserDao extends JooqDao {
     *
     * @param username
     * @param password
+    *           - MD5 hash of password
     * @return
     */
-   public User authenticate(String username, String password) {
-      return getDbContext().select().from(USER).where(USER.NAME.eq(username).and(USER.PASSWORD.eq(password)))
+   public User authenticate(String username, String passwordMD5) {
+      return getDbContext().select().from(USER)
+            .where(USER.USER_NAME.eq(username).and(USER.USER_PASSWORD.eq(passwordMD5)))
+            .fetchOneInto(User.class);
+   }
+
+   public User authenticateMD5(String username, String passwordClearText) {
+      return getDbContext().select().from(USER)
+            .where(USER.USER_NAME.eq(username).and(USER.USER_PASSWORD.eq(Utils.md5(passwordClearText))))
             .fetchOneInto(User.class);
    }
 
@@ -51,16 +63,17 @@ public class UserDao extends JooqDao {
     * @return
     */
    public User getUserByName(String name) {
-      return getDbContext().select().from(USER).where(USER.NAME.eq(name)).fetchOneInto(User.class);
+      return getDbContext().select().from(USER).where(USER.USER_NAME.eq(name)).fetchOneInto(User.class);
    }
 
    /**
     * Create new user
     */
-   public User createNew(String username, String password) {
+   public User createNew(String username, String password, String email) {
       UserRecord user = getDbContext().newRecord(USER);
-      user.setName(username);
-      user.setPassword(password);
+      user.setUserName(username);
+      user.setUserPassword(password);
+      user.setUserEmail(email);
       if (user.insert() == 1) {
          return user.into(User.class);
       } else {
@@ -75,7 +88,7 @@ public class UserDao extends JooqDao {
     * @return
     */
    public Map<String, Object> getUserById(Long userId) {
-      UserRecord record = (UserRecord) getDbContext().select().from(USER).where(USER.ID.eq(userId)).fetchOne();
+      UserRecord record = (UserRecord) getDbContext().select().from(USER).where(USER.USER_ID.eq(userId)).fetchOne();
       return record.intoMap();
    }
 
@@ -86,8 +99,8 @@ public class UserDao extends JooqDao {
     * @return
     */
    public List<Map<String, Object>> getUserHostedTestStats(Long userId) {
-      Result<Record2<Long, Integer>> result = getDbContext().select(DEVICE_JOB.DEVICE_JOB_DEVICE_ID, DSL.count().as("runs"))
-.from(DEVICE_JOB).join(DEVICE)
+      Result<Record2<Long, Integer>> result = getDbContext()
+            .select(DEVICE_JOB.DEVICE_JOB_DEVICE_ID, DSL.count().as("runs")).from(DEVICE_JOB).join(DEVICE)
             .on(DEVICE_JOB.DEVICE_JOB_DEVICE_ID.eq(DEVICE.DEVICE_ID)).where(DEVICE.DEVICE_OWNER_ID.eq(userId))
             .groupBy(DEVICE_JOB.DEVICE_JOB_DEVICE_ID).fetch();
       return result.intoMaps();
@@ -101,7 +114,8 @@ public class UserDao extends JooqDao {
     */
    public List<Map<String, Object>> getUserRunTestStats(Long userId) {
       Result<Record1<Integer>> result = getDbContext().select(DSL.count().as("runs")).from(DEVICE_JOB).join(TESTRUN)
-            .on(DEVICE_JOB.DEVICE_JOB_TESTRUN_ID.eq(TESTRUN.TESTRUN_ID)).where(TESTRUN.TESTRUN_USER_ID.eq(userId)).fetch();
+            .on(DEVICE_JOB.DEVICE_JOB_TESTRUN_ID.eq(TESTRUN.TESTRUN_ID)).where(TESTRUN.TESTRUN_USER_ID.eq(userId))
+            .fetch();
       return result.intoMaps();
    }
 
@@ -111,7 +125,7 @@ public class UserDao extends JooqDao {
     * @return
     */
    public List<Map<String, Object>> getAllUsers() {
-      Result<Record2<Long, String>> result = getDbContext().select(USER.ID, USER.NAME).from(USER).fetch();
+      Result<Record2<Long, String>> result = getDbContext().select(USER.USER_ID, USER.USER_NAME).from(USER).fetch();
       return result.intoMaps();
    }
 }

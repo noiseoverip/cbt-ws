@@ -71,11 +71,25 @@ var CbtClient = {
    getDeviceJobResult: function (deviceJobId) {
       "use strict";
       return CbtClient.parseUrl('/devicejob/' + deviceJobId + '/result');
+   },   
+   createUser: function(username, password, email, callbackSuccess, callbackFailure) {
+      $.ajax({
+         type: 'PUT',
+         contentType: 'application/json',
+         dataType: "json",
+         url: CbtClient.parseUrl("/public/user"),
+         data: JSON.stringify({username : username, password : password, email : email}),
+         success: function (data, textStatus, jqXHR) {
+            callbackSuccess();
+         },
+         error: function (jqXHR, textStatus, errorThrown) {       
+            callbackFailure($.parseJSON(jqXHR.responseText)[0]);
+         }
+      });
    },
-
    // callback: success, returnData
    createDeviceShare : function(deviceId, userToShareWith, callback) {
-       $.ajax({
+		$.ajax({
          type: 'PUT',
          url: CbtClient.getDeviceSharing(deviceId),
          data: {username : userToShareWith},

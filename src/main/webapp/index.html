@@ -2,48 +2,76 @@
 
 <head>
    <title></title>
-
-   <link rel="stylesheet" href="/jqueryui/themes/base/jquery-ui.css"/>
-   <link rel="stylesheet" href="/css/main.css"/>
+   <link rel="stylesheet" href="/css/cbt.css"/>
    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
-
-   <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-   <script src="/js/cbtclient.js"></script>
-   <script src="/js/jquery.cookie.js"></script>
-   <script src="/jqueryui/ui/jquery-ui.js"></script>
-   <script src="/js/common.js"></script>
-   <script src="/js/md5.js"></script>
-
-   <style>
-      .ui-menu {
-         width: 200px;
-         float: left;
-      }
-
-      #contents {
-         float: left;
-         margin-left: 50px;
-      }
-
-   </style>
+   <link rel="stylesheet" href="backbone-autocomplete/backbone.autocomplete-min.css">
+   <link rel="stylesheet" href="jquery-file-upload/jquery.fileupload-ui.css">
+   <!-- Adding Backbone.Modal extension here -->
+   <!--<link rel="stylesheet" href="backbone-modal/backbone.modal.css" type="text/css">-->
+   <!--<link rel="stylesheet" href="backbone-modal/backbone.modal.theme.css" type="text/css">-->
 </head>
 
-<body onload="CMS.onLoad();">
-<div id="debug"></div>
+<body>
 
-<ul id="menu">
-   <li><a href="#devices" onClick="CMS.openPage('devices');">Devices</a></li>
-   <li><a href="#testconfigs" onClick="CMS.openPage('testconfigs');">Test Configs</a></li>
-   <li><a href="#testprofiles" onClick="CMS.openPage('testprofiles');">Test Profiles</a></li>
-   <li><a href="#testruns" onClick="CMS.openPage('testruns');">Test Runs</a></li>
-   <li><a href="#statistics" onClick="CMS.openPage('statistics');">My Info</a></li>
-   <li><a href="#uploadTargetScipt" onClick="CMS.openPage('testTargetUpload');">Upload Test App</a></li>
-   <li><a href="#uploadTestScipt" onClick="CMS.openPage('testScriptUpload');">Upload Test Script</a></li>
-   <li><a href="#logout" onClick="CMS.logOut();CMS.openPage('devices');">Logout</a></li>
-</ul>
+<div class="container" id="content">
+</div>
 
-<div id="contents" style="display: none;"></div>
+<!-- 3pp -->
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="backbone/underscore-min.js"></script>
+<script src="backbone/backbone.js"></script>
+<!-- Adding Backbone.Modal extension here -->
+<!--<script src="backbone-modal/backbone.modal.js" type="text/javascript"></script>-->
+<script src="backbone/backbone.bootstrap-modal.js"></script>
+<!-- required by fil uploader-->
+<script src="backbone/backbone.defered-view-loader.js"></script>
+<script src="backbone/backbone.paginator.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+<script src="backbone-autocomplete/backbone-autocomplete.js"></script>
+<script src="cryptojs/core-min.js"></script>
+<script src="cryptojs/enc-base64-min.js"></script>
+<script src="js/dist/jquery.validate.min.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/moment.min.js"></script>
+<script src="jquery-file-upload/jquery.ui.widget.js"></script>
+<script src="jquery-file-upload/jquery.fileupload.js"></script>
+<script src="jquery-file-upload/jquery.fileupload-ui.js"></script>
+<script src="jquery-file-upload/jquery.iframe-transport.js"></script>
+<script src="jquery-file-upload/backbone.upload-manager.js"></script>
+
+<!-- custom scripts -->
+<script src="js/cbtclientNew.js"></script>
+<script src="js/cbtsettings.js"></script>
+
+<!-- backbone custom components -->
+<script src="js/app.js"></script>
+
+<!-- backbone views -->
+<script src="js/views/dashboard.js"></script>
+<script src="js/views/device.js"></script>
+<script src="js/views/deviceShare.js"></script>
+<script src="js/views/devicetype.js"></script>
+<script src="js/views/jobresult.js"></script>
+<script src="js/views/login.js"></script>
+<script src="js/views/registration.js"></script>
+<script src="js/views/pagination.js"></script>
+<script src="js/views/shell.js"></script>
+<script src="js/views/testconfiguration.js"></script>
+<script src="js/views/testrun.js"></script>
+<script src="js/views/testscript.js"></script>
+<script src="js/views/testtarget.js"></script>
+
+<!-- backbone models -->
+<script src="js/models/device.js"></script>
+<script src="js/models/devicejob.js"></script>
+<script src="js/models/deviceShare.js"></script>
+<script src="js/models/devicetype.js"></script>
+<script src="js/models/jobresult.js"></script>
+<script src="js/models/testconfiguration.js"></script>
+<script src="js/models/testrun.js"></script>
+<script src="js/models/testscript.js"></script>
+<script src="js/models/testtarget.js"></script>
 
 </body>
 </html>

@@ -72,10 +72,10 @@ public class DeviceDao extends JooqDao {
    public Long add(Device device) {
       Long newDeviceId = getDbContext()
             .insertInto(DEVICE, DEVICE.DEVICE_OWNER_ID, DEVICE.DEVICE_SERIAL_NUMBER, DEVICE.DEVICE_UNIQUE_ID,
-                  DEVICE.DEVICE_TYPE_ID,
-                  DEVICE.DEVICE_OS_ID)
+                  DEVICE.DEVICE_TYPE_ID, DEVICE.DEVICE_OS_ID)
             .values(device.getOwnerId(), device.getSerialNumber(), device.getDeviceUniqueId(),
-                  device.getDeviceTypeId(), device.getDeviceOsId()).returning(DEVICE.DEVICE_ID).fetchOne().getDeviceId();
+                  device.getDeviceTypeId(), device.getDeviceOsId()).returning(DEVICE.DEVICE_ID).fetchOne()
+            .getDeviceId();
       return newDeviceId;
    }
 
@@ -100,8 +100,8 @@ public class DeviceDao extends JooqDao {
     */
    public Device getDevice(Long userId, Long deviceId) {
       Record record = getDbContext().select().from(DEVICE).join(DEVICE_TYPE)
-            .on(DEVICE.DEVICE_TYPE_ID.eq(DEVICE_TYPE.DEVICE_TYPE_ID)).join(USER).on(USER.ID.eq(DEVICE.DEVICE_OWNER_ID))
-            .where(DEVICE.DEVICE_ID.eq(deviceId)).fetchOne();
+            .on(DEVICE.DEVICE_TYPE_ID.eq(DEVICE_TYPE.DEVICE_TYPE_ID)).join(USER)
+            .on(USER.USER_ID.eq(DEVICE.DEVICE_OWNER_ID)).where(DEVICE.DEVICE_ID.eq(deviceId)).fetchOne();
       Device device = null;
       if (null != record) {
          device = record.into(Device.class);
@@ -227,7 +227,7 @@ public class DeviceDao extends JooqDao {
     */
    public List<DeviceSharing> getSharedWith(Long deviceId) {
       List<DeviceSharing> result = getDbContext().select().from(DEVICE_SHARING).join(USER)
-            .on(USER.ID.eq(DEVICE_SHARING.DEVICE_SHARING_USER_ID))
+            .on(USER.USER_ID.eq(DEVICE_SHARING.DEVICE_SHARING_USER_ID))
             .where(DEVICE_SHARING.DEVICE_SHARING_DEVICE_ID.eq(deviceId))
             .fetch(new RecordMapper<Record, DeviceSharing>() {
                @Override

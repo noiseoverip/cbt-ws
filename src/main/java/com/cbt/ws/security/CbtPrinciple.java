@@ -1,9 +1,9 @@
 package com.cbt.ws.security;
 
+import java.security.Principal;
+
 import com.cbt.core.entity.User;
 import com.google.common.base.Objects;
-
-import java.security.Principal;
 
 /**
  * User object wrapper for security handling in Jersey
@@ -13,6 +13,9 @@ import java.security.Principal;
 public class CbtPrinciple extends User implements Principal {
 
    public static CbtPrinciple fromUser(User user) {
+      if (null == user) {
+         return null;
+      }
       CbtPrinciple principle = new CbtPrinciple();
       principle.setId(user.getId());
       principle.setName(user.getName());

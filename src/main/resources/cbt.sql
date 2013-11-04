@@ -229,12 +229,14 @@ CREATE TABLE IF NOT EXISTS `testtarget` (
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `name` char(30) NOT NULL,
-  `password` char(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+  `user_id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `user_name` char(30) NOT NULL,
+  `user_password` char(255) NOT NULL,
+  `user_email` char(255) NOT NULL,
+  `user_gapi_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `name` (`user_name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=35 ;
 
 --
 -- Constraints for dumped tables
