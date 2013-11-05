@@ -63,6 +63,6 @@ INSERT INTO `testtarget` (`testtarget_id`, `testtarget_name`, `testtarget_user_i
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `password`) VALUES
-(1, 'testuser1', '41da76f0fc3ec62a6939e634bfb6a342'),
-(2, 'testuser2', '58dd024d49e1d1b83a5d307f09f32734');
+INSERT INTO `user` (`user_id`, `user_name`, `user_password`, `user_email`) VALUES
+(1, 'testuser1', '41da76f0fc3ec62a6939e634bfb6a342', 'testuser1@testusers.com'),
+(2, 'testuser2', '58dd024d49e1d1b83a5d307f09f32734', 'testuser2@testusers.com');
