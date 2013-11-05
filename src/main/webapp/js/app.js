@@ -50,13 +50,14 @@ directory.Router = Backbone.Router.extend({
       directory.loginView = new directory.LoginPageView();
       directory.loginView.render();
       this.$content.html(directory.loginView.el);
-      directory.shellView.trigger('loginPageShow', 'ddd');
+      directory.shellView.trigger('loginPageShow');
    },
 
    register: function() {
       "use strict";
       directory.registrationPageView = new directory.RegistrationPageView();      
       this.$content.html(directory.registrationPageView.render().el);
+      directory.shellView.trigger('loginPageShow');
    },
 
    dashboard: function () {

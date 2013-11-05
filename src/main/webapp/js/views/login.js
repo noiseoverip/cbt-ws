@@ -2,6 +2,7 @@ directory.LoginPageView = Backbone.View.extend({
 
    events: {
       "click #submitLogin": "tryLogin",
+      "click #register": "sendToRegister",
    },
 
    render: function () {
@@ -12,6 +13,10 @@ directory.LoginPageView = Backbone.View.extend({
    tryLogin: function (e) {
       directory.router.trigger('authCredentials', {username : this.$('#username').val(), password: this.$('#password').val()});
       e.preventDefault(); // prevent default button handling
+   },
+   
+   sendToRegister : function() {
+      directory.router.navigate("register", {trigger: true});
    },
 
    getCookieValue: function (key) {
