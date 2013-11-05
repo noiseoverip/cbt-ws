@@ -57,7 +57,7 @@ class AuthenticationFilter implements ContainerRequestFilter {
          String[] creds = new String(
                DatatypeConverter.parseBase64Binary(base64.substring(basicAuthIdentifier.length()))).split(":");
          Preconditions.checkArgument(creds.length == 2, "Malformed base64 contents provided");
-         return CbtPrinciple.fromUser(mUserDao.authenticateMD5(creds[0], creds[1]));
+         return CbtPrinciple.fromUser(mUserDao.authenticate(creds[0], creds[1]));
       }
       mLogger.error("<Authorization> header was not found or malformed:" + base64);
       return null;

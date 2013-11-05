@@ -11,14 +11,12 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 
 import com.cbt.core.entity.User;
-import com.cbt.core.utils.Utils;
 import com.cbt.jooq.tables.records.UserRecord;
 import com.cbt.ws.JooqDao;
 
@@ -28,8 +26,6 @@ import com.cbt.ws.JooqDao;
  * @author SauliusAlisauskas 2013-04-08 Initial version
  */
 public class UserDao extends JooqDao {
-
-   private final Logger mLogger = Logger.getLogger(UserDao.class);
 
    @Inject
    public UserDao(DataSource dataSource) {
@@ -47,12 +43,6 @@ public class UserDao extends JooqDao {
    public User authenticate(String username, String passwordMD5) {
       return getDbContext().select().from(USER)
             .where(USER.USER_NAME.eq(username).and(USER.USER_PASSWORD.eq(passwordMD5)))
-            .fetchOneInto(User.class);
-   }
-
-   public User authenticateMD5(String username, String passwordClearText) {
-      return getDbContext().select().from(USER)
-            .where(USER.USER_NAME.eq(username).and(USER.USER_PASSWORD.eq(Utils.md5(passwordClearText))))
             .fetchOneInto(User.class);
    }
 

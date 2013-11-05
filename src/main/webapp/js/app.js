@@ -105,7 +105,7 @@ directory.Router = Backbone.Router.extend({
       "use strict";
       $.ajaxSetup({  
          headers : { 
-            "Authorization" : "Basic " + CryptoJS.enc.Base64.stringify(CryptoJS.enc.Latin1.parse(user.username + ":" + user.password)),            
+            "Authorization" : "Basic " + CryptoJS.enc.Base64.stringify(CryptoJS.enc.Latin1.parse(user.username + ":" + md5(user.password)))            
          }
       });
       directory.shellView.trigger('loginPageHide', 'ddd');
