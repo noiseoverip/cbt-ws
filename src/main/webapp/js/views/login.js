@@ -11,7 +11,7 @@ directory.LoginPageView = Backbone.View.extend({
    },
 
    tryLogin: function (e) {
-      directory.router.trigger('authCredentials', {username : this.$('#username').val(), password: this.$('#password').val()});
+      directory.router.trigger('authCredentials', {username : this.$('#username').val(), password: md5(this.$('#password').val())});
       e.preventDefault(); // prevent default button handling
    },
    

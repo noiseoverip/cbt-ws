@@ -102,13 +102,10 @@ directory.Router = Backbone.Router.extend({
    },
 
    authCredentials: function (user) {
-      "use strict";
-      $.ajaxSetup({  
-         headers : { 
-            "Authorization" : "Basic " + CryptoJS.enc.Base64.stringify(CryptoJS.enc.Latin1.parse(user.username + ":" + md5(user.password)))            
-         }
-      });
-      directory.shellView.trigger('loginPageHide', 'ddd');
+      "use strict";     
+      localStorage.setItem('user', JSON.stringify(user));
+      fixAjaxSetup(user);
+      directory.shellView.trigger('loginPageHide');
       this.navigate("", {trigger: true});
    },
 
@@ -164,29 +161,43 @@ $(document).on("ready", function () {
       "RegistrationPageView"
    ],
 
-         function () {
-            // Load other small templates
-            $.get('tpl/OtherTemplates.html', function (data) {
-               directory.templateAlert = _.template($(data).filter("#alertTemplate").html());
-            });
-            directory.user = {name: "notset"};
-            directory.router = new directory.Router();
-            Backbone.history.start();
-         });
+   function () {
+      // Load other small templates
+      $.get('tpl/OtherTemplates.html', function (data) {
+         directory.templateAlert = _.template($(data).filter("#alertTemplate").html());
+      });
+      // check if we have credentials stored
+      var user = JSON.parse(localStorage.getItem('user'));                       
+      fixAjaxSetup(user);           
+      directory.router = new directory.Router();            
+      Backbone.history.start();          
+      
+   });
+
 });
 
-$.ajaxSetup({
-   statusCode: {
-      401: function () {
+function fixAjaxSetup(user) {
+
+   if (user != null) {
+      var headers = { 
+               "Authorization" : "Basic " + CryptoJS.enc.Base64.stringify(CryptoJS.enc.Latin1.parse(user.username + ":" + user.password))            
+      };
+   }
+   $.ajaxSetup({
+      headers : headers,
+      statusCode: {
+         401: function () {
          "use strict";
          // Redirec the to the login page.
          window.location.replace('/#login');
 
-      },
-      403: function () {
+         },
+         403: function () {
          "use strict";
          // 403 -- Access denied
          window.location.replace('/#denied');
+         }
       }
-   }
-});
+   });
+}
+
