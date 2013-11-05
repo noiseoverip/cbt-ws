@@ -103,13 +103,11 @@ directory.Router = Backbone.Router.extend({
 
    authCredentials: function (user) {
       "use strict";
-      console.log("Provided creds:" + user.username);
       $.ajaxSetup({  
          headers : { 
             "Authorization" : "Basic " + CryptoJS.enc.Base64.stringify(CryptoJS.enc.Latin1.parse(user.username + ":" + user.password)),            
          }
       });
-      console.log("login ok");
       directory.shellView.trigger('loginPageHide', 'ddd');
       this.navigate("", {trigger: true});
    },
