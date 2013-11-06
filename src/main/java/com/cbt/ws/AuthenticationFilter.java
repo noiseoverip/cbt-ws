@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import com.cbt.ws.dao.UserDao;
 import com.cbt.ws.security.CbtPrinciple;
 import com.cbt.ws.security.CbtSecurityContext;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
@@ -56,7 +55,6 @@ class AuthenticationFilter implements ContainerRequestFilter {
       if (null != base64 && base64.startsWith(basicAuthIdentifier)) {
          String[] creds = new String(
                DatatypeConverter.parseBase64Binary(base64.substring(basicAuthIdentifier.length()))).split(":");
-         Preconditions.checkArgument(creds.length == 2, "Malformed base64 contents provided");
          return CbtPrinciple.fromUser(mUserDao.authenticate(creds[0], creds[1]));
       }
       mLogger.error("<Authorization> header was not found or malformed:" + base64);
