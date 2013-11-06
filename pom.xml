@@ -286,7 +286,7 @@
 						</goals>
 						<phase>package</phase>
 						<configuration>
-							<path>/ws</path>						
+							<path>/</path>						
 						</configuration>
 					</execution>
 				</executions>
