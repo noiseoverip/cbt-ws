@@ -18,7 +18,11 @@ directory.ShellView = Backbone.View.extend({
    },
 
    render: function () {
-      this.$el.html(this.template({user: directory.user}));
+      this.$el.html(this.template({
+         user: directory.user,
+         version: CbtClient.version,
+         buildtime: CbtClient.buildtime
+      }));
       return this;
    },
 

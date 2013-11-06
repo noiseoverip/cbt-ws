@@ -11,13 +11,15 @@
       <mysql.connector.version>5.1.17</mysql.connector.version>
       <jooq.version>3.1.0</jooq.version>
       <c3p0.version>0.9.1.2</c3p0.version>
+      <timestamp>${maven.build.timestamp}</timestamp>
+      <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
    </properties>
    <dependencies>
-     <dependency>
+      <dependency>
          <groupId>com.google.guava</groupId>
          <artifactId>guava</artifactId>
          <version>15.0</version>
-      </dependency>   
+      </dependency>
       <dependency>
          <groupId>com.cbt</groupId>
          <artifactId>cbt-ws-dao</artifactId>
@@ -27,6 +29,7 @@
          <groupId>org.eclipse.jetty</groupId>
          <artifactId>jetty-servlet</artifactId>
          <version>8.1.9.v20130131</version>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>mysql</groupId>
@@ -92,9 +95,9 @@
          <scope>test</scope>
       </dependency>
       <dependency>
-       	 <groupId>commons-validator</groupId>
-		 <artifactId>commons-validator</artifactId>
-		 <version>1.4.0</version>
+         <groupId>commons-validator</groupId>
+         <artifactId>commons-validator</artifactId>
+         <version>1.4.0</version>
       </dependency>
    </dependencies>
    <build>
@@ -113,6 +116,16 @@
             <version>2.1.1</version>
             <configuration>
                <warName>cbt-ws</warName>
+               <webResources>
+                  <resource>
+                     <directory>src/main/resources</directory>
+                     <targetPath>js</targetPath>
+                     <filtering>true</filtering>
+                     <includes>
+                        <include>**/*.js</include>
+                     </includes>
+                  </resource>
+               </webResources>
             </configuration>
          </plugin>
 
@@ -275,22 +288,22 @@
             </executions>
          </plugin>
          <plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.1</version>
-				<executions>
-					<execution>
-						<id>tomcat-run</id>
-						<goals>
-							<goal>exec-war-only</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<path>/</path>						
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            <groupId>org.apache.tomcat.maven</groupId>
+            <artifactId>tomcat7-maven-plugin</artifactId>
+            <version>2.1</version>
+            <executions>
+               <execution>
+                  <id>tomcat-run</id>
+                  <goals>
+                     <goal>exec-war-only</goal>
+                  </goals>
+                  <phase>package</phase>
+                  <configuration>
+                     <path>/</path>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
       <resources>
          <resource>
