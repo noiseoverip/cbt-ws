@@ -156,8 +156,10 @@ $(document).on("ready", function () {
       "PaginatedView",
       "TestRunResultView",
       "DeviceView",
-      "DeviceShareListView",
-      "DeviceShareListItemView",
+      "DeviceShareUserListView",
+      "DeviceShareUserListItemView",
+      "DeviceShareGroupListView",
+      "DeviceShareGroupListItemView",
       "RegistrationPageView"
    ],
 

@@ -1,4 +1,4 @@
-directory.DeviceShareListItemView = Backbone.View.extend({
+directory.DeviceShareUserListItemView = Backbone.View.extend({
    tagName: "tr",
 
    events: {
@@ -20,7 +20,7 @@ directory.DeviceShareListItemView = Backbone.View.extend({
 
 });
 
-directory.DeviceShareListView = Backbone.View.extend({  
+directory.DeviceShareUserListView = Backbone.View.extend({  
    events: {
       "click .shareDevice": "newShare" 
    },
@@ -41,7 +41,7 @@ directory.DeviceShareListView = Backbone.View.extend({
    }, 
 
    renderItem: function (item) {      
-      var modelView = new directory.DeviceShareListItemView({
+      var modelView = new directory.DeviceShareUserListItemView({
          model: item
       });
       this.$el.find("table").append(modelView.render().el);
@@ -49,7 +49,7 @@ directory.DeviceShareListView = Backbone.View.extend({
 
    newShare: function() {
       var that = this;
-      CbtClient.createDeviceShare(this.model.id, this.$el.find("input.username").val(), function(success, data) {
+      CbtClient.createDeviceShareUser(this.model.id, this.$el.find("input.username").val(), function(success, data) {
          if (success) {
             that.collection.reset();
             that.collection.fetch();
@@ -57,6 +57,5 @@ directory.DeviceShareListView = Backbone.View.extend({
             alert(data.responseText);
          }
       });
-   }
-   
+   }   
 });

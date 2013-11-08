@@ -239,6 +239,17 @@ CREATE TABLE IF NOT EXISTS `user` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=35 ;
 
 --
+-- Table structure for table `device_sharing_group`
+--
+
+CREATE TABLE IF NOT EXISTS `device_sharing_group` (
+  `device_sharing_group_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `device_sharing_group_device_id` bigint(20) NOT NULL,
+  `device_sharing_group_group_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`device_sharing_group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+
+--
 -- Constraints for dumped tables
 --
 

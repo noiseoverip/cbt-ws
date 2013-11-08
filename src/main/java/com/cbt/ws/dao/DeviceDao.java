@@ -2,6 +2,7 @@ package com.cbt.ws.dao;
 
 import static com.cbt.jooq.tables.Device.DEVICE;
 import static com.cbt.jooq.tables.DeviceSharing.DEVICE_SHARING;
+import static com.cbt.jooq.tables.DeviceSharingGroup.DEVICE_SHARING_GROUP;
 import static com.cbt.jooq.tables.DeviceType.DEVICE_TYPE;
 import static com.cbt.jooq.tables.TestprofileDevices.TESTPROFILE_DEVICES;
 import static com.cbt.jooq.tables.User.USER;
@@ -14,6 +15,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.RecordMapper;
 import org.jooq.Result;
@@ -22,6 +24,7 @@ import org.jooq.SelectJoinStep;
 
 import com.cbt.core.entity.Device;
 import com.cbt.core.entity.DeviceSharing;
+import com.cbt.core.entity.DeviceSharingGroup;
 import com.cbt.core.entity.DeviceType;
 import com.cbt.core.entity.User;
 import com.cbt.core.exceptions.CbtDaoException;
@@ -200,10 +203,30 @@ public class DeviceDao extends JooqDao {
       return devices;
    }
 
+   /**
+    * Get devices shared with user
+    *
+    * @param userId
+    * @param deviceType
+    * @param state
+    * @return
+    */
    public List<Device> getSharedWithUser(Long userId, Long deviceType, DeviceDeviceState state) {
-      SelectJoinStep<Record> select = getDbContext().select().from(DEVICE).join(DEVICE_SHARING)
-            .on(DEVICE_SHARING.DEVICE_SHARING_DEVICE_ID.eq(DEVICE.DEVICE_ID));
-      SelectConditionStep<Record> condition = select.where(DEVICE_SHARING.DEVICE_SHARING_USER_ID.eq(userId));
+      DSLContext context = getDbContext();
+      SelectConditionStep<Record> condition = context
+            .selectDistinct()
+            .from(DEVICE)
+            .where(DEVICE.DEVICE_ID
+                  // Query devices shared with user specifically
+                  .in(context
+                        .select(DEVICE_SHARING.DEVICE_SHARING_DEVICE_ID)
+                        .from(DEVICE_SHARING)
+                        .where(DEVICE_SHARING.DEVICE_SHARING_USER_ID.eq(userId)))
+                   // Query devices shared with all: group = 1 //TODO: add handling when user belongs to a group
+                   .or(DEVICE.DEVICE_ID.in(context
+                        .select(DEVICE_SHARING_GROUP.DEVICE_SHARING_GROUP_DEVICE_ID)
+                        .from(DEVICE_SHARING_GROUP)
+                        .where(DEVICE_SHARING_GROUP.DEVICE_SHARING_GROUP_GROUP_ID.eq(1L)))));
       if (null != deviceType) {
          condition = condition.and(DEVICE.DEVICE_TYPE_ID.eq(deviceType));
       }
@@ -225,7 +248,7 @@ public class DeviceDao extends JooqDao {
     * @param deviceId
     * @return
     */
-   public List<DeviceSharing> getSharedWith(Long deviceId) {
+   public List<DeviceSharing> getSharedWithUsers(Long deviceId) {
       List<DeviceSharing> result = getDbContext().select().from(DEVICE_SHARING).join(USER)
             .on(USER.USER_ID.eq(DEVICE_SHARING.DEVICE_SHARING_USER_ID))
             .where(DEVICE_SHARING.DEVICE_SHARING_DEVICE_ID.eq(deviceId))
@@ -238,6 +261,11 @@ public class DeviceDao extends JooqDao {
                }
             });
       return result;
+   }
+
+   public List<DeviceSharingGroup> getSharedWithGroups(Long deviceId) {
+      return getDbContext().select().from(DEVICE_SHARING_GROUP)
+            .where(DEVICE_SHARING_GROUP.DEVICE_SHARING_GROUP_DEVICE_ID.eq(deviceId)).fetchInto(DeviceSharingGroup.class);
    }
 
    /**
@@ -290,18 +318,34 @@ public class DeviceDao extends JooqDao {
    }
 
    /**
-    * Add device sharing record
+    * Add device sharing with specified user
     *
     * @param deviceId
     * @param userId
     */
    public void addSharing(Long deviceId, Long userId) {
       getDbContext()
-            .insertInto(DEVICE_SHARING, DEVICE_SHARING.DEVICE_SHARING_DEVICE_ID, DEVICE_SHARING.DEVICE_SHARING_USER_ID)
-            .values(deviceId, userId).execute();
+         .insertInto(DEVICE_SHARING, DEVICE_SHARING.DEVICE_SHARING_DEVICE_ID, DEVICE_SHARING.DEVICE_SHARING_USER_ID)
+         .values(deviceId, userId).execute();
    }
 
-   public void deleteSharing(Long shareId) {
+   /**
+    * Add devices sharing with specified user group
+    *
+    * @param deviceId
+    * @param userGroupId
+    */
+   public void addShareWithUserGroup(Long deviceId, Long userGroupId) {
+      getDbContext()
+         .insertInto(DEVICE_SHARING_GROUP, DEVICE_SHARING_GROUP.DEVICE_SHARING_GROUP_DEVICE_ID, DEVICE_SHARING_GROUP.DEVICE_SHARING_GROUP_GROUP_ID)
+         .values(deviceId, userGroupId).execute();
+   }
+
+   public void deleteSharingUser(Long shareId) {
       getDbContext().delete(DEVICE_SHARING).where(DEVICE_SHARING.DEVICE_SHARING_ID.eq(shareId)).execute();
+   }
+
+   public void deleteSharingGroup(Long shareId) {
+      getDbContext().delete(DEVICE_SHARING_GROUP).where(DEVICE_SHARING_GROUP.DEVICE_SHARING_GROUP_ID.eq(shareId)).execute();
    }
 }

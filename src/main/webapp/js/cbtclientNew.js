@@ -36,11 +36,16 @@ var CbtClient = {
    getUserTestRunsUrl: function () {
       "use strict";
       return CbtClient.parseUrl('/testrun');
+   },  
+
+   getDeviceSharingUsers: function (id) {
+      "use strict";
+      return CbtClient.parseUrl('/device/' + id + "/share/user");
    },
 
-   getDeviceSharing: function (id) {
+   getDeviceSharingGroups: function (id) {
       "use strict";
-      return CbtClient.parseUrl('/device/' + id + "/share");
+      return CbtClient.parseUrl('/device/' + id + "/share/group");
    },
 
    getUserTestProfileUrl: function () {
@@ -88,11 +93,29 @@ var CbtClient = {
       });
    },
    // callback: success, returnData
-   createDeviceShare : function(deviceId, userToShareWith, callback) {
+   createDeviceShareUser : function(deviceId, userToShareWith, callback) {
 		$.ajax({
          type: 'PUT',
-         url: CbtClient.getDeviceSharing(deviceId),
+         url: CbtClient.getDeviceSharingUsers(deviceId),
          data: {username : userToShareWith},
+         success: function (data, textStatus, jqXHR) {
+            if (callback) {
+               callback(true, data);
+            }
+         },
+         error: function (data, textStatus, jqXHR) {
+             if (callback) {
+               callback(false, data);
+            }
+         }
+      });
+   },
+   // callback: success, returnData
+   createDeviceShareGroup : function(deviceId, groupId, callback) {
+      $.ajax({
+         type: 'PUT',
+         url: CbtClient.getDeviceSharingGroups(deviceId),
+         data: {groupId : groupId},
          success: function (data, textStatus, jqXHR) {
             if (callback) {
                callback(true, data);

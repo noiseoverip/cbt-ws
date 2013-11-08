@@ -65,13 +65,22 @@ directory.DeviceView = Backbone.View.extend({
       "use strict";
       if (this.model.get("listerIsOwner") === true) {
          this.render();
-         this.deviceShareList = new directory.DeviceShareList([], { deviceId: this.model.get("id")});
-         this.deviceShareView = new directory.DeviceShareListView({
-            el: this.$el.find("div.sharing"),
+         this.deviceShareUserList = new directory.DeviceShareUserList([], { deviceId: this.model.get("id")});
+         this.deviceShareUserView = new directory.DeviceShareUserListView({
+            el: this.$el.find("div.sharingUsers"),
             model: this.model,
-            collection: this.deviceShareList
+            collection: this.deviceShareUserList
          });
-         this.deviceShareList.fetch();
+         this.deviceShareUserList.fetch();
+
+         this.deviceShareGroupList = new directory.DeviceShareGroupList([], { deviceId: this.model.get("id")});
+         this.deviceShareGroupView = new directory.DeviceShareGroupListView({
+            el: this.$el.find("div.sharingGroups"),
+            model: this.model,
+            collection: this.deviceShareGroupList
+         });
+         this.deviceShareGroupList.fetch();
+
       } else {
          this.render();
       }

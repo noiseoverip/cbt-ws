@@ -32,6 +32,7 @@ import com.cbt.core.entity.Device;
 import com.cbt.core.entity.DeviceJob;
 import com.cbt.core.entity.DeviceJobResult;
 import com.cbt.core.entity.DeviceSharing;
+import com.cbt.core.entity.DeviceSharingGroup;
 import com.cbt.core.entity.DeviceType;
 import com.cbt.core.entity.TestConfig;
 import com.cbt.core.entity.TestPackage;
@@ -133,14 +134,25 @@ public class AccessWs {
    }
 
    @DELETE
-   @Path("/device/{deviceId}/share/{shareId}")
-   public void deleteSharing(@PathParam("deviceId") Long deviceId, @PathParam("shareId") Long shareId)
+   @Path("/device/{deviceId}/share/user/{shareId}")
+   public void deleteSharingUsers(@PathParam("deviceId") Long deviceId, @PathParam("shareId") Long shareId)
          throws CbtDaoException {
       Device device = mDeviceDao.getDevice(getUserId(), deviceId);
       if (null == device) {
          throw new WebApplicationException(Status.UNAUTHORIZED);
       }
-      mDeviceDao.deleteSharing(shareId);
+      mDeviceDao.deleteSharingUser(shareId);
+   }
+
+   @DELETE
+   @Path("/device/{deviceId}/share/group/{shareId}")
+   public void deleteSharingGroups(@PathParam("deviceId") Long deviceId, @PathParam("shareId") Long shareId)
+         throws CbtDaoException {
+      Device device = mDeviceDao.getDevice(getUserId(), deviceId);
+      if (null == device) {
+         throw new WebApplicationException(Status.UNAUTHORIZED);
+      }
+      mDeviceDao.deleteSharingGroup(shareId);
    }
 
    @GET
@@ -213,16 +225,29 @@ public class AccessWs {
    }
 
    /**
-    * Get device sharing information
+    * Get records of device share with users
     *
     * @param deviceId
     * @return
     */
    @GET
-   @Path("/device/{deviceId}/share")
+   @Path("/device/{deviceId}/share/user")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<DeviceSharing> getDeviceSharingInfo(@PathParam("deviceId") Long deviceId) {
-      return mDeviceDao.getSharedWith(deviceId);
+   public List<DeviceSharing> getDeviceSharingUsers(@PathParam("deviceId") Long deviceId) {
+      return mDeviceDao.getSharedWithUsers(deviceId);
+   }
+
+   /**
+    * Get records of device share with groups
+    *
+    * @param deviceId
+    * @return
+    */
+   @GET
+   @Path("/device/{deviceId}/share/group")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<DeviceSharingGroup> getDeviceSharingGroups(@PathParam("deviceId") Long deviceId) {
+      return mDeviceDao.getSharedWithGroups(deviceId);
    }
 
    // TODO: to be changed to use testConfigId once database is changed and test profile is removed
@@ -472,33 +497,43 @@ public class AccessWs {
       return deviceJobResult;
    }
 
-   /**
-    * Share device with specified user
-    *
-    * @param deviceId
-    * @param userShareWithId
-    */
    @PUT
-   @Path("/device/{deviceId}/share/{userShareWithId}")
-   public void putDeviceShare(@PathParam("deviceId") Long deviceId, @PathParam("userShareWithId") Long userShareWithId) {
-      mDeviceDao.addSharing(deviceId, userShareWithId);
-   }
+   @Path("/device/{deviceId}/share/user")
+   public void putNewDeviceShareForUser(@PathParam("deviceId") Long deviceId,
+         @FormParam("username") String shareForUserName) {
 
-   @PUT
-   @Path("/device/{deviceId}/share")
-   public void putNewShare(@PathParam("deviceId") Long deviceId, @FormParam("username") String shareForUserName) {
-      User userToShareTo = mUserDao.getUserByName(shareForUserName);
-      if (null == userToShareTo) {
-         throw new WebApplicationException(Response.status(Status.NOT_FOUND).type("text/plain")
-               .entity("User " + shareForUserName + " was not found !").build());
-      }
+      // Check if user is authorized to share this device and if device exists
       Device device = mDeviceDao.getDevice(getUserId(), deviceId);
       if (null == device) {
          throw new WebApplicationException(Response.status(Status.NOT_FOUND).type("text/plain")
                .entity("Specified device not found or un-authorized").build());
       }
 
-      mDeviceDao.addSharing(deviceId, userToShareTo.getId());
+      // Share with specified user
+      User userToShareTo = mUserDao.getUserByName(shareForUserName);
+      if (null != userToShareTo) {
+         mDeviceDao.addSharing(deviceId, userToShareTo.getId());
+      } else {
+         throw new WebApplicationException(Response.status(Status.NOT_FOUND).type("text/plain")
+               .entity("User " + shareForUserName + " was not found !").build());
+      }
+   }
+
+   @PUT
+   @Path("/device/{deviceId}/share/group")
+   public void putNewDeviceShareForGroup(
+         @PathParam("deviceId") Long deviceId,
+         @FormParam("groupId") Long groupId) {
+
+      // Check if user is authorized to share this device and if device exists
+      Device device = mDeviceDao.getDevice(getUserId(), deviceId);
+      if (null == device) {
+         throw new WebApplicationException(Response.status(Status.NOT_FOUND).type("text/plain")
+               .entity("Specified device not found or un-authorized").build());
+      }
+
+      mDeviceDao.addShareWithUserGroup(deviceId, groupId);
+
    }
 
    /**
